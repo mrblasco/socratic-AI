@@ -1,0 +1,72 @@
+---
+title: |
+  The Impact of Large Language Models on Students: A Randomised Study of Socratic vs. Non-Socratic AI and the Role of Step-by-Step Reasoning
+
+author:
+  - Andrea Blasco:
+      institute:
+        - jrc
+      correspondence: "yes"
+      email: andrea.blasco@ec.europa.eu
+  - Vicky Charisi:
+      institute: [jrc, harvard]
+      correspondence: "yes"
+      email: vcharisi@law.harvard.edu
+
+institute:
+  - jrc: European Commission, Joint Research Centre, Brussels, Belgium
+  - harvard: Harvard University, Berkman Klein Center, Cambridge, MA, USA
+
+toc: false
+fontsize: 11pt # 11
+linestretch: 2 # 1.25
+colorlinks: true
+link-citations: true
+graphics: true
+tables: true
+mainfont: Times New Roman
+geometry: margin=2cm
+bibliography: bibliography/refs.bib
+always_allow_html: true
+
+header-includes: |
+  ```{=latex}
+  % Break sections into new page
+  \usepackage{titlesec}
+  \newcommand{\sectionbreak}{\clearpage}
+  
+  % Table caption 
+  \usepackage{caption} 
+  \captionsetup[table]{skip=8pt}
+
+  % Table packages
+  \usepackage{longtable}
+  \usepackage{array}
+  \usepackage{multirow}
+  \usepackage{wrapfig}
+  \usepackage{float}
+  \usepackage{colortbl}
+  \usepackage{pdflscape}
+  \usepackage{tabu}
+  \usepackage{threeparttable}
+  \usepackage{threeparttablex}
+  \usepackage[normalem]{ulem}
+  \usepackage{makecell}
+  \usepackage{xcolor}
+
+  % Move all figures at the end
+  \usepackage[nolists, nomarkers]{endfloat}
+  \DeclareDelayedFloatFlavour*{longtable}{table}
+
+  %\graphicspath{}
+  ```
+---
+
+```{r setup, include = FALSE}
+library(patchwork)
+library(figpatch)
+knitr::opts_chunk$set(echo = FALSE, dev = "pdf")
+```
+
+```{r child=setdiff(list.files(pattern = ".Rmd", full = TRUE), "./main_report.Rmd")}
+```

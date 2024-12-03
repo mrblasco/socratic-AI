@@ -1,0 +1,11 @@
+distill::distill_article:
+  toc: false
+
+bookdown::html_document2:
+  toc: false
+
+bookdown::pdf_document2:
+  latex_engine: xelatex
+  pandoc_args:
+    - --lua-filter=assets/lua-filters/scholarly-metadata/scholarly-metadata.lua
+    - --lua-filter=assets/lua-filters/author-info-blocks/author-info-blocks.lua

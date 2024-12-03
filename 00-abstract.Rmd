@@ -1,0 +1,25 @@
+# Structured Abstract {-}
+
+**Purpose:** How does integrating Large Language Models (LLMs) into classroom activities influence students' learning? Using a randomised controlled experiment, we examined whether LLMs' step-by-step explanatory capabilities improve students' performance on complex tasks. Additionally, we compare the effects of Socratic AI ---LLM-powered chatbots designed to encourage critical thinking through incremental guidance--- with non-Socratic AI in shaping students' engagement, interactions, and learning outcomes. 
+
+**Methods:** The study was randomised with 122 students aged 14 to 16 from two high schools. Participants engaged in problem-solving and writing tasks under different experimental conditions. The impact of step-by-step reasoning was tested on a simple prediction task (guessing the value of coins in a jar). Conversely, the effect of Socratic AI on students was assessed through objective test scores on various tasks, while attitudes were measured using self-reported surveys.
+
+**Results:** While all students received AI-generated predictions, those exposed to step-by-step reasoning demonstrated significantly higher accuracy in the prediction task, highlighting the benefits of AI reasoning. Socratic AI fostered significantly greater engagement and interaction; however, it did not yield significant improvements in learning, and a higher fraction of students perceived it as less helpful. Furthermore, despite students generally perceiving AI assistance as beneficial, they exhibited limited retention, struggling to apply learned concepts to new situations when we removed AI assistance.
+
+**Conclusion:** These findings contribute to the ongoing debate on integrating LLM-powered chatbots in education. They emphasise the importance of fostering effective student-AI interactions and  incorporating pedagogically grounded principles into AI design to enhance educational outcomes.
+
+**Keywords**: artificial intelligence; large language models; learning; education policy; experiment, k-12
+
+# Statements and Declarations {-}
+
+The authors declare no competing interests directly or indirectly related to the work submitted for publication. 
+
+<!-- Competing Interests: Authors are required to disclose financial or non-financial interests that are directly or indirectly related to the work submitted for publication. Please refer to “Competing Interests and Funding” below for more information on how to complete this section. -->
+
+<!-- 
+Cite references in the text by name and year in parentheses. Some examples:
+
+Negotiation research spans many disciplines (Thompson, 1990).
+This result was later contradicted by Becker and Seligman (1996).
+This effect has been widely studied (Abbott, 1991; Barakat et al., 1995; Kelso & Smith, 1998; Medvec et al., 1999). 
+-->

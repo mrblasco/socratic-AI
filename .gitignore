@@ -1,0 +1,6 @@
+.DS_Store
+
+assets/
+assets/pictures/*.jpg
+assets/lua-filters
+bibliography/*/

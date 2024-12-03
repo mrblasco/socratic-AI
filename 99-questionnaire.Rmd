@@ -1,0 +1,159 @@
+
+\newpage 
+
+## Questionnaire {#sec:questionnaire}
+
+1. Do you agree or disagree that society will benefit from a future of AI?
+   - Strongly Agree
+   - Agree
+   - Neutral
+   - Disagree
+   - Strongly Disagree
+
+2. Do you agree or disagree that AI is dangerous?
+   - Strongly Agree
+   - Agree
+   - Neutral
+   - Disagree
+   - Strongly Disagree
+
+3. Do you agree or disagree that AI will foster students’ learning in the future?
+   - Strongly Agree
+   - Agree
+   - Neutral
+   - Disagree
+   - Strongly Disagree
+
+4. Do you agree or disagree that AI is often misused by students?
+   - Strongly Agree
+   - Agree
+   - Neutral
+   - Disagree
+   - Strongly Disagree
+
+5. How easy or difficult would it be for you to explain how sound waves transfer in the air or other materials?
+   - I could do this easily
+   - I could do this with a bit of effort
+   - I would struggle to do this on my own
+   - I couldn't do this on my own
+
+
+6. How easy or difficult would it be for you to write about the impact of technology on teenagers’ well-being?
+   - I could do this easily
+   - I could do this with a bit of effort
+   - I would struggle to do this on my own
+   - I couldn't do this on my own
+
+7. How easy or difficult would it be for you to guess how many litres of water are in an Olympic swimming pool?
+   - I could do this easily
+   - I could do this with a bit of effort
+   - I would struggle to do this on my own
+   - I couldn't do this on my own
+
+8. You see a jar filled with different coins; you must guess the total value of coins in US dollars. 
+
+9.  We asked the same question about the jar's coins value to an <b>AI system</b> that can understand and process visual information. The AI guessed $213. How accurate is this guess? [IF in AI EXPLANATION TREATMENT, ADD EXPLANATION HERE]
+    - Correct
+    - Mostly Correct
+    - Partially Correct
+    - Mostly incorrect
+    - Incorrect
+
+10. We asked the same question to a group of 600 people of various backgrounds. People's mean guess was $596. How accurate is this guess?
+    - Correct
+    - Mostly Correct
+    - Partially Correct
+    - Mostly incorrect
+    - Incorrect
+
+11. Given the information from the AI ($213) and the people's average ($596), what is your final guess of the value of coins in the jar?
+
+12. [Task 1] How much water in litres do students consume at our school each week? Interact with the AI tutor at the bottom of this page before answering. [Randomly assign SOCRATIC / NON-SOCRATIC AI Tutor]
+
+13. How confident are you that the answer you provided is accurate?
+    - Very confident
+    - Confident
+    - Neutral
+    - Not very confident
+    - Not confident at all
+
+14. How helpful was interacting with the AI tutor?
+    - Very helpful
+    - Helpful
+    - Neutral
+    - Not very helpful
+    - Not helpful at all
+
+15. [Task 2.] Experts say that social media can have either a positive or a negative impact on students' well-being. What is your opinion about the effect of social media on teenagers? There is no correct or wrong answer.
+    - Very Positive
+    - Positive
+    - Neutral
+    - Negative
+    - Very Negative
+
+16. Now, interact with the AI tutor at the bottom of this page before answering. [SOCRATIC / NON-SOCRATIC]. [Repeat question 15.]
+    - Very Positive
+    - Positive
+    - Neutral
+    - Negative
+    - Very Negative
+
+17. Write a well-reasoned 600-character essay critically examining this topic. Write an introductory paragraph with background information, argumentation with as many convincing arguments or facts as possible, and a brief conclusion. 
+
+18. How confident are you that the arguments or facts in your essay are accurate?
+    - Very confident
+    - Confident
+    - Neutral
+    - Not very confident
+    - Not confident at all
+
+19. How helpful was interacting with the AI tutor before writing the essay?
+    - Very helpful
+    - Helpful
+    - Neutral
+    - Not very helpful
+    - Not helpful at all
+
+20. Can you explain why this interaction was helpful or wasn't? [TEXT]
+
+21. [Task 3] Does sound travel faster in water than air? And if so, why?
+    1.  Sound travels slower in water due to its higher density
+    2.  Sound travels faster in water due to its higher density [correct answer]
+    3.  Sound travels at the same speed in both water and air, regardless of density
+    4.  Sound travels slower in water due to its lower density
+    5.  Sound travels faster in water due to its lower density
+
+22. Now, interact with the AI tutor at the bottom of this page before answering. [SOCRATIC / NON-SOCRATIC] [Repeat question 21.]
+
+23. How confident are you that the answer you provided is accurate?
+    - Very confident
+    - Confident
+    - Neutral
+    - Not very confident
+    - Not confident at all
+
+24. How helpful was interacting with the AI tutor?
+    - Very helpful
+    - Helpful
+    - Neutral
+    - Not very helpful
+    - Not helpful at all
+
+25. [Verification question] In which of the following materials does sound travel faster?
+    - Rubber
+    - Cold Air
+    - Warm Air
+    - Gold
+    - Water [correct answer]
+
+26. What is your average grade at school?
+
+27. How many hours per day do you spend completing homework assignments?
+
+28. How often do you complete your homework assignment on time?
+
+29. What single factor contributes the most to your ability to complete homework assignments on time?
+
+30. Have you ever used ChatGPT before today?
+
+31. In your opinion, how many of your classmates are using ChatGPT for homework?
