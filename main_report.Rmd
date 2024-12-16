@@ -1,6 +1,6 @@
 ---
 title: |
-  The Impact of Large Language Models on Students: A Randomised Study of Socratic vs. Non-Socratic AI and the Role of Step-by-Step Reasoning
+  Exploring the Role of AI Chatbots in K-12 Education: A Comparative Study of Socratic and Non-Socratic Approaches
 
 author:
   - Andrea Blasco:
@@ -16,6 +16,9 @@ author:
 institute:
   - jrc: European Commission, Joint Research Centre, Brussels, Belgium
   - harvard: Harvard University, Berkman Klein Center, Cambridge, MA, USA
+
+date: |
+  `r format(Sys.Date(), 'This version: %B %d, %Y')`
 
 toc: false
 fontsize: 11pt # 11
@@ -62,11 +65,14 @@ header-includes: |
   ```
 ---
 
+<!-- # The Impact of Large Language Models on Students: A Randomised Study of Socratic vs. Non-Socratic AI and the Role of Step-by-Step Reasoning -->
+
+
 ```{r setup, include = FALSE}
 library(patchwork)
 library(figpatch)
 knitr::opts_chunk$set(echo = FALSE, dev = "pdf")
 ```
 
-```{r child=setdiff(list.files(pattern = ".Rmd", full = TRUE), "./main_report.Rmd")}
+```{r child=list.files(pattern = "[0-9]+.*.Rmd", full = TRUE)}
 ```

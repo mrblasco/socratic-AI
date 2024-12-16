@@ -1,18 +1,27 @@
-# Structured Abstract {-}
+# Highlights {-}
 
-**Purpose:** How does integrating Large Language Models (LLMs) into classroom activities influence students' learning? Using a randomised controlled experiment, we examined whether LLMs' step-by-step explanatory capabilities improve students' performance on complex tasks. Additionally, we compare the effects of Socratic AI ---LLM-powered chatbots designed to encourage critical thinking through incremental guidance--- with non-Socratic AI in shaping students' engagement, interactions, and learning outcomes. 
+- An experiment was conducted where K-12 students used AI chatbots to solve school-related problems. 
 
-**Methods:** The study was randomised with 122 students aged 14 to 16 from two high schools. Participants engaged in problem-solving and writing tasks under different experimental conditions. The impact of step-by-step reasoning was tested on a simple prediction task (guessing the value of coins in a jar). Conversely, the effect of Socratic AI on students was assessed through objective test scores on various tasks, while attitudes were measured using self-reported surveys.
+- Two AI chatbot approaches were tested: one provided incremental guidance to encourage critical thinking ("Socratic"), while the other offered immediate solutions ("non-Socratic").
 
-**Results:** While all students received AI-generated predictions, those exposed to step-by-step reasoning demonstrated significantly higher accuracy in the prediction task, highlighting the benefits of AI reasoning. Socratic AI fostered significantly greater engagement and interaction; however, it did not yield significant improvements in learning, and a higher fraction of students perceived it as less helpful. Furthermore, despite students generally perceiving AI assistance as beneficial, they exhibited limited retention, struggling to apply learned concepts to new situations when we removed AI assistance.
+- Results showed that AI-generated explanations improved students' performance over solutions without them, highlighting the value of AI-generated guidance.
+ 
+- Participants engaged more frequently with the Socratic AI, though this did not result in improved performance compared to the non-Socratic AI. 
 
-**Conclusion:** These findings contribute to the ongoing debate on integrating LLM-powered chatbots in education. They emphasise the importance of fostering effective student-AI interactions and  incorporating pedagogically grounded principles into AI design to enhance educational outcomes.
+- While students found interactions with the AI useful, they perceived the Socratic AI as less helpful overall.
+
+- The findings highlight challenges in designing AI tutors that effectively foster critical thinking while maintaining student satisfaction, raising concerns about their adoption in educational settings. 
+
+# Abstract {-}
+
+How does integrating large language models (LLMs) into classroom activities influence students' learning? To address this question, we conducted a randomized experiment comparing two distinct chatbot approaches: one designed to encourage critical thinking through incremental guidance ("Socratic AI") and another providing immediate solutions ("non-Socratic AI"). The study involved students aged 14 to 16, who engaged in various school-related tasks under these experimental conditions. Students' attitudes were measured through self-reported surveys. Results indicated that AI-generated explanations significantly improved students' performance over solutions provided without such explanations, highlighting the benefits of step-by-step guidance. The Socratic AI approach fostered significantly greater engagement and interaction. However, it did not achieve significant improvements in learning, and a higher fraction of students perceived it as less helpful. Furthermore, despite students generally perceiving AI assistance as beneficial, they exhibited limited retention, failing to apply learned concepts to new situations when we removed AI assistance. These findings contribute to the ongoing debate on integrating LLM-powered chatbots in education, highlighting key challenges in designing AI tutors that effectively foster critical thinking while maintaining student satisfaction, raising concerns about their adoption in educational settings.
+
+
+<!-- How does integrating Large Language Models (LLMs) into classroom activities influence students' learning? We conduct a randomised experiment to examine whether LLMs' interactions and step-by-step reasoning improve students' performance. Specifically, we compare chatbots designed to encourage critical thinking through incremental guidance ("Socratic AI") against chatbots providing immediate solutions ("non-Socratic AI"), evaluating the effects on students' engagement, interactions, and learning outcomes. Students aged 14 to 16 participated in problem-solving and writing tasks under different experimental conditions. We evaluated their performance through conversation logs and test scores on various school-related tasks. Attitudes were measured using self-reported surveys.  -->
+
 
 **Keywords**: artificial intelligence; large language models; learning; education policy; experiment, k-12
 
-# Statements and Declarations {-}
-
-The authors declare no competing interests directly or indirectly related to the work submitted for publication. 
 
 <!-- Competing Interests: Authors are required to disclose financial or non-financial interests that are directly or indirectly related to the work submitted for publication. Please refer to “Competing Interests and Funding” below for more information on how to complete this section. -->
 
