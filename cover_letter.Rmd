@@ -1,7 +1,11 @@
 
+```{r, echo = FALSE}
+journal <- "<strong>Humanities and Social Sciences Communications</strong>"
+```
+
 Dear Editors,
 
-We are pleased to submit our manuscript, titled *"Exploring the Role of AI Chatbots in K-12 Education: A Comparative Study of Socratic and Non-Socratic Approaches,"* for consideration in Computers in Human Behavior. This study investigates the potential of Large Language Models (LLMs) to support student learning, focusing on how different chatbot interaction approaches influence engagement, performance, and perceptions in a classroom setting.
+We are pleased to submit our manuscript, titled *"Exploring the Role of AI Chatbots in K-12 Education: A Comparative Study of Socratic and Non-Socratic Approaches,"* for consideration in `r journal`. This study investigates the potential of Large Language Models (LLMs) to support student learning, focusing on how different chatbot interaction approaches influence engagement, performance, and perceptions in a classroom setting.
 
 In this research, we conducted a randomized experiment with students aged 14 to 16 to evaluate the impact of two distinct AI chatbot designs: one employing incremental guidance to foster critical thinking ("Socratic AI") and the other providing immediate solutions ("non-Socratic AI"). Our findings reveal that AI-generated explanations significantly improved students' task performance compared to solutions offered without AI-generated reasoning, emphasizing the value of step-by-step guidance. Interestingly, however, while students engaged more frequently with the Socratic AI, this interaction style did not translate into higher performance on various tasks and was perceived by the students as less helpful overall. These results underscore the trade-offs and challenges in designing AI tutors that balance critical thinking support with user satisfaction.
 
@@ -9,7 +13,7 @@ Our work contributes to the growing literature on integrating AI tools into educ
 
 The manuscript has not been published elsewhere and is not under consideration by another journal (the pre-print is available on SSRN). We have no conflicts of interest to disclose, and all authors have approved the manuscript for submission. We welcome any feedback that could help refine and improve our work.
 
-Thank you for considering our submission. We look forward to the possibility of contributing to Computers in Human Behavior and are happy to address any questions or provide additional information.
+Thank you for considering our submission. We look forward to the possibility of contributing to `r journal` and are happy to address any questions or provide additional information.
 
 Sincerely,
 
