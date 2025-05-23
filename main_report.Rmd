@@ -21,13 +21,13 @@ date: |
   `r format(Sys.Date(), 'This version: %B %d, %Y')`
 
 toc: false
-fontsize: 11pt # 11
-linestretch: 2 # 1.25
+fontsize: 12pt # 11
+linestretch: 1.5 # 1.25
 colorlinks: true
 link-citations: true
 graphics: true
 tables: true
-mainfont: Times New Roman
+mainfont: Helvetica
 geometry: margin=2cm
 bibliography: [References/refs.bib]
 always_allow_html: true

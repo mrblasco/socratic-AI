@@ -36,9 +36,8 @@ geom_coef <- function() {
 ## Overview of Student Demographics
 
 A total of 122 students participated in the study, 64 in Brussels and 58 in Seville. The sample was gender balanced. Over half of the students reported B+ grades and prior use of ChatGPT, with boys more likely to report ChatGPT experience. Around 50% reported to always complete homework on time, with a minority reporting less than always, with factors like time management (17% in Brussels, 25% in Seville) and material comprehension (56% in Brussels, 28% in Seville) affecting completion. Students' self-efficacy varied by task, with 30% of the students feeling they could "easily" write a technology essay (task 2) but only 6% and 11% feeling confident about explaining sound propagation (task 3) or solving a numerical estimation task such as guessing the litres of water in a pool (task 1). Thus, the sample was substantially homogeneous in terms of demographics but diverse in terms of self-efficacy. 
-<!-- Thus, there was considerable variation in students' self-efficacy of the skills relevant to our tasks before performing these tasks.  -->
 
-Table \@ref(tab:summary-statistics) illustrates the distribution of student characteristics according to the treatment assignment for the Socratic versus Non-Socratic AI tutor. (A similar table for the AI step-by-step reasoning assignment can be shown.) The sample characteristics were generally balanced across treatments. Only one out of ten associations with the treatment assignment was statistically significant for the Socratic/Non-Socratic conditions, and no significant associations were found for the AI Step-by-step reasoning assignment. Thus, only one out of twenty Fisher's exact tests showed a significant result (p < 0.05), indicating a good balance across treatments.
+Table \@ref(tab:summary-statistics) illustrates the distribution of student characteristics across treatment groups alongside the results of separate Fisher's Exact Tests on the association with treatment assignment. The sample characteristics were generally balanced across treatments. Only one variable out of ten -- i.e., self-reported difficulties in homework -- was statistically associated (p = 0.05) with the treatment assignment to Socratic/Non-Socratic conditions, while no significant associations were found for the AI explanation assignment. Thus, only one out of twenty Fisher's exact tests showed a significant result, indicating a good balance across treatments.
 
 ```{r summary-statistics, echo = FALSE, warning=FALSE, message=FALSE}
 tutorgpt_rename <- tutorgpt %>%
@@ -55,7 +54,7 @@ tutorgpt_rename <- tutorgpt %>%
     "Self-efficacy (sound)" = q5_self_physics,
     "Self-efficacy (essay)" = q6_self_technology,
     "Self-efficacy (guess)" = q7_self_swimming_pool,
-  ) 
+  )
 
 table_socratic <- tutorgpt_rename %>%
   select(-treatment_explain_id) %>% 
@@ -178,17 +177,21 @@ attitudes_df %>%
 
 ## The Impact of AI Step-by-step Reasoning Exposure
 
-We tested whether showing students AI-generated step-by-step reasoning affected how they used the AI's prediction, compared to just seeing the prediction without any reasoning. We measured students' accuracy using the absolute difference between each student $i$’s prediction and the actual value of coins:
+We tested whether showing students AI-generated step-by-step reasoning affected how they used the AI's prediction, compared to just seeing the prediction without any reasoning. For each student $i = 1, \cdots, 122$, we computed the absolute error as the absolute difference between student $i$'s prediction, $\text{Guess}_i$, and the actual value of coins:
 $$
-  \text{absolute error}_i = |\text{guess}_i - \text{actual value}|,
+  \text{Absolute Error}_i = \mid \text{Guess}_i - \text{Actual Value Coins} \mid,
 $$
-for $i =1, \cdots, N$, where a smaller absolute error indicated greater accuracy.
+where a smaller absolute error indicated greater accuracy.
 
-The absolute error distribution in our sample was positively skewed, complicating the testing for mean differences. Consequently, we shifted our analysis towards treatment differences in the median absolute error, as illustrated in Figure \@ref(fig:boot-accuracy). We applied bootstrap resampling to estimate the median difference across treatment groups and the corresponding confidence intervals.[^outlier] Results indicated that, although both groups received the same exact AI estimate of $213, students who also received AI-generated step-by-step reasoning demonstrated a significantly higher accuracy, reflected by a lower median of the absolute error (p = 0.08).  This evidence indicates that exposure to AI reasoning contributed to an improvement in student performance.
+<!-- The absolute error distribution in our sample was positively skewed, complicating the testing for mean differences. Consequently, we shifted our analysis towards treatment differences in the median absolute error, as illustrated in Figure \@ref(fig:boot-accuracy).  -->
 
-[^outlier]: Outliers were detected in the data and removed from the bootstrap analysis. One student provided a notably high guess of 6969. However, this value deviated substantially from both the overall distribution and the student’s initial guess, suggesting an error rather than an informed estimate.
+Figure \@ref(fig:boot-accuracy) illustrates that students' prediction accuracy was positively skewed in both treatment groups, with a greater accuracy for students exposed to AI reasoning. To estimate confidence intervals for the median difference in accuracy betweeen the groups, we used a nonparametric bootstrap approach.[^outlier] This procedure involved resampling participants' absolute errors (n = 1,999) to build a distribution of medians for each group. The differences between groups were computed, and the 5th and 95th percentiles of the resulting distribution were used to construct a 90% confidence interval for the difference in accuracy between groups. The interval ranged from 0 to 70, indicating a significantly greater accuracy (lower error) for the students exposed to AI-generated reasoning (one-sided, p < 0.05).
 
-```{r boot-accuracy, echo = FALSE, fig.width = 7, fig.height = 3, fig.cap = "Comparison of Students' Absolute Error in Estimating Coin Jar Value with and without AI Explanations. All students received the AI-generated estimate of $213 (the correct value was $379.54). Still, those in the AI reasoning treatment also viewed the AI-generated step-by-step explanation for the estimation. Exposure to the AI-generated explanation significantly reduced the students' median absolute error."}
+[^outlier]: We detected one outlier in the data, which was removed from the bootstrap analysis. One student provided a notably high guess of 6969. However, this value deviated substantially from both the overall distribution and the student's initial guess, suggesting a mistake rather than an estimate.
+
+```{r boot-accuracy, echo = FALSE, fig.width = 7, fig.height = 3, fig.cap = cap}
+cap <- "Comparison of Students' Absolute Error in Estimating Coin Jar Value with and without AI Explanations. All students received the AI-generated estimate of $213 (the correct value was $379.54). Still, those in the AI reasoning treatment also viewed the AI-generated step-by-step explanation for the estimation. Exposure to the AI-generated explanation significantly reduced the students' median absolute error." # nolint
+
 coins_value <- 379.54
 
 # Regression
@@ -215,12 +218,15 @@ bootstrap_accuracy_diff <- bootstrap_accuracy %>%
 
 # Test diffrence
 alpha <- 0.1
-diff_cis <- bootstrap_accuracy_diff %>% 
+diff_cis <- bootstrap_accuracy_diff %>%
   reframe(quantile(diff, p = c(alpha / 2, 1 - alpha / 2)))
 
-# # Compute p-values 
+# # Compute p-values two-sided test
 p_value <- bootstrap_accuracy_diff %>% 
   with(1 - (sum(diff < 0) + 1) / (length(diff) + 2))
+
+p_value_one_sided <- bootstrap_accuracy_diff %>% 
+  with(mean(diff > 0))
 
 p_dens_diff <- bootstrap_accuracy_diff %>% 
   ggplot() + 
