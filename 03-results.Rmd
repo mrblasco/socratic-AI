@@ -41,9 +41,10 @@ A total of 122 students participated in the study, 64 in Brussels and 58 in Sevi
 Table \@ref(tab:summary-statistics) illustrates the distribution of student characteristics according to the treatment assignment for the Socratic versus Non-Socratic AI tutor. (A similar table for the AI step-by-step reasoning assignment can be shown.) The sample characteristics were generally balanced across treatments. Only one out of ten associations with the treatment assignment was statistically significant for the Socratic/Non-Socratic conditions, and no significant associations were found for the AI Step-by-step reasoning assignment. Thus, only one out of twenty Fisher's exact tests showed a significant result (p < 0.05), indicating a good balance across treatments.
 
 ```{r summary-statistics, echo = FALSE, warning=FALSE, message=FALSE}
-tutorgpt %>%
+tutorgpt_rename <- tutorgpt %>%
   dplyr::select(
-    treatment_tutor_id,
+    treatment_tutor_id, 
+    treatment_explain_id,
     "Gender" = gender,
     "Has used ChatGPT" = has_used_before,
     "Location" = location,
@@ -54,31 +55,66 @@ tutorgpt %>%
     "Self-efficacy (sound)" = q5_self_physics,
     "Self-efficacy (essay)" = q6_self_technology,
     "Self-efficacy (guess)" = q7_self_swimming_pool,
-  ) %>%
+  ) 
+
+table_socratic <- tutorgpt_rename %>%
+  select(-treatment_explain_id) %>% 
   tidyr::pivot_longer(-treatment_tutor_id) %>%
-  dplyr::count(name, value, treatment_tutor_id) %>%
+  mutate(pval = xtabs(~ value + treatment_tutor_id) %>% 
+                fisher.test() %>% 
+                .$p.value,
+        .by = name)  %>% 
+  dplyr::count(name, value, pval, treatment_tutor_id) %>%
   na.omit() %>%
   dplyr::mutate(percent = 100 * n / sum(n), 
                 .by = c(name, treatment_tutor_id)) %>%
   tidyr::pivot_wider(names_from = treatment_tutor_id,
                      values_from = c(percent, n),
                      values_fill = 0) %>%
-  dplyr::mutate(name = ifelse(row_number() == 1, name, ""), .by = name) %>% 
-  dplyr::mutate(totals = n_non_socratic + n_socratic) %>%
+  dplyr::mutate(totals = n_non_socratic + n_socratic)
+
+table_explain <- tutorgpt_rename %>%
+  select(-treatment_tutor_id) %>% 
+  tidyr::pivot_longer(-treatment_explain_id) %>%
+  dplyr::mutate(pval_explain = xtabs(~ value + treatment_explain_id) %>% 
+                               fisher.test() %>% 
+                                .$p.value, 
+                .by = name)  %>% 
+  dplyr::count(name, value, treatment_explain_id, pval_explain) %>%
+  na.omit() %>%
+  dplyr::mutate(percent = 100 * n / sum(n), 
+                .by = c(name, treatment_explain_id)) %>%
+  tidyr::pivot_wider(names_from = treatment_explain_id,
+                     values_from = c(percent, n),
+                     values_fill = 0) 
+
+table_socratic %>% 
+  left_join(table_explain, by = c("name", "value")) %>% 
+  mutate(name = ifelse(row_number() == 1, name, ""), 
+         pval = ifelse(row_number() == 1, sprintf("%0.2f", pval), ""),
+         pval_explain = ifelse(row_number() == 1, sprintf("%0.2f", pval_explain), ""),
+         .by = name) %>%
   dplyr::select(
-    "Name" = name,
-    "Value" = value,
-    "% Non-Socratic" = percent_non_socratic,
-    "% Socratic" = percent_socratic,
-    "N" = totals
+      name, value,
+      percent_socratic, percent_non_socratic, pval,
+      percent_explain_yes, percent_explain_no, pval_explain,
+      totals,
   ) %>% 
   kableExtra::kbl(
-    digits = 1,
-    caption = "Sample characteristics",
+    col.names = c(
+      "Name", "Value",
+      "Yes", "No", "p.",
+      "Yes", "No", "p.",
+      "N"
+    ),
+    digits = 0,
     booktabs = TRUE,
-    linesep = if (knitr::is_latex_output()) "\\hline" else ""
+    caption = "Sample Characteristics",
+    linesep = if (knitr::is_latex_output()) "\\hline" else "",
   ) %>% 
-  kableExtra::kable_styling()
+  kableExtra::kable_styling() %>% 
+  kableExtra::add_header_above(c(" " = 2, "Socratic (%)" = 3,
+                                 "AI Explain (%)" = 3, " "))
 ```
 
 ## Attitudes Towards AI

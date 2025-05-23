@@ -29,7 +29,7 @@ graphics: true
 tables: true
 mainfont: Times New Roman
 geometry: margin=2cm
-bibliography: bibliography/refs.bib
+bibliography: [References/refs.bib]
 always_allow_html: true
 
 header-includes: |

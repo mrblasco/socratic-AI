@@ -4,12 +4,14 @@ require(kableExtra)
 
 # Methods {#sec:methods}
 
+We conducted a field experiment across two schools to investigate the impact of different AI tutoring strategies on students' critical thinking, self-confidence, and task performance. Participants engaged with a custom-designed web application, the _AI Tutor_, which randomly assigned students to interact with distinct versions of GPT-4-based chatbots during structured educational activities. The experimental design featured two primary manipulations: (1) the presence of step-by-step reasoning by the AI and (2) the use of Socratic versus non-Socratic dialogue styles. To assess the effects, we employed objective performance measures alongside pre- and post-task surveys capturing students' cognitive and affective responses. The following subsections detail the AI Tutor system, participant characteristics, and experimental procedures.
+
 ## AI Tutor
 
 To assess the impact of LLMs on students' critical thinking, we developed an _AI Tutor_, a web-based application built using Python with the Flask framework. The application integrates OpenAI APIs, allowing students to interact with the GPT-4.0 model while performing different educational tasks. This app's key features include:
 
 - **User authentication**: A secure and anonymous login system for students.
-- **Web Survey**: A web interface to survey students and where they could perform simple tasks online, such as writing a short essay or performing basic calculations.
+- **Web Survey**: A web interface to collect data from students, including answering survey questions and perform simple tasks, such as writing a short essay or solving simple math problems.
 - **AI Chatbot**: A chatbot powered by GPT-4 provided students with personalised assistance and tutoring during the session. A new chatbot instance was associated with each question for each student, isolating each conversation from interactions in previous questions. The chatbot was available to students only for specific questions or tasks under the researchers' control.
 - **Data logging**: A SQL database storing students' conversation logs with the AI chatbot, including texts, timestamps, and survey responses. 
 - **Randomised assignment**: A system to randomly assign registered students to different versions of the AI chatbot or treatment groups to explore the causal impact of various configurations on students' interactions and performance. 
@@ -20,23 +22,23 @@ To assess the impact of LLMs on students' critical thinking, we developed an _AI
 
 We recruited students  between 14 and 16 years old enrolled in secondary education from two schools: one in Brussels (Belgium) and one in Seville (Spain). The experiment was conducted during school hours at the schools (Fig. \@ref(fig:classrooms)). Both schools are bilingual institutions, with English as a primary language, ensuring participants had a high English proficiency. The AI Tutor was multilingual, allowing students to interact with either language. The experimental instructions were in English. However, if needed, students could translate the instructions using the browser's automatic translation service.
 
-Recruiting students was conducted after receiving ethical approval from the European Commission's internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and the experimental protocol complied with local laws and were safe for the participants. The data privacy protection protocol was approved by the Commission's data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
+Recruiting students was conducted after receiving ethical approval from the European Commission's internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and the experimental protocol complied with local laws and ethical research standards. The data privacy protection protocol was approved by the Commission's data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
 
 ![Classrooms used for the experiment in Seville (**A**) and in Brussels (**B**).](assets/pictures/classrooms.pdf){#fig:classrooms}
 
 ## Experimental sessions
 
-About ten experimental sessions were conducted at the schools between November 11 and 12, 2023, in Brussels and February 8 and 9, 2024, in Seville. Each session took about two hours. In the first 45-60 minutes, students received a personal computer and were asked to perform multiple tasks online using the AI tutor, including answering a questionnaire. In the following 45-60, there was a group discussion on how the students found the interactions with the AI tutor and a more general debate on how they perceived the potential benefits and drawbacks of integrating LLMs in the classroom. The results of the group discussions are not discussed in this paper; however, they were used as material for interpreting the results of the experimental study.
+About ten experimental sessions were conducted at the schools between November 11 and 12, 2023, in Brussels and February 8 and 9, 2024, in Seville. Each session took about two hours. In the first 45-60 minutes, students received a personal computer and were asked to perform three main tasks using the AI tutor and answer a questionnaire without the AI tutor. In the following 45-60, there was a group discussion on how the students judged the interactions with the AI tutor and a more general debate on how they perceived the potential benefits and drawbacks of integrating LLMs in the classroom. The results of the group discussions are not discussed in this paper; however, they were used as material for interpreting the results of the experimental study.
 
 ## Experimental Conditions
 
-Figure \@ref(fig:design) illustrates the two randomised manipulations in our experimental design: (1) AI step-by-step reasoning and (2) Socratic vs non-Socratic AI.
+Figure \@ref(fig:design) illustrates the two  randomised manipulations in our experimental design: (1) AI step-by-step reasoning and (2) Socratic vs non-Socratic AI. It is important to note that these were conducted as independent experiments, with different dependent and independent variables, rather than a factorial 2x2 design.
 
 ![The experimental design involves two manipulations: **A.** Socratic vs Non-Socratic; **B.** AI solution with explanation vs AI solution (without explanation)](assets/pictures/experimental_design.pdf){#fig:design}
 
 #### AI step-by-step reasoning {-}
 
-The first manipulation focuses on a task in which students are asked to estimate the value of coins in a jar (see Section \@ref(sec:si-ai-explanation) for the details).[^jar] Specifically, we used the coin jar from Steiner's experiment [@steiner2015turns], aimed originally at assessing Internet users' guessing accuracy. For this intervention, we varied the AI’s response by providing either a complete answer, which included both an estimated value and a step-by-step explanation generated by the AI tutor, or a partial answer that provided only the estimate without additional details. In both conditions, all participants received the same estimated value ($213), but those in the full-answer condition also viewed an explanation outlining the step-by-step reasoning the AI used to arrive at this estimation based on the jar image.[^jar-gpt4]
+The first manipulation focuses on a task in which students are asked to estimate the value of coins in a jar (see Section \@ref(sec:si-ai-explanation) for the details).[^jar] Specifically, we used the coin jar from Steiner's experiment [@steiner2015turns], aimed originally at assessing Internet users' guessing accuracy. For this intervention, we varied the AI's response by providing either a complete answer, which included both an estimated value and a step-by-step explanation generated by the AI tutor, or a partial answer that provided only the estimate without additional details. In both conditions, all participants received the same estimated value ($213), but those in the full-answer condition also viewed an explanation outlining the step-by-step reasoning the AI used to arrive at this estimation based on the jar image.[^jar-gpt4]
 
 [^jar]: This is a common experimental activity in economics, especially in the context of auction theory [@thaler1988anomalies]. The task is ideal in our setting because it requires participants to guess based on limited information, thus creating a situation where AI-generated assistance could potentially influence their decisions.
 
@@ -53,9 +55,12 @@ The second manipulation involved randomly assigning students to one of two diffe
 ```{r prompts}
 df_prompts <- data.frame(
   "AI Tutor" = c("Socratic", "Non-Socratic"),
-  "Prompt instruction" = c("You are a Socratic tutor. You always answer using the Socratic style, asking just the right questions to help students learn to think for themselves, breaking down the problem into simpler parts until it's at the right level for them. You provide concise information and explanations understandable for 8th to 10th grade students.", "You are a didactic tutor. You provide concise information and explanations understandable for 8th to 10th grade students.")
+  "Prompt instruction" = c("You are a Socratic tutor. You always answer using the Socratic style, asking just the right questions to help students learn to think for themselves, breaking down the problem into simpler parts until it's at the right level for them. You provide concise information and explanations understandable for 8th to 10th grade students.", "You are a didactic tutor. You provide concise information and explanations understandable for 8th to 10th grade students.") # nolint
 )
-kbl(df_prompts, booktabs = TRUE, caption = "Prompt instructions associated with the AI Tutor's treatments") |>
+kbl(
+  df_prompts, booktabs = TRUE,
+  caption = "Prompt instructions associated with the AI Tutor's treatments"
+) |>
   kableExtra::column_spec(2, "4in")
 ```
 
