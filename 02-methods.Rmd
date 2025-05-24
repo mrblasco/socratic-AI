@@ -68,10 +68,18 @@ This setup allowed us to investigate the impact of different pedagogical AI tuto
 
 We focused on two primary metrics: (1) confidence in their answers, (2) perceived usefulness of interacting with the AI tutor. Specifically,  students were asked, "How confident are you that the answer you provided is accurate?" on a five-point scale ranging from "not confident at all" to "very confident." They were also asked "How helpful was it to interact with the AI tutor?" This was also rated on a five-point scale, from "Not at all helpful" to "Very helpful." Only for task 3, we had an additional metric which was the correctness of their answers.
 
-## Background Measures
+## Student Characteristics
 
-As an initial step in our analysis, and to better understand students' awareness of and attitudes toward AI, we developed a brief four-question "AI in Education Attitudes Scale." This scale was adapted from the broader AI Attitudes Scale proposed by Schepman and Rodway [@schepman2020initial]. These questions included: Do you agree or disagree that society will benefit from a future of AI? Do you agree or disagree that AI is dangerous? Do you agree or disagree that AI will foster students’ learning in the future? Do you agree or disagree that AI is often misused by students?
+To examine student interactions with AI and their potential impact on learning and critical thinking, we collected a range of self-reported and behavioral data. The full questionnaire is provided in the Appendix (Section \@ref(sec:questionnaire)).
 
-Finally, to consider participants' academic performance and skills, participants were also asked about their school grades and how often they complete their homework assignments on time and what factors affect their ability to do so. Self-reported experience using ChatGPT (the main LLM available at the time of the study) was also asked, including a question on their estimation of how many of their peers use ChatGPT for their homework. 
+## AI Attitudes and Usage
 
-Section \@ref(sec:questionnaire) presents the complete questionnaire.
+To better understand students' general attitudes toward AI, we selected four questions from Schepman and Rodway's AI Attitudes Scale [@schepman2020initial]. These questions explored students; beliefs about AI's societal benefits, potential dangers, capacity to support learning, and likelihood of misuse by students (Appendix, Section \@ref(sec:questionnaire)). We also asked students about their direct experience using ChatGPT for homework --- the most common chatbot at the time of the study --- and their beliefs of how many of their peers use ChatGPT for their homework, thereby capturing both individual behaviour and the perceived social norm around AI usage. These measures help establish baseline orientations that may moderate how students engage with and evaluate AI explanations (related to RQ-1) and how they perceive different AI interaction styles (related to RQ-3).
+
+## AI Academic Habits and Skills
+
+Academic skills or habits may moderate the effect of AI interactions on problem solving activities. Accordingly, to acconut for participants' heterogeneity in academic skills, we asked students to report their average school grades within five categories. We also asked students about their academic habits or the challenges they face at school, such as how often they complete their homework assignments on time and what factors affect their ability to do so.
+
+## AI Interactions
+
+To quantify engagement, we analyzed students' interaction logs with the AI Tutor, recording the number of turns and the word counts as a proxy for interaction intensity. While this provides a basic behavioral metric, it does not capture the quality of cognitive engagement or depth of reasoning, limiting its direct relevance to RQ-1 and RQ-2. Therefore, we also asked students about how helpfuly they found the AI interactions and how confident they were in their answers to selected tasks. These self-reported metrics are needed to assess whether explanations were helpful to students (for RQ-1) and whether Socratic dialogue promoted critical thinking or confidence (for RQ-2).
