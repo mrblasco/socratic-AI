@@ -37,7 +37,8 @@ header-includes: |
   % Break sections into new page
   \usepackage{titlesec}
   \newcommand{\sectionbreak}{\clearpage}
-  
+  \usepackage{soul} % \hl{} = highlights
+
   % Table caption 
   \usepackage{caption} 
   \captionsetup[table]{skip=8pt}

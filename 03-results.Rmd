@@ -177,7 +177,7 @@ attitudes_df %>%
 
 ## The Impact of AI Step-by-step Reasoning Exposure
 
-We tested whether showing students AI-generated step-by-step reasoning affected how they used the AI's prediction, compared to just seeing the prediction without any reasoning. For each student $i = 1, \cdots, 122$, we computed the absolute error as the absolute difference between student $i$'s guess, $\text{Guess}_i$, and the actual value of coins:
+We tested whether showing students AI-generated step-by-step reasoning affected how they used the AI's prediction (RQ1), compared to just seeing the prediction without any reasoning. For each student $i = 1, \cdots, 122$, we computed the absolute error as the absolute difference between student $i$'s guess, $\text{Guess}_i$, and the actual value of coins:
 $$
   \text{Absolute Error}_i = \mid \text{Guess}_i - \text{Actual Value Coins} \mid,
 $$
@@ -274,7 +274,7 @@ p_dens <- bootstrap_accuracy %>%
   )
 ```
 
-We subsequently examined students' perceptions of the AI's prediction accuracy on a five-point rating. We noticed that 53% of students who did not receive step-by-step reasoning considered the AI estimate as either “good” (39%) or “very good” (14%) compared to 43% of students exposed to the AI reasoning (19% and 24%, respectively). This gap of ten percentage points suggests that students viewed the AI as more accurate when the AI-generated guess was presented as a "black box." However, we didn't have enough observations to reach a statistically significant association (Fisher's test, p = .27), and even regression analysis, controlling for individual characteristics, showed no significant association (Figure \@ref(fig:perceived-accuracy-coins)).
+To examine the impact of AI explanations on students' perceived credibility of AI predictions (RQ2), we analysed students' five-point ratings of the perceived accuracy of the AI estimated value of coins. We noticed that 53% of students who did not receive step-by-step reasoning considered the AI estimate as either “good” (39%) or “very good” (14%) compared to 43% of students exposed to the AI reasoning (19% and 24%, respectively). This gap of ten percentage points suggests that students viewed the AI as more accurate when the AI-generated guess was presented as a "black box." However, we didn't have enough observations to reach a statistically significant association (Fisher's test, p = .27), and even regression analysis, controlling for individual characteristics, showed no significant association (Figure \@ref(fig:perceived-accuracy-coins)).
 
 ```{r, include = FALSE, tab.cap = "Percentage of students who perceived the accuracy of the AI-generated estimate for the coin value in the jar as accurate"}
 xtab <- xtabs(~ q10_guess_coins_ai_accuracy + treatment_explain_id, tutorgpt)
@@ -334,7 +334,7 @@ list("Human" = fit, "AI" = fit_ai) %>%
 
 ## A Comparison of Socratic vs Non-Socratic AI
 
-#### Student-AI Interactions {-}
+### Student-AI Interactions
 
 Figure \@ref(fig:messages) shows the students' message length and frequency in the Socratic AI and Non-Socratic AI groups, allowing us to compare the student-AI interactions across treatment groups. As shown in the figure, Socratic AI students exchanged a median of 20 messages, significantly more than the eight messages by non-Socratic AI students (Wilcoxon test, p < 0.01). In addition, the Socratic AI’s messages were significantly shorter, with a median of 42 words, compared to 123 for the non-Socratic tutor (Wilcoxon test, p < 0.01). Socratic students also used fewer words, with two peaks: one at ten and the other at one word. This evidence supports the hypothesis that the Socratic tutor encouraged more engagement and interaction, resembling a relatively more genuine student-tutor talk.
 
@@ -487,9 +487,9 @@ p_combined <-
 p_combined + plot_annotation(tag_levels = "A") 
 ```
 
-#### Students' Confidence in Their Responses {-}
+### Students' Confidence in Their Responses
 
-We hypothesised Socratic AI would promote a deeper understanding of the task, raising students' confidence in their answers. To test this hypothesis, we examined students' self-reported confidence using a five-point scale at the end of each task. As shown in Figure \@ref(fig:confidence), the differences in confidence levels between the treatment groups were minimal. Among Socratic students, 25% reported feeling "very confident," and 33% felt "confident" compared to 21% and 38% among non-Socratic students. These differences were not statistically significant, even with regression analysis controlling for student-task differences (Figure \@ref(fig:confidence-regression)). Thus, our analysis found no evidence of treatment effects on students' confidence levels.
+To test whether Socratic AI increased students' confidence in their answers (RQ4), we examined students' self-reported confidence levels at the end of each task. As shown in Figure \@ref(fig:confidence), the observed differences in confidence between the treatment groups were minimal. Specifically, 25% of Socratic students reported feeling "very confident," and 33% reported feeling "confident" compared to 21% and 38%, respectively, among non-Socratic students. These differences were not statistically significant, even with regression analysis controlling for variation across students and tasks (Figure \@ref(fig:confidence-regression)). Thus, our analysis found no evidence of treatment effects on students' confidence in their answers.
 
 ```{r confidence, fig.width = 7, fig.height = 7, fig.cap = "This figure shows the impact of Socratic AI on students' confidence levels in their performance across three different tasks. Despite some differences between the Socratic and Non-Socratic groups, we found no significant association between the treatment assignment and students' declared confidence levels."}
 create_impact_figure <- function(data, measure) {
@@ -623,9 +623,9 @@ df_coef %>%
 
 Further explorative regression analysis to examine potential treatment interactions shows that Socratic AI students with prior ChatGPT experience reported significantly less confidence (p < 0.1) than Non-Socratic AI students. This explorative finding suggests that experienced users may perceive new or unconventional AI tutoring methods as less effective or even counterproductive, indicating that encouraging the use of such AI tutoring tools among experienced ChatGPT students can be challenging.
 
-#### Perceived Helpfulness of AI Tutor {-}
+### Perceived Helpfulness of AI Tutor
 
-We examined differences in students' perceptions of the AI tutor's helpfulness (How helpful was it to interact with the AI tutor?) on a five-point scale, from "Not at all helpful" to "Very helpful."[^mistake]
+To test differences in students' perceptions of the AI tutor's helpfulness (RQ5), we examined students' ratings of helpfulness of the AI interaction at the end of each task. These ratings were on a five-point scale, from "Not at all helpful" to "Very helpful."[^mistake]
 
 [^mistake]: Due to a coding issue, the scale used in Brussels and Seville differed slightly in the labels: Seville's students saw "Extremely helpful" whereas Brussels students saw "Very helpful." However, this issue has a minimal impact on the overall results, as results focus on the negative labels ("not at all helpful" or "not helpful") and they remain the same even after controlling for location effects in a regression. Additionally, open discussions held with students after the experimental session confirmed that they found the Socratic AI less helpful. This feedback, combined with the observed differences in negative labels, reinforces that the coding discrepancy has a minimal impact on the overall findings.
 
@@ -674,9 +674,11 @@ df_coef %>%
   )
 ```
 
-#### Learning Outcomes and Knowledge Retention {-}
+### Learning Outcomes and Knowledge Retention
 
-To evaluate the impact of learning, we compared the correctness of responses to Task 3, which focused on sound propagation, and assessed knowledge retention using a follow-up question on the same topic without AI assistance. As shown in Figure \@ref(fig:learning), the use of AI significantly enhanced students' response accuracy. Before interacting with the AI tutor, only 32% of students correctly answered that sound travels faster in water than air due to water's higher density. After AI interaction, this percentage nearly doubled increasing to 68%. However, there was no significant difference in learning outcomes between the Socratic and non-Socratic AI approaches, as illustrated in the figure. Moreover, when presented with a follow-up question (asking in which medium sound travels fastest among gold, rubber, warm air, cold air, and water), only 18% of students responded correctly by selecting the denser material (i.e., gold), again with no significant difference across treatments. This result suggests two implications. Firstly, we found no evidence of Socratic AI improving learning. Secondly, our results confirmed a problem of limited retention of the insights obtained with AI assistance or difficulty in applying such learning to novel scenarios.
+To evaluate the impact of learning (RQ3), we compared the correctness of responses to Task 3, which focused on sound propagation, and assessed knowledge retention using a follow-up question on the same topic without AI assistance. As shown in Figure \@ref(fig:learning), the use of AI significantly enhanced students' response accuracy. Before interacting with the AI tutor, only 32% of students correctly answered that sound travels faster in water than air due to water's higher density. After AI interaction, this percentage nearly doubled increasing to 68%. However, there was no significant difference in learning outcomes between the Socratic and non-Socratic AI approaches, as illustrated in the figure. Moreover, when presented with a follow-up question (asking in which medium sound travels fastest among gold, rubber, warm air, cold air, and water), only 18% of students responded correctly by selecting the denser material (i.e., gold), again with no significant difference across treatments. This result suggests two implications. Firstly, we found no evidence of Socratic AI improving learning. Secondly, our results seems to suggest a problem of limited retention of the insights obtained with AI assistance or difficulty in applying such learning to novel scenarios.[^limitation]
+
+[^limitation]: While it is true that gold is significantly denser than water or air, it is possible that some students did not fully understand this fact or were unsure how to compare the densities of the materials. If that were the case, even if the AI effectively conveyed that sound travels faster in denser media, students lacking this knowledge may still have been unable to select the correct answer. However, this explanation seems unlikely, as the relative densities of air, water, and metals, like gold, are commonly taught and conceptually straightforward, suggesting that other factors may have contributed to students' outcomes.
 
 ```{r learning, fig.cap ="Effects on learning: **A** shows the % of correct responses about the physics of sound propagation, illustrating the positive effect of interacting with the AI tutor, while no differences are associated with the Socratic AI. **B** shows the results of the verification question asking students to identify the fastest material for sound propagation (speed as meter per second reported) without AI assistance. Only 18% responded accurately, indicating limited learning."}
 
