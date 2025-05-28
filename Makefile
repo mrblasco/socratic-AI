@@ -31,10 +31,14 @@ $(SUBMIT_DIR)/acknowledgement.docx : $(SUBMIT_DIR)/acknowledgement.Rmd
 
 # Review ----
 
-review: $(SUBMIT_DIR)/rebuttal_point_by_point.docx
+review: $(SUBMIT_DIR)/rebuttal_point_by_point.pdf $(SUBMIT_DIR)/rebuttal_point_by_point.docx
+	open $<
 
 $(SUBMIT_DIR)/%.docx : Reviews/round_1/%.md
 	pandoc --from markdown --to docx -C $< -o $@
+
+$(SUBMIT_DIR)/%.pdf : Reviews/round_1/%.md
+	pandoc --pdf-engine xelatex --from markdown --to pdf -C $< -o $@
 
 view:
 	open -a Skim $(PDF_REPORT)
