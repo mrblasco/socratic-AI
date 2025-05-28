@@ -16,7 +16,7 @@ Thanks for this nice comment.
 
 > **The literature review provides a broad context for AI’s potential; however, it lacks a strong connection to recent studies that address AI’s evolving role in educational contexts, critical thinking, and argumentative writing. The paper could enhance its theoretical foundation by engaging more deeply with contemporary research on AI’s impact on students' critical thinking, argumentation and reasoning. There are much more recent studies by scholars such as Kazem Banihashem and that you can consult with.**
 
-We did ... 
+We thank the reviewer for this comment. We have now expanded the literature review into a dedicated section (p. xxx). We have elaborated on the evolving role of LLMs in education, focusing on the literature speficic to AI chatbots. The section discusses the main findings and points out to a few gaps in the literature that we aim to fill with our study. At the same time, given the novelty of the LLMs applications in education, the theoretical foundation for our work are necessarily limited. 
 
 > **Please justify why the participants come from Brussels (Belgium) and one in Seville (Spain)? Why these two countries and these two cities? What is the argument here?**
 
@@ -28,15 +28,15 @@ We have revised the manuscript expanding the Methods section to improve the clar
 
 - The revised Methods section begins with a summary of our research design and setup before presenting the details in the relevant subsections. 
 
-- We more clearly justify the recruitment of the two schools in footnote XXXX, as in Reviewer 1's point discussed above. 
+- We now clearly justify the recruitment of the two schools (see footnote XXX), as in Reviewer 1's point discussed above. 
 
-- We renamed and expanded the "Background Measures" sub-section into a "Student characteristics" to provide a detailed description of all the variables collected, including our questions on students' AI attitudes and experience, their academic habits and grades, and we have included a new sub-section discussing how we collected AI-student interaction metircs. 
+- We also expanded the "Background Measures" sub-section into a new section "Student characteristics" tthat provides a detailed description of all the variables collected, including our questions on students' AI attitudes and experience, their academic habits and grades, and we have included a new sub-section discussing how we collected AI-student interaction metircs. 
   
-- Finally, in the Results section, we have revised Table 2  (p. xxx) to illustrate the distribution of participants characteristics across treatments, which provides a more precise information on the demographics and academic skills of our participants.
+- Finally, in the Results section, we have revised Table 2  (p. XXX) to illustrate the distribution of participants characteristics across treatments, which provides a more precise information on the demographics and academic skills of our participants.
 
 > **The results show promising outcomes. However, the findings of this study are derived from self-reported data collected from participants through surveys. However, it is important to note that the literature suggests caution in heavily relying on such self-reported data, as perception does not always equate to actions (see: https://urldefense.com/v3/__https://doi.org/10.1080/02602938.2024.2345669__;!!DOxrgLBm!DU2xLNvI0Ke45t43rGQAI3BYa8bni0Io2JesBwINodtn8kzLHvspBE2my62mGZlAoKzFv6RFxgUv6FWyBQIbCg9ObQu4SA$ ). Therefore, this must be acknowledged as a limitation of the study, along with suggestions for future research to address this issue.**
 
-Many thanks for this important point. We have discussed this limitation in the conclusions ... "solely on students’ perceptions of their learning experiences may not accurately reflect their actual learning"
+Many thanks for this important point. We have discussed this limitation in the conclusions [TBA] "solely on students’ perceptions of their learning experiences may not accurately reflect their actual learning"
 
 > **The depth and width of the discussion section could be improved by incorporating relevant and recent literature. This would provide more theoretical insights and add value to the study by linking the findings to the broader literature.**
 
@@ -62,9 +62,11 @@ Many thanks for the opportunity to clarify this important point. In response, we
 
 The revised research questions are as follows:
 
-- RQ1: Do AI-generated explanations improve students' problem-solving performance?
-- RQ2: How AI-generated explanations affect students’ perceived credibility of AI-generated solutions?
-- RQ3: Do student-AI interactions guided by the Socratic method promote deeper critical thinking in students?
+- RQ1: Do AI-generated explanations enhance students’ problem-solving performance in
+school tasks?
+- RQ2: How do AI-generated explanations influence students’ perceived credibility of AI-
+generated solutions?
+- RQ3: Do student-AI interactions guided by the Socratic method promote better performance?
 - RQ4: Do student-AI interactions guided by the Socratic method increase students' confidence in their answers? 
 - RQ5: Do students perceive Socratic student-AI interactions more helpful than non-Socratic AI interactions?
 
@@ -79,9 +81,9 @@ Specifically:
 
 - Regarding the missing information about the other experimental intervention, Table 2 now shows descriptives for both treatment groups. It also shows p-values from separate statistical tests of independence between variable and treatmnet assignment. 
 
-- Regarding the propensity to update the guess, we [...] 
+- Regarding the propensity to update the guess, we found no evidence that the treatment had an effect on this propensity. We report this analysis in footnote XXXX at p. xXXX. 
 
-- Regarding the missing information in the methods, we now report the student-AI interaction metrics -- logs and number of words -- in a dedicated sub-section titled "Student-AI Interaction Metrics" in the Methods section (p. xxxx). We also discuss these metrics in the Introduction [xxxx]. 
+- Regarding the missing information in the Methods section, we now report the student-AI interaction metrics -- logs and number of words -- in a dedicated sub-section titled "Student-AI Interaction Metrics" in the Methods section (p. xxxx).
 
 > **Contrary to usual conventions, some results with a significance level greater than 0.1 are reported as significant. In addition, in some cases, the language used is not specific/detailed enough to correctly understand the analyses (Which analysis uses exactly which data or answers from the questionnaire?). In some cases, the methods used are only briefly named and may therefore not be reproducible (in particular bootstrap method, in some cases also regression models - which variables exactly have been included?).**
 
@@ -91,12 +93,11 @@ Specifically:
 
 > *Figure \@ref(fig:boot-accuracy) illustrates that students' prediction accuracy was positively skewed in both treatment groups, with a greater accuracy for students exposed to AI reasoning. To estimate confidence intervals for the median difference in accuracy betweeen the groups, we used a nonparametric bootstrap approach. This procedure involved resampling participants' absolute errors (n = 1,999) to build a distribution of medians for each group. The 5th and 95th percentiles of the resulting distribution were used to construct a 90% confidence interval for the difference in accuracy between groups. The interval ranged from 0 to 70, indicating a greater accuracy (lower error) for the students exposed to AI-generated reasoning (one-sided, p < 0.05).*
 
-- In the appendix,  the regression models we have corre [xxx]
-
+- In the Supporting Information section, we have clarified the information about the regression models [TBC]
 
 > **The discussion addresses the research findings and identifies some methodological limitations. Since there was little specific literature on the specific research questions in the Introduction, the discussion of the results in the context of the existing literature is also very brief. However, it is particularly striking that the entire discussion does not contain a single reference/citation. In my opinion, this would be essential for a scientific publication.**
 
-Ok. 
+TBA 
 
 > **In my opinion, some interpretations of the results go too far. In particular, the data on learning and retention effects can only give first indications, because each type of task was completed exactly once by the students. The database is therefore too small to provide generalizable results. Nevertheless, the article contains interesting results, especially on the interaction/acceptance of a socratic AI tutor by people who had prior experience with chatGPT.**
 
