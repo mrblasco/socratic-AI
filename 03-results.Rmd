@@ -31,6 +31,8 @@ geom_coef <- function() {
 }
 ```
 
+
+
 # Results {#sec:results}
 
 ## Overview of Student Demographics
@@ -175,9 +177,77 @@ attitudes_df %>%
   )
 ```
 
+```{r update-propensity, include = FALSE}
+library(boot)
+library(MASS)
+
+names(tutorgpt)
+
+# data 
+update_ds <- tutorgpt %>% 
+  mutate(update = sign(q12_guess_coins_final - q9_guess_coins_initial),
+         initial_guess_100 = q9_guess_coins_initial / 100)
+
+update_propensity_table <- update_ds %>% 
+  xtabs(formula = ~ update  + treatment_explain_id) 
+
+knitr::kable(update_propensity_table)
+fisher.test(update_propensity_table)
+
+# util functions
+center <- function(x) scale(x, center = TRUE, scale = FALSE)
+topcode <- function(x, value) ifelse(x > value, value, x)
+
+# Original fit
+model <- center(q12_guess_coins_final) ~ initial_guess_100 +
+  I(initial_guess_100^2) + treatment_explain_id + location
+
+# Fit regular ols
+fit_update_propensity <- lm(model, update_ds)
+
+# Robust regression
+fit_robust <- rlm(model, update_ds)
+
+# remove outliers
+fit_no_out <- fit_robust %>% 
+  update(subset = q9_guess_coins_initial < 1e5)
+
+fit <- list(fit_update_propensity, fit_robust, fit_no_out)
+stargazer::stargazer(fit, type = "text", keep.stat = "n", digits = 1)
+
+# ---- Figure ----
+cap <- "Difference between first and second guess.  "
+tutorgpt %>% 
+  mutate(
+    final_tc = q12_guess_coins_final %>% 
+      topcode(1e3),
+    initial_tc = q9_guess_coins_initial %>% 
+      topcode(1e3),
+  ) %>%
+  ggplot(aes(x = initial_tc, 
+             y = final_tc,
+             color = treatment_explain_id,
+             pch = treatment_explain_id,
+             fill = treatment_explain_id,
+             linetype = treatment_explain_id)) +
+  geom_point() +
+  geom_smooth(alpha = .25) + 
+  #scale_y_log10() + scale_x_log10() +
+  labs(
+    x = "First Guess ($)",
+    y = "Second Guess ($)"
+  ) + 
+  theme(
+    legend.position = "bottom",
+  )
+
+```
+
 ## The Impact of AI Step-by-step Reasoning Exposure
 
-We tested whether showing students AI-generated step-by-step reasoning affected how they used the AI's prediction (RQ1), compared to just seeing the prediction without any reasoning. For each student $i = 1, \cdots, 122$, we computed the absolute error as the absolute difference between student $i$'s guess, $\text{Guess}_i$, and the actual value of coins:
+Nearly all students revised their initial estimates (110 out of 122), with no significant difference between treatment groups (Fisher’s test, p = 0.9). These revisions showed no systematic pattern, as there was no evidence that the AI explanation influenced the direction or magnitude of the changes. However, presenting students with AI-generated step-by-step reasoning may have influenced the accuracy of their revised estimates (RQ1).
+
+To address RQ1, we examined whether the treatment—showing step-by-step AI reasoning—affected how students used the AI’s prediction, compared to seeing the prediction alone without any accompanying explanation. For each student $i = 1, \cdots, 122$, we computed the absolute error as the absolute difference between student $i$'s guess, $\text{Guess}_i$, and the actual value of coins:
 $$
   \text{Absolute Error}_i = \mid \text{Guess}_i - \text{Actual Value Coins} \mid,
 $$
