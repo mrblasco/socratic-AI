@@ -11,7 +11,7 @@ We conducted a field experiment across two schools to investigate the impact of 
 To assess the impact of LLMs on students' critical thinking, we developed an _AI Tutor_, a web-based application built using Python with the Flask framework. The application integrates OpenAI APIs, allowing students to interact with the GPT-4.0 model while performing different educational tasks. This app's key features include:
 
 - **User authentication**: A secure and anonymous login system for students.
-- **Web Survey**: A web interface to collect data from students, including answering survey questions and perform simple tasks, such as writing a short essay or solving simple math problems.
+- **Web Survey**: A web interface to collect data from students, including answering survey questions and performing simple tasks, such as writing a short essay or solving simple math problems.
 - **AI Chatbot**: A chatbot powered by GPT-4 provided students with personalised assistance and tutoring during the session. A new chatbot instance was associated with each question for each student, isolating each conversation from interactions in previous questions. The chatbot was available to students only for specific questions or tasks under the researchers' control.
 - **Data logging**: A SQL database storing students' conversation logs with the AI chatbot, including texts, timestamps, and survey responses. 
 - **Randomised assignment**: A system to randomly assign registered students to different versions of the AI chatbot or treatment groups to explore the causal impact of various configurations on students' interactions and performance. 
@@ -28,7 +28,7 @@ All participants had appropriate levels of English proficiency, given the langua
 
 ### Ethical Approval and Data Privacy
 
-We recruited students after receiving ethical approval from the European Commission's internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and the experimental protocol complied with local laws and ethical research standards. The data privacy protection protocol was approved by the Commission's data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
+We recruited students after receiving ethical approval from the European Commission's internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and experimental protocol complied with local laws and ethical research standards. The data privacy protection protocol was approved by the Commission's data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
 
 ![Classrooms used for the experiment in Seville (**A**) and in Brussels (**B**).](assets/pictures/classrooms.pdf){#fig:classrooms}
 
@@ -48,7 +48,7 @@ The first manipulation focuses on a task in which students are asked to estimate
 
 [^jar]: This is a common experimental activity in economics, especially in the context of auction theory [@thaler1988anomalies]. The task is ideal in our setting because it requires participants to guess based on limited information, thus creating a situation where AI-generated assistance could potentially influence their decisions.
 
-[^jar-gpt4]: Using GPT 4.0, we uploaded the image of the coin jar asking for an estimate of the value of coins for ten times. We then selected the median response for the experiment.
+[^jar-gpt4]: Using GPT 4.0, we uploaded the image of the coin jar asking for an estimate of the value of coins ten times. We then selected the median response for the experiment.
 
 This setup allows us to examine how AI-provided explanations affect students' performance and their perceptions of the AI's accuracy. Specifically, we focus on three outcome variables: (1) the propensity to update their initial guess, (2) the accuracy of students' final estimations, measured as the (absolute) difference between their final guesses and the actual coin value, and (3) students' perceived accuracy of the AI, rated on a scale from low to high. We also asked participants (4) to rate the perceived accuracy of the mean guess among 600 people ($596), which exaggerated the correct value, as reported in the original article [@steiner2015turns].
 
@@ -56,12 +56,12 @@ This setup allows us to examine how AI-provided explanations affect students' pe
 
 The second manipulation involved randomly assigning students to one of two different types of AI tutors: Socratic or non-Socratic AI tutors. Both tutors were powered by the same underlying large language model (GPT-4). Still, each was instructed with different "system messages" to create different behaviours, as illustrated in Table \@ref(tab:prompts).[^prompts] For the Socratic tutor, the system message asked the model to engage students with open-ended, thought-provoking questions, encouraging them to think critically about their responses. In contrast, the non-Socratic AI tutor was instructed to provide concise, direct answers without necessarily engaging in deeper dialogue or posing further questions.
 
-[^prompts]: An AI's system message guides how the AI interprets the conversations by setting paramters for interaction.
+[^prompts]: An AI's system message guides how the AI interprets the conversations by setting parameters for interaction.
 
 ```{r prompts}
 df_prompts <- data.frame(
   "AI Tutor" = c("Socratic", "Non-Socratic"),
-  "Prompt instruction" = c("You are a Socratic tutor. You always answer using the Socratic style, asking just the right questions to help students learn to think for themselves, breaking down the problem into simpler parts until it's at the right level for them. You provide concise information and explanations understandable for 8th to 10th grade students.", "You are a didactic tutor. You provide concise information and explanations understandable for 8th to 10th grade students.") # nolint
+  "Prompt instruction" = c("You are a Socratic tutor. You always answer using the Socratic style, asking just the right questions to help students learn to think for themselves and breaking down the problem into simpler parts until it's at the right level for them. You provide concise information and explanations understandable for 8th to 10th grade students.", "You are a didactic tutor. You provide concise information and explanations understandable for 8th to 10th grade students.") # nolint
 )
 kbl(
   df_prompts, booktabs = TRUE,
@@ -70,22 +70,22 @@ kbl(
   kableExtra::column_spec(2, "4in")
 ```
 
-This setup allows us to investigate the impact of different pedagogical AI tutoring approaches on students' performance and perceptions. Specifically, we asked students to use the AI tutor while performing three tasks: guess an unknown quantity ("How much water in litres do students consume at our school each week?"); express an opinion and write a short essay ("What is your opinion about the effect of social media on teenagers?"); respond to physics questions on how sound propagates in different media ("In which of the following materials does sound travel faster?"). These questions enabled us to assess the AI tutor's impact on students' learning and problem-solving abilities. 
+This setup allows us to investigate the impact of different pedagogical AI tutoring approaches on students' performance and perceptions. Specifically, we asked students to use the AI tutor while performing three tasks: guess an unknown quantity ("How much water in litres do students consume at our school each week?"), express an opinion and write a short essay ("What is your opinion about the effect of social media on teenagers?"); respond to physics questions on how sound propagates in different media ("In which of the following materials does sound travel faster?"). These questions enabled us to assess the AI tutor's impact on students' learning and problem-solving abilities. 
 
-We focused on two primary metrics: (1) confidence in their answers, (2) perceived usefulness of interacting with the AI tutor. Specifically,  students were asked, "How confident are you that the answer you provided is accurate?" on a five-point scale ranging from "not confident at all" to "very confident." They were also asked "How helpful was it to interact with the AI tutor?" This was also rated on a five-point scale, from "Not at all helpful" to "Very helpful." Only for task 3, we had an additional metric which was the correctness of their answers.
+We focused on two primary metrics: (1) confidence in their answers and (2) perceived usefulness of interacting with the AI tutor. Specifically,  students were asked, "How confident are you that the answer you provided is accurate?" on a five-point scale ranging from "not confident at all" to "very confident." They were also asked, "How helpful was it to interact with the AI tutor?" This was also rated on a five-point scale, from "Not at all helpful" to "Very helpful." Only for task 3, we had an additional metric, which was the correctness of their answers.
 
 ## Student Characteristics
 
-To examine student interactions with AI and their potential impact on learning and critical thinking, we collected a range of self-reported and behavioral data. The full questionnaire is provided in the Appendix (Section \@ref(sec:questionnaire)).
+To examine student interactions with AI and their potential impact on learning and critical thinking, we collected a range of self-reported and behavioural data. The full questionnaire is provided in the Appendix (Section \@ref(sec:questionnaire)).
 
 ### AI Attitudes and Usage
 
-To better understand students' general attitudes toward AI, we selected four questions from Schepman and Rodway's AI Attitudes Scale [@schepman2020initial]. These questions explored students; beliefs about AI's societal benefits, potential dangers, capacity to support learning, and likelihood of misuse by students (Appendix, Section \@ref(sec:questionnaire)). We also asked students about their direct experience using ChatGPT for homework --- the most common chatbot at the time of the study --- and their beliefs of how many of their peers use ChatGPT for their homework, thereby capturing both individual behaviour and the perceived social norm around AI usage. These measures help establish baseline orientations that may moderate how students engage with and evaluate AI explanations (related to RQ-1) and how they perceive different AI interaction styles (related to RQ-3).
+To better understand students' general attitudes toward AI, we selected four questions from Schepman and Rodway's AI Attitudes Scale [@schepman2020initial]. These questions explored students; beliefs about AI's societal benefits, potential dangers, capacity to support learning, and the likelihood of misuse by students (Appendix, Section \@ref(sec:questionnaire)). We also asked students about their direct experience using ChatGPT for homework --- the most common chatbot at the time of the study --- and their beliefs about how many of their peers use ChatGPT for their homework, thereby capturing both individual behaviour and the perceived social norm around AI usage. These measures help establish baseline orientations that may moderate how students engage with and evaluate AI explanations (related to RQ-1) and how they perceive different AI interaction styles (related to RQ-3).
 
 ### AI Academic Habits and Skills
 
-Academic skills or habits may moderate the effect of AI interactions on problem solving activities. Accordingly, to acconut for participants' heterogeneity in academic skills, we asked students to report their average school grades within five categories. We also asked students about their academic habits or the challenges they face at school, such as how often they complete their homework assignments on time and what factors affect their ability to do so.
+Academic skills or habits may moderate the effect of AI interactions on problem-solving activities. Accordingly, to account for participants' heterogeneity in academic skills, we asked students to report their average school grades within five categories. We also asked students about their academic habits or the challenges they face at school, such as how often they complete their homework assignments on time and what factors affect their ability to do so.
 
 ### Student-AI Interaction Metrics
 
-To quantify engagement, we analyzed students' interaction logs with the AI Tutor, recording the number of turns and the word counts as a proxy for interaction intensity. While this provides a basic behavioral metric, it does not capture the quality of cognitive engagement or helpfulness, limiting its direct relevance to RQ-1 and RQ-2. Therefore, we also asked students about how useful they found the AI interactions and how confident they were in their answers to selected tasks. These self-reported metrics are needed to assess whether explanations were helpful to students (for RQ-1) and whether Socratic dialogue promoted critical thinking or confidence (for RQ-2).
+To quantify engagement, we analyzed students' interaction logs with the AI Tutor, recording the number of turns and the word counts as a proxy for interaction intensity. While this provides a basic behavioural metric, it does not capture the quality of cognitive engagement or helpfulness, limiting its direct relevance to RQ-1 and RQ-2. Therefore, we also asked students about how useful they found the AI interactions and how confident they were in their answers to selected tasks. These self-reported metrics are needed to assess whether explanations were helpful to students (for RQ-1) and whether Socratic dialogue promoted critical thinking or confidence (for RQ-2).

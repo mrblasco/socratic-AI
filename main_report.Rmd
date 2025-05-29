@@ -1,21 +1,24 @@
 ---
+params:
+  anonymous: false
+
 title: |
   AI Chatbots in K-12 Education: An Experimental Study of Socratic vs. Non-Socratic Approaches and the Role of Step-by-Step Reasoning
 
 author:
-  - Andrea Blasco:
+  - "`r ifelse(!params$anonymous, 'Andrea Blasco', 'Anonymous') `":
       institute:
         - jrc
       correspondence: "yes"
-      email: andrea.blasco@ec.europa.eu
-  - Vicky Charisi:
+      email: "`r ifelse(!params$anonymous, 'andrea.blasco@ec.europa.eu', 'Email') `"
+  - "`r ifelse(!params$anonymous, 'Vicky Charisi', 'Anonymous') `":
       institute: [jrc, harvard]
       correspondence: "yes"
-      email: vcharisi@law.harvard.edu
+      email: "`r ifelse(!params$anonymous, 'vcharisi@law.harvard.edu', 'Email') `"
 
 institute:
-  - jrc: European Commission, Joint Research Centre, Brussels, Belgium
-  - harvard: Harvard University, Berkman Klein Center, Cambridge, MA, USA
+  - jrc: "`r ifelse(!params$anonymous, 'European Commission, Joint Research Centre, Brussels, Belgium', 'Anonymous Institute') `"
+  - harvard: "`r ifelse(!params$anonymous, 'Harvard University, Berkman Klein Center, Cambridge, MA, USA', 'Anonymous Institute')`"
 
 date: |
   `r format(Sys.Date(), 'This version: %B %d, %Y')`
