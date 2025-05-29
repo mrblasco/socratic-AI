@@ -1,6 +1,6 @@
 ---
 title: |
-  Exploring the Role of AI Chatbots in K-12 Education: A Comparative Study of Socratic and Non-Socratic Approaches
+  AI Chatbots in K-12 Education: An Experimental Study of Socratic vs. Non-Socratic Approaches and the Role of Step-by-Step Reasoning
 
 author:
   - Andrea Blasco:

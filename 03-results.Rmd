@@ -245,7 +245,7 @@ tutorgpt %>%
 
 ## The Impact of AI Step-by-step Reasoning Exposure
 
-Nearly all students revised their initial estimates (110 out of 122), with no significant difference between treatment groups (Fisher’s test, p = 0.9). These revisions showed no systematic pattern, as there was no evidence that the AI explanation influenced the direction or magnitude of the changes. However, presenting students with AI-generated step-by-step reasoning may have influenced the accuracy of their revised estimates (RQ1).
+Nearly all students revised their initial estimates (110 out of 122), with no significant difference between treatment groups (Fisher’s test, p = 0.9). However, presenting students with AI-generated step-by-step reasoning may have influenced the accuracy of their revised estimates.
 
 To address RQ1, we examined whether the treatment—showing step-by-step AI reasoning—affected how students used the AI’s prediction, compared to seeing the prediction alone without any accompanying explanation. For each student $i = 1, \cdots, 122$, we computed the absolute error as the absolute difference between student $i$'s guess, $\text{Guess}_i$, and the actual value of coins:
 $$
@@ -691,7 +691,7 @@ df_coef %>%
   )
 ```
 
-Further explorative regression analysis to examine potential treatment interactions shows that Socratic AI students with prior ChatGPT experience reported significantly less confidence (p < 0.1) than Non-Socratic AI students. This explorative finding suggests that experienced users may perceive new or unconventional AI tutoring methods as less effective or even counterproductive, indicating that encouraging the use of such AI tutoring tools among experienced ChatGPT students can be challenging.
+Further explorative regression analysis to examine potential treatment interactions shows that Socratic AI students with prior ChatGPT experience reported significantly less confidence (p < 0.1) than Non-Socratic AI students (see Figure \@ref(fig:interactions)). This explorative finding suggests that experienced users may perceive new or unconventional AI tutoring methods as less effective or even counterproductive, indicating that encouraging the use of such AI tutoring tools among experienced ChatGPT students can be challenging.
 
 ### Perceived Helpfulness of AI Tutor
 
@@ -943,4 +943,151 @@ panel_b <- panel_b_data %>%
 
 (panel_a + labs(title = NULL, subtitle = NULL)) / (panel_b) + 
   plot_annotation(tag_levels = "A")
+```
+
+
+
+```{r interactions, include = TRUE, fig.cap = cap}
+cap <- "Regression coefficients and 95% confidence intervals from a linear regression using as dependent variable the (**A**) students' self-reported confidence level and (**B**) perceived helpfulness of the AI tutor. The controls include student's gender, grades, location, and ChatGPT experience. Treatment dummies are interacted with all the controls and the task type. All models also include individual student random effects, and the student's rated confidence in their skills before performing each task." # nolint
+
+tutorgpt_wide <- tutorgpt_wide %>%
+  mutate(
+    helpful_yes = helpful %in% c("Helpful", "Very helpful"),
+    confident_yes = value %in% c("Very confident", "Confident")
+  )
+
+fit_lmer <- lmerTest::lmer(
+  100 * confident_yes ~ treatment_tutor_id + name + 
+    conf_value + location + gender + has_used_before + 
+    top_grades + (1 | student_id), tutorgpt_wide
+)
+
+interactions <- list(baseline = fit_lmer)
+interactions$used   <- update(fit_lmer, ~ . + treatment_tutor_id:has_used_before)
+interactions$name   <- update(fit_lmer, ~ . + treatment_tutor_id:name)
+interactions$gender <- update(fit_lmer, ~ . + treatment_tutor_id:gender)
+interactions$grades <- update(fit_lmer, ~ . + treatment_tutor_id:top_grades)
+interactions$all    <- update(fit_lmer, ~ . + treatment_tutor_id:(has_used_before + top_grades + gender + location + name))
+
+coef_df <- interactions %>% 
+  lapply(broom.mixed::tidy, conf.int = TRUE) %>% 
+  bind_rows(.id = "model") 
+
+calc_stars <- function(p.value) {
+  dplyr::case_when(
+    p.value < 0.01 ~ "***",
+    (p.value < 0.05 & p.value > 0.01) ~ "**",
+    (p.value < 0.1 & p.value > 0.05) ~ "*",
+    TRUE ~ ""
+  )
+}
+
+panel_a <- coef_df %>%
+  filter(grepl(":", term), model == "all") %>% 
+  ggplot() + 
+  aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high, color = p.value < 0.1) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_linerange(linewidth = 3, alpha = .25) +
+  geom_point(size = 3) +
+  geom_text_repel(
+    nudge_y = -.25,
+    aes(
+      label = sprintf("%.1f%s", estimate, calc_stars(p.value))
+    )
+  ) +
+  ## Add CIs
+  geom_text(x = Inf, aes(label = sprintf("(%s: %.1f, %.1f)", "95% CI", conf.low, conf.high)), size = 3.5) + 
+  coord_cartesian(clip = "off") + 
+  theme(
+    legend.position = "none",
+    axis.text.y = element_markdown(hjust = 0),
+    plot.margin = margin(t = .1, b = .1, r = 1, l = .1, unit = "in"),
+  ) + 
+  scale_color_manual(values = c("orange", "navy")) +
+  scale_y_discrete(
+    labels = function(x) {
+      x %>% 
+        gsub("^.*:", "Socratic x ", .) %>%
+        gsub("has_used_beforeYes", "ChatGPT experience", .) %>% 
+        gsub("locationSeville", "Seville", .) %>% 
+        gsub("top_grades", "", .) %>% 
+        gsub("gender", "", .) %>% 
+        gsub("nametask([123])_(.*)", "Task \\1 (\\2)", .)
+    }
+  ) +
+  labs(
+    title = "Socratic AI and Student Confidence Levels",
+    subtitle = "Interaction effects between Socratic AI and task/student characteristics",
+    y = NULL,
+    x = "Regression coefficients and 95% confidence intervals",
+    caption = "Results from linear regression (n = 366); * p < 0.1"
+  )
+
+#ggsave("figures_and_tables/10_socratic_interact_confidence.pdf")
+
+#' ### Helpfulness
+
+fit_lmer <- lmerTest::lmer(
+  100 * helpful_yes ~ treatment_tutor_id + name + 
+    conf_value + location + gender + has_used_before + 
+    top_grades + (1 | student_id), tutorgpt_wide
+)
+
+interactions <- list(baseline = fit_lmer)
+interactions$used   <- update(fit_lmer, ~ . + treatment_tutor_id:has_used_before)
+interactions$name   <- update(fit_lmer, ~ . + treatment_tutor_id:name)
+interactions$gender <- update(fit_lmer, ~ . + treatment_tutor_id:gender)
+interactions$grades <- update(fit_lmer, ~ . + treatment_tutor_id:top_grades)
+interactions$all    <- update(fit_lmer, ~ . + treatment_tutor_id:(has_used_before + top_grades + gender + location + name))
+
+coef_df <- interactions %>% 
+  lapply(broom.mixed::tidy, conf.int = TRUE) %>% 
+  bind_rows(.id = "model") 
+
+panel_b <- coef_df %>% 
+  filter(grepl(":", term), model == "all") %>% 
+  ggplot() + 
+  aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high, color = p.value < 0.1) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_linerange(linewidth = 3, alpha = .25) +
+  geom_point(size = 3) +
+  geom_text_repel(
+    nudge_y = -.25,
+    aes(
+      label = sprintf("%.1f%s", estimate, calc_stars(p.value))
+    )
+  ) +
+  ## Add CIs
+  geom_text(x = Inf, aes(label = sprintf("(%s: %.1f, %.1f)", "95% CI", conf.low, conf.high)), size = 3.5) + 
+  coord_cartesian(clip = "off") + 
+  theme(
+    legend.position = "none",
+    axis.text.y = element_markdown(hjust = 0),
+    plot.margin = margin(t = .1, b = .1, r = 1, l = .1, unit = "in"),
+  ) + 
+  scale_color_manual(values = c("orange", "navy")) +
+  scale_y_discrete(
+    labels = function(x) {
+      x %>% 
+        gsub("^.*:", "Socratic x ", .) %>%
+        gsub("has_used_beforeYes", "ChatGPT experience", .) %>% 
+        gsub("locationSeville", "Seville", .) %>% 
+        gsub("top_grades", "", .) %>% 
+        gsub("gender", "", .) %>% 
+        gsub("nametask([123])_(.*)", "Task \\1 (\\2)", .)
+    }
+  ) +
+  labs(
+    title = "Socratic AI and Perceived Helpfulness",
+    subtitle = "Interaction effects between Socratic AI and task/student characteristics",
+    y = NULL,
+    x = "Regression coefficients and 95% confidence intervals",
+    caption = "Results from linear regression (n = 366); * p < 0.1"
+  )
+
+#ggsave("figures_and_tables/10_socratic_interact_helpfull.pdf")
+
+panel_a / panel_b + plot_annotation(tag_levels = "A")
+
+##ggsave("figures_and_tables/10_socratic_interactions.pdf")
 ```
