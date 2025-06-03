@@ -28,7 +28,7 @@ All participants had appropriate levels of English proficiency, given the langua
 
 ### Ethical Approval and Data Privacy
 
-We recruited students after receiving ethical approval from the European Commission's internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and experimental protocol complied with local laws and ethical research standards. The data privacy protection protocol was approved by the Commission's data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
+We recruited students after receiving ethical approval from the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`'s internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and experimental protocol complied with local laws and ethical research standards. The data privacy protection protocol was approved by the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`'s data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
 
 ![Classrooms used for the experiment in Seville (**A**) and in Brussels (**B**).](assets/pictures/classrooms.pdf){#fig:classrooms}
 

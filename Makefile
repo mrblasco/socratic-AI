@@ -1,13 +1,14 @@
 # Inputs  ------------------------
 CONFIG := _output.yml
 RMD_FILES := $(wildcard *.Rmd)
-SUBMIT_DIR := Submission
+SUBMIT_DIR := HSSC_Revised_Submission
 
 PDF_REPORT := $(SUBMIT_DIR)/main_report.pdf
+PDF_ANONYM := $(SUBMIT_DIR)/main_report_anonym.pdf
 DOC_REPORT := $(PDF_REPORT:.pdf=.docx)
 
 # Targets  ------------------------
-all: $(PDF_REPORT) $(DOC_REPORT) review submission view clean
+all: $(PDF_REPORT) $(PDF_ANONYM) $(DOC_REPORT) review submission view clean
 
 
 $(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) $(CONFIG)
@@ -15,6 +16,10 @@ $(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) $(CONFIG)
 
 $(SUBMIT_DIR)/%.docx : %.Rmd $(RMD_FILES) $(CONFIG)
 	Rscript -e 'rmarkdown::render("$<", output_format = "bookdown::word_document2", output_file = "$@")'
+
+$(SUBMIT_DIR)/%_anonym.pdf : %.Rmd $(RMD_FILES) $(CONFIG)
+	Rscript -e 'rmarkdown::render("$<", output_file = "$@", params = list(anonymous = TRUE))'
+
 
 # Submission ----
 
