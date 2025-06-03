@@ -1,7 +1,7 @@
 
 \newpage 
 
-## Questionnaire {#sec:questionnaire}
+# Questionnaire {#sec:questionnaire}
 
 1. Do you agree or disagree that society will benefit from a future of AI?
    - Strongly Agree

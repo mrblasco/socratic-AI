@@ -1,0 +1,54 @@
+# Acknowledgements
+
+```{r, eval = !params$anonymous, results = "asis"}
+cat("The contents of this publication do not necessarily reflect the position or opinion of the European Commission or Joint Research Centre. We thank Lucas Bagnari de Seabra and the colleagues in the JRC, especially those in the Digital Economy unit for their support and generous collaboration. Special thanks for the Data Privacy Coordinator of the JRC, who helped us with the data privacy statement, ensuring the highest safeguard to the students participating in the study. Many thanks go to the schools, including their leadership teams, parents and pupils who participated in the study. All errors are our own.") # nolint
+```
+
+# Statements and Declarations
+
+## Data Availability
+
+The data that support the findings of this study are available in the following open data repository [DOI available upon publication]. All relevant data have been anonymized to comply with ethical guidelines and institutional policies.
+
+## Ethical approval
+
+This study was conducted in accordance with the ethical standards and guidelines of the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`. Ethical approval was obtained from the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`'s Ethical Review Board prior to the commencement of the research. Approval reference number: 32530 / Ares(2023)3278765. All procedures involving human participants/data complied with the relevant institutional and European ethical regulations. Clearance received on May 17, 2023.
+
+## Informed consent for Participation 
+
+Informed consent was obtained prior to the experimental sessions. The text of the informed consent is provided below.
+
+**Purpose of the study**
+
+> The purpose of this study is to understand the ways teachers and students use applications based on Generative AI, such as the ChatGPT, and the impact of this emerging technology on teachers and students’ learning process. The findings of this study will help us understand how to increase the positive impact of the use of Generative AI while mitigating possible risks. This study aims to contribute to the current scientific dialogue about the use of Generative AI in Education and the teaching practices and provide recommendations for policymakers and developers in line with the European charter of fundamental rights and children’s rights in the context of digital and online world.
+
+**Consent**
+
+> I, the undersigned  (Participant’s name), born on (Birthdate) in (Birthplace), having read the related privacy statement and information brochure of the study “The impact of Generative Artificial Intelligence (AI) on Education: The case study of ChatGPT in Secondary Education”, organised by the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission, Joint Research Centre')`, which is attached to the invitation hereby:  
+
+(1)	Processing of my personal data for my participation in the study:
+
+- [ ] Consent to the processing of my personal data, as described in the attached privacy statement, for the purpose of participating in this study. 
+- [ ] DO NOT consent to the processing of my personal data for the purpose of participating in this study. 
+
+(2)	Processing of my personal data for research purposes:
+
+- [ ] Consent to the processing of my personal data, including my recordings and related artifacts, as described in the attached privacy statement, for the purpose of allowing the research team to conduct research associated to this study and its objectives. 
+- [ ] DO NOT consent to the processing of my personal data, including my recordings and related artifacts, for the purpose of allowing the research team to conduct research associated to this study and its objectives. 
+
+(3)	Anonymisation of my personal data for research and scientific purposes (only if you selected YES to consent request number 2 above)
+
+- [ ] Consent to the anonymization of my personal data, including audio recordings and related artifacts from the study, to be used for educational and scientific purposes such as conference publications and presentations in an anonymous way.
+- [ ] DO NOT consent to the anonymization of my personal data, including audio recordings and related artifacts from the study. 
+
+**Contact Information**
+
+> If you would like to exercise your rights under Regulation (EU) 2018/1725, or if you have comments, questions or concerns, or if you would like to submit a complaint regarding the collection and use of your personal data, please feel free to contact the Data Controller at: EMAIL
+
+## Competing Interests
+
+The authors declare no competing interests directly or indirectly related to the work submitted for publication. 
+
+## Declaration of generative AI and AI-assisted technologies in the writing process
+
+During the preparation of this work the author(s) used Grammarly, ChatGPT in order to improve the readability and language of the manuscript. After using this tool/service, the author(s) reviewed and edited the content as needed and take(s) full responsibility for the content of the published article.

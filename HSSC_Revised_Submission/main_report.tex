@@ -103,6 +103,8 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\usepackage[utf8]{inputenc}
+
 % Break sections into new page
 \usepackage{titlesec}
 \newcommand{\sectionbreak}{\clearpage}
@@ -273,12 +275,12 @@ All participants had appropriate levels of English proficiency, given the langua
 
 \subsubsection{Ethical Approval and Data Privacy}\label{ethical-approval-and-data-privacy}
 
-We recruited students after receiving ethical approval from the European Commission's internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and experimental protocol complied with local laws and ethical research standards. The data privacy protection protocol was approved by the European Commission's data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
+We recruited students after receiving ethical approval from the European Commission's internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and experimental protocol complied with local laws and ethical research standards.\footnote{Clearance obtained on May 17, 2023.} The data privacy protection protocol was approved by the European Commission's data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
 
 \begin{figure}
 \centering
 \pandocbounded{\includegraphics[keepaspectratio]{assets/pictures/classrooms.pdf}}
-\caption{Classrooms used for the experiment in Seville (\textbf{A}) and in Brussels (\textbf{B}).}\label{fig:classrooms}
+\caption{\label{fig:classrooms}Classrooms used for the experiment in Seville (\textbf{A}) and in Brussels (\textbf{B}).}
 \end{figure}
 
 \subsection{Experimental sessions}\label{experimental-sessions}
@@ -292,7 +294,7 @@ Figure \ref{fig:design} illustrates the two randomised manipulations in our expe
 \begin{figure}
 \centering
 \pandocbounded{\includegraphics[keepaspectratio]{assets/pictures/experimental_design.pdf}}
-\caption{The experimental design involves two manipulations: \textbf{A.} Socratic vs Non-Socratic; \textbf{B.} AI solution with explanation vs AI solution (without explanation)}\label{fig:design}
+\caption{\label{fig:design}The experimental design involves two manipulations: \textbf{A.} Socratic vs Non-Socratic; \textbf{B.} AI solution with explanation vs AI solution (without explanation)}
 \end{figure}
 
 \subsubsection{AI step-by-step reasoning}\label{ai-step-by-step-reasoning}
@@ -681,7 +683,7 @@ Lam, Faith. 2011. {``The Socratic Method as an Approach to Learning and Its Bene
 Lara, Francisco, and Jan Deckers. 2020. {``Artificial Intelligence as a Socratic Assistant for Moral Enhancement.''} \emph{Neuroethics} 13 (3): 275--87.
 
 \bibitem[\citeproctext]{ref-lee2024cheating}
-Lee, Victor R, Denise Pope, Sarah Miles, and Rosalı́a C Zárate. 2024. {``Cheating in the Age of Generative AI: A High School Survey Study of Cheating Behaviors Before and After the Release of ChatGPT.''} \emph{Computers and Education: Artificial Intelligence} 7: 100253.
+Lee, Victor R, Denise Pope, Sarah Miles, and Rosalía C Zárate. 2024. {``Cheating in the Age of Generative AI: A High School Survey Study of Cheating Behaviors Before and After the Release of ChatGPT.''} \emph{Computers and Education: Artificial Intelligence} 7: 100253.
 
 \bibitem[\citeproctext]{ref-legare2014contributions}
 Legare, Cristine H. 2014. {``The Contributions of Explanation and Exploration to Children's Scientific Reasoning.''} \emph{Child Development Perspectives} 8 (2): 101--6.
@@ -723,7 +725,7 @@ Thaler, Richard H. 1988. {``Anomalies: The Winner's Curse.''} \emph{Journal of E
 Tlili, Ahmed, Boulus Shehata, Michael Agyemang Adarkwah, Aras Bozkurt, Daniel T Hickey, Ronghuai Huang, and Brighter Agyemang. 2023. {``What If the Devil Is My Guardian Angel: ChatGPT as a Case Study of Using Chatbots in Education.''} \emph{Smart Learning Environments} 10 (1): 1--24.
 
 \bibitem[\citeproctext]{ref-urban2024chatgpt}
-Urban, Marek, Filip Děchtěrenko, Jiřı́ Lukavskỳ, Veronika Hrabalová, Filip Svacha, Cyril Brom, and Kamila Urban. 2024. {``ChatGPT Improves Creative Problem-Solving Performance in University Students: An Experimental Study.''} \emph{Computers \& Education} 215: 105031.
+Urban, Marek, Filip Dechterenko, Jiri Lukavsky, Veronika Hrabalova, Filip Svacha, Cyril Brom, and Kamila Urban. 2024. {``ChatGPT Improves Creative Problem-Solving Performance in University Students: An Experimental Study.''} \emph{Computers \& Education} 215: 105031.
 
 \bibitem[\citeproctext]{ref-vaccaro2024combinations}
 Vaccaro, Michelle, Abdullah Almaatouq, and Thomas Malone. 2024. {``When Combinations of Humans and AI Are Useful: A Systematic Review and Meta-Analysis.''} \emph{Nature Human Behaviour}, 1--11.
@@ -827,9 +829,100 @@ Where:
 
 The regression specification described above assumes homogeneous treatment effects across individuals and tasks. To relax this assumption, we employed a more flexible model that allows the average treatment effect, \(\gamma\), to vary based on individual-level and task-specific factors. Specifically, we included interaction terms between the treatment indicator and variables such as the student's gender, academic performance (as measured by school grades), prior experience with ChatGPT, and school location. Additionally, we accounted for heterogeneity in treatment effects across tasks by estimating separate regressions for each task-specific subset of the data. The results are shown in Figure \ref{fig:interactions}, Figure \ref{fig:confidence-regression}, and Figure \ref{fig:helpful-regression}.
 
+\section{Acknowledgements}\label{acknowledgements}
+
+The contents of this publication do not necessarily reflect the position or opinion of the European Commission or Joint Research Centre. We thank Lucas Bagnari de Seabra and the colleagues in the JRC, especially those in the Digital Economy unit for their support and generous collaboration. Special thanks for the Data Privacy Coordinator of the JRC, who helped us with the data privacy statement, ensuring the highest safeguard to the students participating in the study. Many thanks go to the schools, including their leadership teams, parents and pupils who participated in the study. All errors are our own.
+
+\section{Statements and Declarations}\label{statements-and-declarations}
+
+\subsection{Data Availability}\label{data-availability}
+
+The data that support the findings of this study are available in the following open data repository {[}DOI available upon publication{]}. All relevant data have been anonymized to comply with ethical guidelines and institutional policies.
+
+\subsection{Ethical approval}\label{ethical-approval}
+
+This study was conducted in accordance with the ethical standards and guidelines of the European Commission. Ethical approval was obtained from the European Commission's Ethical Review Board prior to the commencement of the research. Approval reference number: 32530 / Ares(2023)3278765. All procedures involving human participants/data complied with the relevant institutional and European ethical regulations. Clearance received on May 17, 2023.
+
+\subsection{Informed consent for Participation}\label{informed-consent-for-participation}
+
+Informed consent was obtained prior to the experimental sessions. The text of the informed consent is provided below.
+
+\textbf{Purpose of the study}
+
+\begin{quote}
+The purpose of this study is to understand the ways teachers and students use applications based on Generative AI, such as the ChatGPT, and the impact of this emerging technology on teachers and students' learning process. The findings of this study will help us understand how to increase the positive impact of the use of Generative AI while mitigating possible risks. This study aims to contribute to the current scientific dialogue about the use of Generative AI in Education and the teaching practices and provide recommendations for policymakers and developers in line with the European charter of fundamental rights and children's rights in the context of digital and online world.
+\end{quote}
+
+\textbf{Consent}
+
+\begin{quote}
+I, the undersigned (Participant's name), born on (Birthdate) in (Birthplace), having read the related privacy statement and information brochure of the study ``The impact of Generative Artificial Intelligence (AI) on Education: The case study of ChatGPT in Secondary Education'', organised by the European Commission, Joint Research Centre, which is attached to the invitation hereby:
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\tightlist
+\item
+  Processing of my personal data for my participation in the study:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Consent to the processing of my personal data, as described in the attached privacy statement, for the purpose of participating in this study.
+\item[$\square$]
+  DO NOT consent to the processing of my personal data for the purpose of participating in this study.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Processing of my personal data for research purposes:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Consent to the processing of my personal data, including my recordings and related artifacts, as described in the attached privacy statement, for the purpose of allowing the research team to conduct research associated to this study and its objectives.
+\item[$\square$]
+  DO NOT consent to the processing of my personal data, including my recordings and related artifacts, for the purpose of allowing the research team to conduct research associated to this study and its objectives.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Anonymisation of my personal data for research and scientific purposes (only if you selected YES to consent request number 2 above)
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Consent to the anonymization of my personal data, including audio recordings and related artifacts from the study, to be used for educational and scientific purposes such as conference publications and presentations in an anonymous way.
+\item[$\square$]
+  DO NOT consent to the anonymization of my personal data, including audio recordings and related artifacts from the study.
+\end{itemize}
+
+\textbf{Contact Information}
+
+\begin{quote}
+If you would like to exercise your rights under Regulation (EU) 2018/1725, or if you have comments, questions or concerns, or if you would like to submit a complaint regarding the collection and use of your personal data, please feel free to contact the Data Controller at: EMAIL
+\end{quote}
+
+\subsection{Competing Interests}\label{competing-interests}
+
+The authors declare no competing interests directly or indirectly related to the work submitted for publication.
+
+\subsection{Declaration of generative AI and AI-assisted technologies in the writing process}\label{declaration-of-generative-ai-and-ai-assisted-technologies-in-the-writing-process}
+
+During the preparation of this work the author(s) used Grammarly, ChatGPT in order to improve the readability and language of the manuscript. After using this tool/service, the author(s) reviewed and edited the content as needed and take(s) full responsibility for the content of the published article.
+
 \newpage
 
-\subsection{Questionnaire}\label{sec:questionnaire}
+\section{Questionnaire}\label{sec:questionnaire}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}

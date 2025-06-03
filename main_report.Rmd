@@ -37,6 +37,8 @@ always_allow_html: true
 
 header-includes: |
   ```{=latex}
+  \usepackage[utf8]{inputenc}
+  
   % Break sections into new page
   \usepackage{titlesec}
   \newcommand{\sectionbreak}{\clearpage}
