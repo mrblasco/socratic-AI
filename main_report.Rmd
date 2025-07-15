@@ -24,15 +24,15 @@ date: |
   `r format(Sys.Date(), 'This version: %B %d, %Y')`
 
 toc: false
-fontsize: 12pt # 11
-linestretch: 1.5 # 1.25
+fontsize: 11pt # 11
+linestretch: 1.25 # 1.25
 colorlinks: true
 link-citations: true
 graphics: true
 tables: true
 mainfont: Helvetica
 geometry: margin=2cm
-bibliography: [References/refs.bib]
+bibliography: [refs.bib]
 always_allow_html: true
 
 header-includes: |

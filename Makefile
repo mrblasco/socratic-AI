@@ -1,24 +1,47 @@
-# Inputs  ------------------------
-CONFIG := _output.yml
-RMD_FILES := $(wildcard *.Rmd)
-SUBMIT_DIR := HSSC_Revised_Submission
-BIB_FILE := References/refs.bib
+
+SUBMIT_DIR := journal_HSSC/Revised_Submission/Round_2
 
 PDF_REPORT := $(SUBMIT_DIR)/main_report.pdf
 PDF_ANONYM := $(SUBMIT_DIR)/main_report_anonym.pdf
-DOC_REPORT := $(PDF_REPORT:.pdf=.docx)
 
-# Targets  ------------------------
-all: $(PDF_REPORT) $(PDF_ANONYM) $(DOC_REPORT) review submission view clean
+DOCX_REPORT := $(PDF_REPORT:.pdf=.docx)
 
-$(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) $(CONFIG) $(BIB_FILE)
-	Rscript -e 'rmarkdown::render("$<", output_file = "$@")'
+REPORTS := $(PDF_REPORT) $(PDF_ANONYM) $(DOCX_REPORT)
+
+RMD_FILES := $(wildcard *.Rmd)
+
+# Formats 
+
+DOCX_FORMAT := bookdown::word_document2
+PDF_FORMAT := bookdown::pdf_document2
+
+# ---- Targets  ------------------------
+
+all: $(REPORTS)
+
+$(SUBMIT_DIR):
+	mkdir -p $@
+
+$(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) _output.yml refs.bib  $(SUBMIT_DIR)
+	Rscript -e 'rmarkdown::render("$<", "$(PDF_FORMAT)", "$@")'
 
 $(SUBMIT_DIR)/%.docx : %.Rmd $(RMD_FILES) $(CONFIG)
-	Rscript -e 'rmarkdown::render("$<", output_format = "bookdown::word_document2", output_file = "$@")'
+	Rscript -e 'rmarkdown::render("$<", "$(DOCX_FORMAT)", "$@")'
 
 $(SUBMIT_DIR)/%_anonym.pdf : %.Rmd $(RMD_FILES) $(CONFIG)
-	Rscript -e 'rmarkdown::render("$<", output_file = "$@", params = list(anonymous = TRUE))'
+	Rscript -e 'rmarkdown::render("$<", "$(PDF_FORMAT)", "$@", params = list(anonymous = TRUE))'
+
+clean: 
+	rm -f *.ttt *.log *.fff
+
+# ----- Revision 
+
+revision: journal_HSSC/Response_referees/round_2/rebutal_point_by_point.pdf
+
+%.pdf : %.md
+	pandoc $< --from markdown --to pdf -o $@
+	open -a Skim $@
+
 
 # Archive ---
 
@@ -33,39 +56,14 @@ archive.zip: $(PDF_ANONYM:.pdf=.tex) $(PDF_ANONYM:.pdf=_files) $(pictures)
 old.tex : 
 	git show diff:main_report.tex
 
-diff.tex : old.tex HSSC_Revised_Submission/main_report.tex
+diff.tex : old.tex $(SUBMIT_DIR)/main_report.tex
 	latexdiff $+ > $@
 
 diff.pdf : diff.tex
 	pdflatex $<
 
-# Submission ----
-
-submission: $(SUBMIT_DIR)/cover_letter.pdf $(SUBMIT_DIR)/declaration.docx \
-	$(SUBMIT_DIR)/acknowledgement.docx
-
-$(SUBMIT_DIR)/cover_letter.pdf : $(SUBMIT_DIR)/cover_letter.Rmd
-	Rscript -e 'rmarkdown::render("$<", output_format = "linl::linl")'
-
-$(SUBMIT_DIR)/declaration.docx : $(SUBMIT_DIR)/declaration.Rmd
-	Rscript -e 'rmarkdown::render("$<", output_format = "bookdown::word_document2")'
-
-$(SUBMIT_DIR)/acknowledgement.docx : $(SUBMIT_DIR)/acknowledgement.Rmd
-	Rscript -e 'rmarkdown::render("$<", output_format = "bookdown::word_document2")'
-
-# Review ----
-
-review: $(SUBMIT_DIR)/rebuttal_point_by_point.pdf $(SUBMIT_DIR)/rebuttal_point_by_point.docx
-	open $<
-
-$(SUBMIT_DIR)/%.docx : Reviews/round_1/%.md
-	pandoc --from markdown --to docx -C $< -o $@
-
-$(SUBMIT_DIR)/%.pdf : Reviews/round_1/%.md
-	pandoc --pdf-engine xelatex --from markdown --to pdf -C $< -o $@
+# --- 
 
 view:
 	open -a Skim $(PDF_REPORT)
 
-clean: 
-	rm -f *.ttt *.log *.fff
