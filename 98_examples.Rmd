@@ -1,0 +1,105 @@
+# Examples of Student-AI Interactions
+
+## Estimation task 
+
+**Question**: How much water in litres do students consume at our school each week? Interact with the AI tutor at the bottom of this page before answering.
+
+### Non-Socratic Approach 
+
+**Student**: how many litres of water de we consume at school each week?
+
+**AI Tutor**: To answer this question, we need more specific information. The amount of water consumed at a school each week can vary greatly depending on several factors: 1. Number of students and staff: More people means more water usage for drinking, washing hands, and other activities. 2. School facilities: If the school has a cafeteria, gym, or other facilities that use water, this will increase the total consumption. 3. Drinking habits: If students and staff are encouraged to drink a lot of water, this could also increase the total consumption. For example, if a school has 500 students and each student drinks an average of 1 litre of water per day, the school would consume 2,500 litres of water in a 5-day week just for drinking. This doesn't include water used for other purposes like cleaning or cooking. Remember, this is a very rough estimate and the actual amount could be much higher or lower depending on the factors mentioned above.
+
+**Student**: if there is 5000 children at our school how many litres do we use per week?
+
+**AI Tutor**: If we use the same estimation as before, where each student drinks an average of 1 litre of water per day, then a school with 5,000 students would consume 25,000 litres of water in a 5-day week just for drinking. However, this is a rough estimate and does not include water used for other purposes like cleaning, cooking, or facilities like bathrooms and gyms. The actual amount could be much higher. It's also important to note that promoting good hydration is essential for health and learning, so schools should encourage students to drink enough water each day.
+
+### Socratic Approach
+
+**Student**: How much water in litres do students consume at our school each week?	
+
+**AI Tutor**: To answer that question, we need to gather some information first. 1. How many students are there in your school? 2. On average, how many litres of water does each student consume per day? 3. How many days per week are students at school?	
+
+**Student**: 1. There are around 200 people at our school	
+
+**AI Tutor**: Great, that's a good start. Now, let's move on to the next questions: 2. On average, how many litres of water does each student consume per day? 3. How many days per week are students at school?
+
+**Student**: 2. 250 litres
+
+**AI Tutor**: That seems like a lot of water for one person to consume in a day. The average person usually drinks about 2 litres of water per day. Could you please check that number again?	
+
+**Student**: 2 litres
+
+**AI Tutor**: Great! Now, let's move on to the last piece of information we need. 3. How many days per week are students at school?	
+
+**Student**: 4 days, but on Wednesdays we don't consume water at school	
+
+**AI Tutor**: Okay, so if students are at school for 5 days a week, but they don't consume water at school on Wednesdays, that means they are consuming water at school for 4 days a week. Is that correct?	
+
+**Student**: Yes
+
+**AI Tutor**: Great! Now, let's put all this information together. If there are 200 students in your school, and each student consumes 2 litres of water per day, and they do this for 4 days a week, how many litres of water do students consume at your school each week?	
+
+**Student**: 1600 litres in total
+
+**AI Tutor**: That's correct! If each of the 200 students consumes 2 litres of water per day for 4 days a week, that would indeed total to 1600 litres of water consumed at your school each week. Well done!	
+
+## Scientific question
+
+**Question**: Does sound travel faster in water than air? And if so, why?
+
+1.  Sound travels slower in water due to its higher density
+2.  Sound travels faster in water due to its higher density [correct answer]
+3.  Sound travels at the same speed in both water and air, regardless of density
+4.  Sound travels slower in water due to its lower density
+5.  Sound travels faster in water due to its lower density
+
+Now, interact with the AI tutor at the bottom of this page before answering. [SOCRATIC / NON-SOCRATIC] [Repeat question 21.]
+
+### Non-Socratic approach 
+
+**Student**: does sound travel faster in water or air and why?
+
+**AI Tutor**: Sound actually travels faster in water than it does in air. This is because water has a higher density and elasticity than air, which allows sound waves to travel more quickly. In air, sound travels at about 343 meters per second, while in water, it travels at approximately 1,500 meters per second.	
+
+### Socratic Appraoch
+
+**Student**: Does sound travels faster in water than air? And if so, why?
+
+**AI Tutor**: Yes, sound does travel faster in water than in air. But why do you think that might be the case? What do you know about the properties of air and water that might affect the speed of sound?
+
+**Student**: does Sound travels faster in water due to its higher density?
+
+**AI Tutor**: That's a great start! Density is indeed a factor. Sound waves travel through the vibration of atoms and molecules in a medium. In water, the molecules are much closer together than they are in air, which allows the vibrations to be transferred between them more quickly. But there's another property of water that also affects the speed of sound. Can you think of what that might be?
+
+
+## The effect of Social Media on Students
+
+**Question.** Experts say that social media can have either a positive or a negative impact on students' well-being. What is your opinion about the effect of social media on teenagers? [...]  Now, interact with the AI tutor at the bottom of this page before answering. 
+
+### Non-Socratic
+
+**Student**: what are the benefits of social media to teenagers
+
+**AI Tutor**: 1. Communication and Connectivity: Social media platforms allow teenagers to stay connected with friends and family, even those who live far away. They can share experiences, updates, and communicate instantly. 2. Information and Learning: Social media can be a great source of information and learning. Many educational pages and groups provide knowledge about various subjects. It can also help them to stay updated with current events and news. 3. Self-Expression: Teenagers can use social media to express their thoughts, ideas, and creativity. They can share their artwork, music, or writings with a larger audience. 4. Community Building: Social media allows teenagers to join groups of people with similar interests. This can help them to feel a sense of belonging and community. 5. Skills Development: Managing social media profiles can help teenagers develop digital literacy and marketing skills. They learn about creating engaging content, online etiquette, and internet safety. 6. Emotional Support: Social media can provide a platform for teenagers to share their feelings and experiences, and receive emotional support. They can connect with others who are going through similar experiences. 7. Advocacy: Teenagers can use social media to advocate for causes they believe in and raise awareness about important issues. Remember, while social media has many benefits, it's also important to use it responsibly and be aware of potential risks such as cyberbullying, privacy issues, and misinformation.	
+
+**Student**: does it have more of a positive or negative impact
+
+**AI Tutor**: The impact of social media on teenagers can be both positive and negative, and it largely depends on how it's used. On the positive side, social media can provide a platform for self-expression, learning, and connectivity. It can help teenagers develop digital literacy skills, find communities of like-minded individuals, and stay informed about current events. On the negative side, excessive use of social media can lead to issues like cyberbullying, privacy concerns, and exposure to inappropriate content. It can also contribute to feelings of inadequacy or anxiety, especially when teenagers compare their lives to the often idealized representations they see online. In conclusion, social media can have both positive and negative impacts on teenagers. It's important for them to be educated about responsible use of these platforms, and for parents or guardians to monitor their online activities to ensure a healthy balance.	
+
+**Student**: thanks
+
+### Socratic Approach
+
+**Student**: is social media a posative or a negative impact on student zell being?	
+
+**AI Tutor**: That's a great question and it's a topic that can be viewed from many different angles. Let's break it down. Firstly, can you think of any positive impacts that social media might have on a student's well-being?	
+
+**Student**: they can learn new things from social media
+
+**AI Tutor**: Absolutely, that's a great point. Social media can be a source of information and learning. It can help students to connect with educational resources, learn about different cultures, or stay updated on current events. Now, can you think of any potential negative impacts that social media might have on a student's well-being?	
+
+**Student**: they use it to much
+
+**AI Tutor**: Yes, that's a valid point. Excessive use of social media can lead to issues like distraction from studies, lack of physical activity, and even sleep deprivation. It can also contribute to feelings of anxiety or depression in some cases. Now, considering these positive and negative aspects, how do you think a balance can be achieved in using social media for the benefit of students?	
+
