@@ -1,5 +1,5 @@
 
-SUBMIT_DIR := journal_HSSC/Revised_Submission/Round_2
+SUBMIT_DIR := output/drafts
 
 PDF_REPORT := $(SUBMIT_DIR)/main_report.pdf
 PDF_ANONYM := $(SUBMIT_DIR)/main_report_anonym.pdf
@@ -22,7 +22,7 @@ all: $(REPORTS)
 $(SUBMIT_DIR):
 	mkdir -p $@
 
-$(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) _output.yml refs.bib  $(SUBMIT_DIR)
+$(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) _output.yml refs.bib
 	Rscript -e 'rmarkdown::render("$<", "$(PDF_FORMAT)", "$@")'
 
 $(SUBMIT_DIR)/%.docx : %.Rmd $(RMD_FILES) $(CONFIG)
