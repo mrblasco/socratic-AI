@@ -17,12 +17,12 @@ PDF_FORMAT := bookdown::pdf_document2
 
 # ---- Targets  ------------------------
 
-all: $(REPORTS)
+all: $(PDF_REPORT)
 
 $(SUBMIT_DIR):
 	mkdir -p $@
 
-$(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) _output.yml refs.bib
+$(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) _output.yml refs.bib $(SUBMIT_DIR)
 	Rscript -e 'rmarkdown::render("$<", "$(PDF_FORMAT)", "$@")'
 
 $(SUBMIT_DIR)/%.docx : %.Rmd $(RMD_FILES) $(CONFIG)
@@ -33,6 +33,7 @@ $(SUBMIT_DIR)/%_anonym.pdf : %.Rmd $(RMD_FILES) $(CONFIG)
 
 clean: 
 	rm -f *.ttt *.log *.fff
+
 
 # ----- Revision 
 
