@@ -57,6 +57,9 @@ archive.zip: $(PDF_ANONYM:.pdf=.tex) $(PDF_ANONYM:.pdf=_files) $(pictures)
 
 # Mardked up difference --- 
 
+show_diffs: old.tex main.tex
+	latexdiff $+ > diff.tex && pdflatex diff.tex
+
 old.tex : 
 	git show diff:main_report.tex
 
