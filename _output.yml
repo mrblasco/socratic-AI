@@ -1,3 +1,7 @@
+bookdown::html_document2:
+  toc: false
+  css: [~/Documents_local/02_Projects/01_education/02_Socratic_AI/socratic-AI/assets/style.css]
+
 bookdown::pdf_document2:
   latex_engine: xelatex
   keep_tex: true
@@ -7,7 +11,4 @@ bookdown::pdf_document2:
 
 
 distill::distill_article:
-  toc: false
-
-bookdown::html_document2:
   toc: false
