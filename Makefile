@@ -1,5 +1,3 @@
-
-
 # Outputs
 OUTPUT_DIR := output/drafts
 PDF_REPORT := $(OUTPUT_DIR)/main_report.pdf
@@ -7,7 +5,6 @@ DOCX_REPORT := $(PDF_REPORT:.pdf=.docx)
 
 # Inputs
 RMD_FILES := $(wildcard *.Rmd)
-
 
 # Formats
 DOCX_FORMAT := bookdown::word_document2
@@ -17,13 +14,16 @@ COMMIT_MSG ?= "Update"
 
 # ---- Targets  ------------------------
 
-all: $(PDF_REPORT)
+all: $(PDF_REPORT) $(DOCX_REPORT)
 
 $(OUTPUT_DIR):
 	mkdir -p $@
 
 $(OUTPUT_DIR)/%.pdf : %.Rmd $(RMD_FILES) _output.yml refs.bib $(OUTPUT_DIR)
 	Rscript -e 'rmarkdown::render("$<", "$(PDF_FORMAT)", "$@")'
+
+$(OUTPUT_DIR)/%.docx : %.Rmd $(RMD_FILES) _output.yml refs.bib $(OUTPUT_DIR)
+	Rscript -e 'rmarkdown::render("$<", "$(DOCX_FORMAT)", "$@")'
 
 clean: 
 	rm -f *.ttt *.log *.fff
@@ -38,14 +38,10 @@ commit:
 
 # ----- Revision 
 
-revision: _rebuttal_to_reviewers_rev2.docx
+revision: $(OUTPUT_DIR)/_rebuttal_to_reviewers_rev2.pdf
 
-%.pdf : %.md
+$(OUTPUT_DIR)/%.pdf : docs/%.md
 	pandoc $< --from markdown --to pdf -C -o $@
-	open -a Skim $@
-
-%.docx : %.md
-	pandoc $< --from markdown --to docx -C -o $@
 
 # Archive ---
 
