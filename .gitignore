@@ -1,6 +1,11 @@
 .DS_Store
 
+docs/
 assets/
 assets/pictures/*.jpg
 assets/lua-filters
 bibliography/*/
+
+*.log
+*.fff
+*.ttt

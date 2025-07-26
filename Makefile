@@ -1,48 +1,51 @@
 
-SUBMIT_DIR := output/drafts
 
-PDF_REPORT := $(SUBMIT_DIR)/main_report.pdf
-PDF_ANONYM := $(SUBMIT_DIR)/main_report_anonym.pdf
-
+# Outputs
+OUTPUT_DIR := output/drafts
+PDF_REPORT := $(OUTPUT_DIR)/main_report.pdf
 DOCX_REPORT := $(PDF_REPORT:.pdf=.docx)
 
-REPORTS := $(PDF_REPORT) $(PDF_ANONYM) $(DOCX_REPORT)
-
+# Inputs
 RMD_FILES := $(wildcard *.Rmd)
 
-# Formats 
 
+# Formats
 DOCX_FORMAT := bookdown::word_document2
 PDF_FORMAT := bookdown::pdf_document2
+
+COMMIT_MSG ?= "Update"
 
 # ---- Targets  ------------------------
 
 all: $(PDF_REPORT)
 
-$(SUBMIT_DIR):
+$(OUTPUT_DIR):
 	mkdir -p $@
 
-$(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) _output.yml refs.bib $(SUBMIT_DIR)
+$(OUTPUT_DIR)/%.pdf : %.Rmd $(RMD_FILES) _output.yml refs.bib $(OUTPUT_DIR)
 	Rscript -e 'rmarkdown::render("$<", "$(PDF_FORMAT)", "$@")'
-
-$(SUBMIT_DIR)/%.docx : %.Rmd $(RMD_FILES) $(CONFIG)
-	Rscript -e 'rmarkdown::render("$<", "$(DOCX_FORMAT)", "$@")'
-
-$(SUBMIT_DIR)/%_anonym.pdf : %.Rmd $(RMD_FILES) $(CONFIG)
-	Rscript -e 'rmarkdown::render("$<", "$(PDF_FORMAT)", "$@", params = list(anonymous = TRUE))'
 
 clean: 
 	rm -f *.ttt *.log *.fff
 
+view:
+	open -a Skim $(PDF_REPORT)
+
+commit: 
+	@git add . && git commit -m "$(COMMIT_MSG)"
+	@echo "Committed changes with message: $(COMMIT_MSG)"
+
 
 # ----- Revision 
 
-revision: journal_HSSC/Response_referees/round_2/rebutal_point_by_point.pdf
+revision: _rebuttal_to_reviewers_rev2.docx
 
 %.pdf : %.md
-	pandoc $< --from markdown --to pdf -o $@
+	pandoc $< --from markdown --to pdf -C -o $@
 	open -a Skim $@
 
+%.docx : %.md
+	pandoc $< --from markdown --to docx -C -o $@
 
 # Archive ---
 
@@ -64,7 +67,4 @@ diff.pdf : diff.tex
 	pdflatex $<
 
 # --- 
-
-view:
-	open -a Skim $(PDF_REPORT)
 

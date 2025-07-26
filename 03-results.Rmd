@@ -344,7 +344,7 @@ p_dens <- bootstrap_accuracy %>%
   )
 ```
 
-To examine the impact of AI explanations on students' perceived credibility of AI predictions (RQ2), we analysed students' five-point ratings of the perceived accuracy of the AI estimated value of coins. We noticed that 53% of students who did not receive step-by-step reasoning considered the AI estimate as either “good” (39%) or “very good” (14%) compared to 43% of students exposed to the AI reasoning (19% and 24%, respectively). This gap of ten percentage points suggests that students viewed the AI as more accurate when the AI-generated guess was presented as a "black box." However, we didn't have enough observations to reach a statistically significant association (Fisher's test, p = .27), and even regression analysis, controlling for individual characteristics, showed no significant association (Figure \@ref(fig:perceived-accuracy-coins)).
+To examine the impact of AI explanations on students' perceived credibility of AI predictions (RQ2), we analysed students' five-point ratings of the perceived accuracy of the AI estimated value of coins. We noticed that 53% of students who did not receive step-by-step reasoning considered the AI estimate as either “good” (39%) or “very good” (14%) compared to 43% of students exposed to the AI reasoning (19% and 24%, respectively). This gap of ten percentage points suggests that students viewed the AI as more accurate when the AI-generated guess was presented as a "black box." However, the association is not statistically significant (Fisher's test, p = .27), and even regression analysis, controlling for individual characteristics, showed no significant association (Figure \@ref(fig:perceived-accuracy-coins)).
 
 ```{r, include = FALSE, tab.cap = "Percentage of students who perceived the accuracy of the AI-generated estimate for the coin value in the jar as accurate"}
 xtab <- xtabs(~ q10_guess_coins_ai_accuracy + treatment_explain_id, tutorgpt)
@@ -556,6 +556,8 @@ p_combined <-
 
 p_combined + plot_annotation(tag_levels = "A") 
 ```
+
+To complement these measures, we examined qualitative differences in the chats between students and the AI tutor, as illustrated by selected chat examples in the Appendix. This analysis highlights that the interactions were qualitatively different. In the Socratic condition, students had to actively think about the problem and provide input in order to progress. For example, when discussing the effects of social media, a student in the Socratic group was first prompted by the AI tutor to list positive effects, and then asked to identify negative ones. In contrast, a student in the non-Socratic group was simply presented with a list of both positive and negative effects by the AI tutor.
 
 ### Students' Confidence in Their Responses
 
