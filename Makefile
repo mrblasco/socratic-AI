@@ -38,10 +38,11 @@ commit:
 
 # ----- Revision 
 
-revision: $(OUTPUT_DIR)/_rebuttal_to_reviewers_rev2.pdf
+revision: $(OUTPUT_DIR)/1_rebuttal_to_reviewers_round2.pdf
+	@open $<
 
 $(OUTPUT_DIR)/%.pdf : docs/%.md
-	pandoc $< --from markdown --to pdf -C -o $@
+	@pandoc $< --from markdown --to pdf -C -o $@
 
 # Archive ---
 

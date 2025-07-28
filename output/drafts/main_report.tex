@@ -249,7 +249,7 @@ Our analysis of integration of AI chatbots into educational contexts draws on in
 
 \subsection{Theoretical Considerations}\label{theoretical-considerations}
 
-Explanations are a central component of learning, both in everyday cognition and formal education. Research suggests that generating explanations, especially self-explaining, can be more effective for learning and generalization than simply reading text or receiving feedback (\citeproc{ref-lombrozo2006structure}{Lombrozo 2006}). In educational settings, explanations are widely used across contexts, such as classroom instruction (Ma, 1999), tutoring (Chi et al., 2001), peer learning (Webb, 1989), and learning from texts (Goldman, 2004), but their effectiveness depends heavily on how they align with learners' prior knowledge, focus on conceptual understanding over rote procedures, support active learning, and do not replace the learner's own knowledge construction (\citeproc{ref-wittwer2008instructional}{Wittwer and Renkl 2008}).
+Explanations are a central component of learning, both in everyday cognition and formal education. Research suggests that generating explanations, especially self-explaining, can be more effective for learning and generalization than simply reading text or receiving feedback (\citeproc{ref-lombrozo2006structure}{Lombrozo 2006}). In educational settings, explanations are widely used across contexts, such as classroom instruction (\citeproc{ref-ma1999knowing}{Ma 1999}), tutoring (\citeproc{ref-chi2001learning}{Chi et al. 2001}), peer learning (\citeproc{ref-webb1989peer}{Webb 1989}), and learning from texts (\citeproc{ref-goldman2004constructing}{Goldman 2004}), but their effectiveness depends heavily on how they align with learners' prior knowledge, focus on conceptual understanding over rote procedures, support active learning, and do not replace the learner's own knowledge construction (\citeproc{ref-wittwer2008instructional}{Wittwer and Renkl 2008}).
 
 AI-generated explanations, however, often fall short on these dimensions: they may not adapt to individual knowledge levels, ignore learner agency, and risk fostering overreliance due to the opaque, ``black-box'' nature of models, potentially spreading misinformation or suppressing critical thinking (\citeproc{ref-rudin2022interpretable}{Rudin et al. 2022}). Nonetheless, chatbots offer a unique opportunity for adaptivity, allowing learners to engage in Socratic dialogue and refine their understanding through follow-up questions (\citeproc{ref-yan2024promises}{Yan, Greiff, et al. 2024}). Our study explores this duality by first examining the impact of non-adaptive AI explanations and then testing whether adaptive, Socratic-style interactions better support learning compared to traditional classroom explanations.
 
@@ -637,6 +637,9 @@ Arleback, Jonas Bergman, and Lluis Albarracin. 2019. {``The Use and Potential of
 \bibitem[\citeproctext]{ref-bearman2023learning}
 Bearman, Margaret, and Rola Ajjawi. 2023. {``Learning to Work with the Black Box: Pedagogy for a World with Artificial Intelligence.''} \emph{British Journal of Educational Technology} 54 (5): 1160--73.
 
+\bibitem[\citeproctext]{ref-chi2001learning}
+Chi, Michelene TH, Stephanie A Siler, Heisawn Jeong, Takashi Yamauchi, and Robert G Hausmann. 2001. {``Learning from Human Tutoring.''} \emph{Cognitive Science} 25 (4): 471--533.
+
 \bibitem[\citeproctext]{ref-chi2014icap}
 Chi, Michelene TH, and Ruth Wylie. 2014. {``The ICAP Framework: Linking Cognitive Engagement to Active Learning Outcomes.''} \emph{Educational Psychologist} 49 (4): 219--43.
 
@@ -694,6 +697,9 @@ Ferrario, Andrea, and Michele Loi. 2022. {``How Explainability Contributes to Tr
 \bibitem[\citeproctext]{ref-gavsevic2023empowering}
 Gašević, Dragan, George Siemens, and Shazia Sadiq. 2023. {``Empowering Learners for the Age of Artificial Intelligence.''} \emph{Computers and Education: Artificial Intelligence}. Elsevier.
 
+\bibitem[\citeproctext]{ref-goldman2004constructing}
+Goldman, Susan R. 2004. {``Constructing Meaning Through and Across.''} In \emph{Uses of Intertextuality in Classroom and Educational Research}, edited by Nora Shuart-Faris and David Bloome, 317. IAP.
+
 \bibitem[\citeproctext]{ref-hendrycks2021measuring}
 Hendrycks, Dan, Collin Burns, Saurav Kadavath, Akul Arora, Steven Basart, Eric Tang, Dawn Song, and Jacob Steinhardt. 2021. {``Measuring Mathematical Problem Solving with the Math Dataset.''} \emph{arXiv Preprint arXiv:2103.03874}.
 
@@ -741,6 +747,9 @@ Li, Wei, Xiaolin Zhang, Jing Li, Xiao Yang, Dong Li, and Yantong Liu. 2024. {``A
 
 \bibitem[\citeproctext]{ref-lombrozo2006structure}
 Lombrozo, Tania. 2006. {``The Structure and Function of Explanations.''} \emph{Trends in Cognitive Sciences} 10 (10): 464--70.
+
+\bibitem[\citeproctext]{ref-ma1999knowing}
+Ma, Liping. 1999. \emph{Knowing and Teaching Elementary Mathematics: Teacher's Understanding Offundamental Mathematics in China and the United States}. Lawrence Erlbaum Associates, Incorporated.
 
 \bibitem[\citeproctext]{ref-micklo1999estimation}
 Micklo, Stephen J. 1999. {``Estimation It's More Than a Guess.''} \emph{Childhood Education} 75 (3): 142--45.
@@ -795,6 +804,9 @@ Walczak, Krzysztof, and Wojciech Cellary. 2023. {``Challenges for Higher Educati
 
 \bibitem[\citeproctext]{ref-walter2024embracing}
 Walter, Yoshija. 2024. {``Embracing the Future of Artificial Intelligence in the Classroom: The Relevance of AI Literacy, Prompt Engineering, and Critical Thinking in Modern Education.''} \emph{International Journal of Educational Technology in Higher Education} 21 (1): 15.
+
+\bibitem[\citeproctext]{ref-webb1989peer}
+Webb, Noreen M. 1989. {``Peer Interaction and Learning in Small Groups.''} \emph{International Journal of Educational Research} 13 (1): 21--39.
 
 \bibitem[\citeproctext]{ref-weidinger2022taxonomy}
 Weidinger, Laura, Jonathan Uesato, Maribeth Rauh, Conor Griffin, Po-Sen Huang, John Mellor, Amelia Glaese, et al. 2022. {``Taxonomy of Risks Posed by Language Models.''} In \emph{Proceedings of the 2022 ACM Conference on Fairness, Accountability, and Transparency}, 214--29.
@@ -888,6 +900,14 @@ Where:
 \end{itemize}
 
 The regression specification described above assumes homogeneous treatment effects across individuals and tasks. To relax this assumption, we employed a more flexible model that allows the average treatment effect, \(\gamma\), to vary based on individual-level and task-specific factors. Specifically, we included interaction terms between the treatment indicator and variables such as the student's gender, academic performance (as measured by school grades), prior experience with ChatGPT, and school location. Additionally, we accounted for heterogeneity in treatment effects across tasks by estimating separate regressions for each task-specific subset of the data. The results are shown in Figure \ref{fig:interactions}, Figure \ref{fig:confidence-regression}, and Figure \ref{fig:helpful-regression}.
+
+\begin{quote}
+``Explanations are a central component of learning, both in everyday cognition and formal education. Research suggests that generating explanations, especially self-explaining, can be more effective for learning and generalization than simply reading text or receiving feedback (\citeproc{ref-lombrozo2006structure}{Lombrozo 2006}). In educational settings, explanations are widely used across contexts, such as classroom instruction (\citeproc{ref-ma1999knowing}{Ma 1999}), tutoring (\citeproc{ref-chi2001learning}{Chi et al. 2001}), peer learning (\citeproc{ref-webb1989peer}{Webb 1989}), and learning from texts (\citeproc{ref-goldman2004constructing}{Goldman 2004}), but their effectiveness depends heavily on how they align with learners' prior knowledge, focus on conceptual understanding over rote procedures, support active learning, and do not replace the learner's own knowledge construction (\citeproc{ref-wittwer2008instructional}{Wittwer and Renkl 2008}).''
+
+``AI-generated explanations, however, often fall short on these dimensions: they may not adapt to individual knowledge levels, ignore learner agency, and risk fostering overreliance due to the opaque,''black-box'' nature of models, potentially spreading misinformation or suppressing critical thinking (\citeproc{ref-rudin2022interpretable}{Rudin et al. 2022}). Nonetheless, chatbots offer a unique opportunity for adaptivity, allowing learners to engage in Socratic dialogue and refine their understanding through follow-up questions (\citeproc{ref-yan2024promises}{Yan, Greiff, et al. 2024}). Our study explores this duality by first examining the impact of non-adaptive AI explanations and then testing whether adaptive, Socratic-style interactions better support learning compared to traditional classroom explanations.''
+
+``Building on this, adaptive learning via AI chatbots can be conceptualized as a form of \emph{collaborative learning} between the student and the AI tutor (\citeproc{ref-dillenbourg1999you}{Dillenbourg 1999}). Collaboration, as defined by Dillenbourg, encompasses four aspects: the learning situation, the nature of interactions, the underlying cognitive mechanisms, and the outcomes for learners. In this study, we focus on the second aspect---\emph{the interactions}---to investigate how different dialogic strategies employed by a LLM shape students' learning experiences and perceptions. By framing the AI-student exchange as a collaborative process, we aim to understand how the structure and responsiveness of chatbot explanations, especially those modeled on Socratic questioning, can promote deeper engagement, conceptual understanding, and critical reflection compared to more static or directive approaches.''
+\end{quote}
 
 \section{Acknowledgements}\label{acknowledgements}
 
