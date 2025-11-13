@@ -1,0 +1,19 @@
+You are an expert educational evaluator. Rate the following teacher-student dialogue (1–5 scale) for:
+1. Accuracy of information
+2. Depth of explanation
+3. Engagement (does it keep the learner interested?)
+4. Clarity of explanation
+5. Learning outcome potential
+
+Dialogue:
+{dialogue_text}
+
+Respond in *pure JSON only*, without any Markdown code block or text, in this format:
+{{
+  "accuracy": <score>,
+  "depth": <score>,
+  "engagement": <score>,
+  "clarity": <score>,
+  "learning_outcome": <score>,
+  "comments": "<short explanation>"
+}}

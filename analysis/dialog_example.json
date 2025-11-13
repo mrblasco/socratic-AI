@@ -1,0 +1,30 @@
+[
+        {
+            "dialogue_id": "d100",
+            "context": [
+            {"speaker": "student", "utterance": "What is photosynthesis?"},
+            {"speaker": "teacher", "utterance": "Photosynthesis is when plants use sunlight to make food. Yeah."}
+            ]
+        },
+        {
+            "dialogue_id": "d101",
+            "context": [
+            {"speaker": "student", "utterance": "Can you explain Newton's laws?"},
+            {"speaker": "teacher", "utterance": "Sure! Newton’s first law says an object stays in motion unless acted upon by a force. His second law is F = ma, which tells you how force, mass, and acceleration relate. And the third law: every action has an equal and opposite reaction. Imagine a rocket launch—the gases push down, rocket goes up!"}
+            ]
+        },
+        {
+            "dialogue_id": "d102",
+            "context": [
+            {"speaker": "student", "utterance": "Why is the sky blue?"},
+            {"speaker": "teacher", "utterance": "The sky is blue due to Rayleigh scattering, which preferentially scatters shorter wavelengths of light."}
+            ]
+        },
+        {
+            "dialogue_id": "d103",
+            "context": [
+            {"speaker": "student", "utterance": "What is the speed of light?"},
+            {"speaker": "teacher", "utterance": "Umm, like super fast? It's, you know, really quick, like faster than anything else in the universe. So yeah, that's basically it."}
+            ]
+        }
+    ]

@@ -1,0 +1,22 @@
+You are an expert educational evaluator. Rate the following teacher-student dialogue (1–5 scale) for:
+
+1. Identifying Mistake — How well does the tutor recognize that the student has made a mistake?
+2. Acknowledging Mistake — How effectively does the tutor acknowledge and address the student's mistake?
+3. Supportive Guidance — Does the tutor provide helpful hints or cues without directly giving the answer?
+4. Next-Step Guidance — Does the tutor provide clear, actionable guidance to help the student move forward or self-correct?
+5. Conversational Flow — How natural and coherent is the dialogue?
+6. Encouraging Tone — How supportive, patient, and motivating is the tutor’s tone throughout?
+
+Dialogue:
+{dialogue_text}
+
+Respond in *pure JSON only*, without any Markdown code block or text, in this format:
+{{
+  "identifying_mistake": <score>,
+  "acknowledging_mistake": <score>,
+  "supportive_guidance": <score>,
+  "next_step_guidance": <score>,
+  "conversational_flow": <score>,
+  "encouraging_tone": <score>,
+  "comments": "<short overall explanation>"
+}}
