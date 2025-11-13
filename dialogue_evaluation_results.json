@@ -1,0 +1,66 @@
+[
+  {
+    "dialogue_id": "d100",
+    "evaluation": {
+      "dialogue_quality": {
+        "coherence": 0.7978869676589966
+      },
+      "pedagogical_value": {
+        "accuracy": 4,
+        "depth": 2,
+        "engagement": 2,
+        "clarity": 3,
+        "learning_outcome": 2,
+        "comments": "The explanation is accurate but very basic. It lacks depth and engagement, providing minimal detail about the process of photosynthesis, which could limit the learning outcome potential."
+      }
+    }
+  },
+  {
+    "dialogue_id": "d101",
+    "evaluation": {
+      "dialogue_quality": {
+        "coherence": 0.5992898941040039
+      },
+      "pedagogical_value": {
+        "accuracy": 5,
+        "depth": 3,
+        "engagement": 4,
+        "clarity": 4,
+        "learning_outcome": 4,
+        "comments": "The teacher accurately summarizes Newton's three laws and provides an engaging example for the third law. More depth is needed for full comprehension, but the explanation is clear and has good potential for student learning."
+      }
+    }
+  },
+  {
+    "dialogue_id": "d102",
+    "evaluation": {
+      "dialogue_quality": {
+        "coherence": 0.7839909195899963
+      },
+      "pedagogical_value": {
+        "accuracy": 5,
+        "depth": 3,
+        "engagement": 3,
+        "clarity": 4,
+        "learning_outcome": 3,
+        "comments": "Accurate explanation but lacks depth and additional context to enhance understanding and engagement."
+      }
+    }
+  },
+  {
+    "dialogue_id": "d103",
+    "evaluation": {
+      "dialogue_quality": {
+        "coherence": 0.4765217900276184
+      },
+      "pedagogical_value": {
+        "accuracy": 2,
+        "depth": 1,
+        "engagement": 2,
+        "clarity": 1,
+        "learning_outcome": 1,
+        "comments": "The teacher's response lacks specific information about the speed of light (approximately 299,792 kilometers per second). The explanation is vague and does not engage the student or offer a clear understanding. There is minimal potential for learning from this exchange."
+      }
+    }
+  }
+]

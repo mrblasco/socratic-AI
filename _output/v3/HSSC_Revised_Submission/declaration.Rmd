@@ -1,0 +1,9 @@
+# Statements and Declarations {-}
+
+## Competing Interests {-}
+
+The authors declare no competing interests directly or indirectly related to the work submitted for publication. 
+
+## Declaration of generative AI and AI-assisted technologies in the writing process {-}
+
+During the preparation of this work the author(s) used Grammarly, ChatGPT in order to improve the readability and language of the manuscript. After using this tool/service, the author(s) reviewed and edited the content as needed and take(s) full responsibility for the content of the published article.
