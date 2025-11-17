@@ -1,9 +1,16 @@
 # ---- setup , include = F
-require(dplyr)
-require(jsonlite)
-require(knitr)
+library(dplyr)
+library(jsonlite)
+library(knitr)
+library(lme4)
+library(stargazer)
 
-opts_chunk$set(error = TRUE)
+opts_chunk$set(
+    echo = TRUE,
+    message = FALSE,
+    warning = FALSE,
+    error = TRUE
+)
 
 # ---- data  ----
 
@@ -23,60 +30,65 @@ ds_socratic <- read.csv(data_path, header = FALSE, col.names = c(
 ))
 
 
-chat_info <- filter(chats, role == "user") %>% 
+chat_info <- chats %>% 
+    filter(role == "user") %>% 
     rename(student_id = user_id) %>%
     distinct(chat_id, student_id, treatment_tutor_id, location)
 
-
-
+# merge
 ds <- left_join(ds, chat_info, by = "chat_id") %>% 
     left_join(ds_socratic, by = "chat_id") %>% 
-    left_join(count(chats, chat_id, name = "interactions"), by = "chat_id")
-
-str(ds)
-
-ds <- filter(ds, student_id != 1)
-
-kable(head(select(ds, -comments)))
-#kable(head(tutorgpt))
+    left_join(count(chats, chat_id, name = "interactions"), by = "chat_id") %>%
+    filter(student_id != 1)
 
 # ---- analysis
-require(lme4)
 
-fit_coherence <- lmer(coherence ~ treatment_tutor_id + location + interactions + (1|student_id), data = ds)
-fit_engagement <- update(fit_coherence, engagement ~ .)
-fit_clarity <- update(fit_coherence, clarity ~ .)
-fit_depth <- update(fit_coherence, depth ~ .)
-fit_learning_outcome<- update(fit_coherence, learning_outcome ~ .)
+fit_coherence <- lmer(
+    scale(coherence) ~ treatment_tutor_id + location +
+        scale(log(interactions)) + (1 | student_id),
+    data = ds
+)
 
-fit_mistake_id <- update(fit_coherence, identifying_mistake ~ .)
-fit_mistake_ack <- update(fit_coherence, acknowledging_mistake ~ .)
+fit_engagement <- update(fit_coherence, scale(engagement) ~ .)
+fit_clarity <- update(fit_coherence, scale(clarity) ~ .)
+fit_depth <- update(fit_coherence, scale(depth) ~ .)
+fit_learning_outcome <- update(fit_coherence, scale(learning_outcome) ~ .)
 
-fit_supportive_guidance <- update(fit_coherence, supportive_guidance ~ .)
-fit_next_step <- update(fit_coherence, next_step_guidance ~ .)
-fit_conversational_flow <- update(fit_coherence, conversational_flow ~ .)
+fit_mistake_id <- update(fit_coherence, scale(identifying_mistake) ~ .)
+fit_mistake_ack <- update(fit_coherence, scale(acknowledging_mistake) ~ .)
 
-fit_encouraging_tone <- update(fit_coherence, encouraging_tone ~ .)
+fit_supportive_guidance <- update(fit_coherence, scale(supportive_guidance) ~ .)
+fit_next_step <- update(fit_coherence, scale(next_step_guidance) ~ .)
+fit_conversational_flow <- update(fit_coherence, scale(conversational_flow) ~ .)
+fit_encouraging_tone <- update(fit_coherence, scale(encouraging_tone) ~ .)
 
 
-models <- list(
-    "Mistake Id." = fit_mistake_id,
-    "Mistake Ack." = fit_mistake_ack,
-    "Guidance" = fit_supportive_guidance,
-    "Next Step" = fit_next_step,
-    "Conversation" = fit_conversational_flow,
-    "Encouraging" = fit_encouraging_tone
+models_socratic <- list(
+    "Supportive guidance" = fit_supportive_guidance,
+    "Next step" = fit_next_step,
+    "Encouraging tone" = fit_encouraging_tone,
+    "Conversational flow" = fit_conversational_flow,
+    "Mistake identification" = fit_mistake_id,
+    "Mistake acknowledge" = fit_mistake_ack,
+    "Clarity" = fit_clarity,
+    "Engagement" = fit_engagement,
+    "Depth" = fit_depth
 )
 
 stargazer::stargazer(
-    models,
-    title = "Regression Results (linear mixed model)",
-    dep.var.labels = names(models),
-    covariate.labels = c("Socratic Tutor", "Seville", "Interactions"),
-    type = "text",
+    models_socratic,
+    title = "Linear Mixed Model Results — Socratic Rubric",
+    label = "tab:socratic_lmm",
+    type = "latex",
+    covariate.labels = c("Socratic Tutor", "Constant"),
+    dep.var.labels = names(models_socratic),
+    digits = 2,
+    no.space = TRUE,
     omit.stat = c("f", "ser"),
-    digits = 2
+    omit = c("interaction", "location"),
+    omit.labels = c("Exchanges", "School")
 )
+
 
 models <- list(
     "Coeherence" = fit_coherence,
@@ -88,10 +100,42 @@ models <- list(
 
 stargazer::stargazer(
     models,
-    title = "Regression Results (linear mixed model)",
+    title = "Linear Mixed Model Results — Socratic Rubric",
+    label = "tab:socratic_lmm",
+    type = "latex",
     dep.var.labels = names(models),
     covariate.labels = c("Socratic Tutor", "Seville", "Interactions"),
     type = "text",
     omit.stat = c("f", "ser"),
+    digits = 2,
+    no.space = TRUE,
+    float = TRUE,
+    float.env = "table",
+    table.placement = "ht!"
+)
+
+
+# ----- hhtml, results = "asis"
+
+stargazer::stargazer(
+    models,
+    type = "html",
+    title = "Regression Results (linear mixed model)",
+    dep.var.labels = names(models),
+    omit.stat = c("f", "ser"),
+    omit = c("interaction", "location"),
+    omit.labels = c("intera", "location"),
+    digits = 2,
+)
+
+stargazer::stargazer(
+    models_socratic,
+    type = "html",
+    title = "Regression Results (linear mixed model)",
+    dep.var.labels = names(models_socratic),
+    covariate.labels = c("Socratic Tutor", "Constant"),
+    omit.stat = c("f", "ser"),
+    omit = c("interaction", "loca"),
+    omit.labels = c("Exchanges", "Location"),
     digits = 2
 )

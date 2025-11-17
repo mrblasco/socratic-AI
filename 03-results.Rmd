@@ -24,7 +24,7 @@ geom_coef <- function() {
   list(
     scale_color_manual(values = c("navy", "orange")),
     geom_vline(xintercept = 0, linetype = "dashed"),
-    geom_linerange(linewidth = 3, alpha = 0.2), 
+    geom_linerange(linewidth = 3, alpha = 0.2),
     geom_point(size = 3),
     guides(colour = guide_legend(position = "inside"))
   )
@@ -240,7 +240,6 @@ tutorgpt %>%
   theme(
     legend.position = "bottom",
   )
-
 ```
 
 ## The Impact of AI Step-by-step Reasoning Exposure
@@ -556,6 +555,114 @@ p_combined <-
 
 p_combined + plot_annotation(tag_levels = "A") 
 ```
+
+
+### Automatic evaluation of Socratic dimensions 
+
+We conducted a detailed textual analysis of all AI–student conversations (n = 362) to (1) test the pedagogical differences between the Socratic and Non-Socratic tutors as they emerged in our experiment, and (2) derive additional indicators of student engagement that extend beyond simple measures such as word counts or the number of exchanges. To address the first aim, we adapted a rubric from Pauzi et al. [@pauzi2025automating], originally designed for automating the pedagogical evaluation of LLM-based conversational agents. The rubric captures key dimensions of Socratic tutoring, including providing support without directly giving answers ("scaffolding"), offering stepwise guidance, maintaining an encouraging tone, and sustaining a conversational style.
+
+While the original rubric consisted of five binary items, we modified it in two ways. First, we replaced the binary response format with a 5-point scale to increase statistical power and improve granularity. Second, we expanded the set of items to capture additional pedagogically relevant dimensions of conversational agents, including clarity, engagement, and depth of response. Using this revised rubric, we evaluated all 366 conversations (122 students × 3 tasks) through an LLM-based coding procedure and subsequently conducted regression analyses that accounted for within-student correlation, included school fixed effects, and controlled for the number of conversational exchanges. (See the Rubric in the Appendix, Section \ref{sec:socratic-dimension}).
+
+Figure \@ref(fig:socratic-dimensions) presents the regression results. The Socratic AI scored significantly higher on the core Socratic dimensions, showing greater average supportive guidance or scaffolding (coef = 0.55, SE = 0.12), more next-step guidance (coef = 0.54, SE = 0.12), and a more encouraging tone (coef = 0.53, SE = 0.12). We found no significant differences between conditions on the remaining Socratic dimensions. For the additional indicators, the Socratic AI elicited higher student engagement (coef = 0.43, SE = 0.12), although its clarity and depth of response were significantly lower (coef = -0.38, SE = 0.11; coef = -0.55, SE = 0.11, respectively). Taken together, these findings indicate that the Socratic AI followed Socratic principles (encouraging tone and supportive guidance) and, even after controlling for the number of exchanges, was more engaging. However, this increased conversational and encouraging style appears to have come at a cost to overall clarity and response depth.
+
+```{r socratic-eval, include = FALSE}
+library(dplyr)
+library(lme4)
+library(knitr)
+
+opts_chunk$set(error = TRUE)
+tutorgpt <- readRDS("analysis/data/processed/tutorgpt.rds")
+
+chats <- readRDS("analysis/data/processed/chats.rds")
+chat_info <- chats %>% 
+    filter(role == "user") %>% 
+    rename(student_id = user_id) %>%
+    distinct(chat_id, student_id, treatment_tutor_id, location)
+
+data_path <- "analysis/data/dialogues.csv"
+ds_text <- read.csv(data_path, header = FALSE, col.names = c(
+    "chat_id", "coherence", "accuracy", "depth", "engagement",
+    "clarity", "learning_outcome", "comments"
+))
+data_path <- "analysis/data/dialogues_socratic_eval.csv"
+ds_socratic <- read.csv(data_path, header = FALSE, col.names = c(
+    "chat_id", "coherence_2", "identifying_mistake", "acknowledging_mistake", "supportive_guidance",
+    "next_step_guidance", "conversational_flow", "encouraging_tone", "comments_socratic"
+))
+
+
+ds <- left_join(ds_text, chat_info, by = "chat_id") %>% 
+    left_join(ds_socratic, by = "chat_id") %>% 
+    left_join(count(chats, chat_id, name = "interactions"), by = "chat_id") %>%
+    filter(student_id != 1)
+
+fit_coherence <- lmer(
+    scale(coherence) ~ treatment_tutor_id + location +
+        scale(log(interactions)) + (1 | student_id),
+    data = ds
+)
+fit_engagement <- update(fit_coherence, scale(engagement) ~ .)
+fit_clarity <- update(fit_coherence, scale(clarity) ~ .)
+fit_depth <- update(fit_coherence, scale(depth) ~ .)
+fit_learning_outcome <- update(fit_coherence, scale(learning_outcome) ~ .)
+
+fit_mistake_id <- update(fit_coherence, scale(identifying_mistake) ~ .)
+fit_mistake_ack <- update(fit_coherence, scale(acknowledging_mistake) ~ .)
+
+fit_supportive_guidance <- update(fit_coherence, scale(supportive_guidance) ~ .)
+fit_next_step <- update(fit_coherence, scale(next_step_guidance) ~ .)
+fit_conversational_flow <- update(fit_coherence, scale(conversational_flow) ~ .)
+fit_encouraging_tone <- update(fit_coherence, scale(encouraging_tone) ~ .)
+
+
+models_socratic <- list(
+    "Supportive guidance" = fit_supportive_guidance,
+    "Next step" = fit_next_step,
+    "Encouraging tone" = fit_encouraging_tone,
+    "Conversational flow" = fit_conversational_flow,
+    "Mistake identification" = fit_mistake_id,
+    "Mistake acknowledge" = fit_mistake_ack,
+    "Clarity" = fit_clarity,
+    "Engagement" = fit_engagement,
+    "Depth" = fit_depth
+)
+```
+
+```{r socratic-dimensions, fig.cap = cap}
+cap <- paste(
+  "Coefficients and 95% confidence intervals for the effect of Socratic AI from mixed-effects regression models. Each row reports the estimated average difference between Socratic and non-Socratic AI for a distinct pedagogical dimension. All models include individual-level random effects to account for within-student correlation across chats, school-location fixed effects, and a control for the number of exchanges in each chat. Dependent variables were standardized from their original 1–5 scales, so all coefficients represent changes measured in standard-deviation units."
+)
+
+library(ggplot2)
+library(broom.mixed)
+
+coeffs <- models_socratic %>%
+    lapply(broom::tidy, conf.int = TRUE) %>% 
+    bind_rows(.id = "depvar")
+
+coeffs %>%
+    filter(grepl("socratic", term)) %>%
+    ggplot() +
+    aes(
+        x = estimate,
+        y = reorder(depvar, estimate),
+        xmin = conf.low, xmax = conf.high,
+        color = "95% CI",
+    ) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_coef() +
+    labs(
+        x = "Regression coefficient (Socratic AI)",
+        y = "Pedagogical dimension (standardised)",
+        caption = "Source: AI-student conversations (n = 362)"
+    ) +
+    theme(
+        legend.position.inside = c(.1, .9), 
+        legend.title = element_blank(),
+        plot.title.position = "plot",
+    )
+```
+
 
 ### Students' Confidence in Their Responses
 

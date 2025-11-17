@@ -68,3 +68,44 @@ Where:
 
 The regression specification described above assumes homogeneous treatment effects across individuals and tasks. To relax this assumption, we employed a more flexible model that allows the average treatment effect, $\gamma$, to vary based on individual-level and task-specific factors. Specifically, we included interaction terms between the treatment indicator and variables such as the student’s gender, academic performance (as measured by school grades), prior experience with ChatGPT, and school location. Additionally, we accounted for heterogeneity in treatment effects across tasks by estimating separate regressions for each task-specific subset of the data. The results are shown in Figure \@ref(fig:interactions), Figure \@ref(fig:confidence-regression), and Figure \@ref(fig:helpful-regression).
 
+
+# Automatic evaluation of Socratic dimensions {#sec:socratic-dimension}
+
+We first concatenated the conversations into a single string for each chat ("dialogue_text"). Then, based on @pauzi2025automating, we used a LLM (OpenAI's GPT-o) to annotate the conversations. We employed the following prompt to evaluate the socratic dimensions automatically: 
+
+```
+You are an expert educational evaluator. Rate the following teacher-student dialogue 
+(1–5 scale) for:
+
+1. Identifying Mistake — How well does the tutor recognize 
+                         that the student has made a mistake?
+2. Acknowledging Mistake — How effectively does the tutor acknowledge 
+                            and address the student's mistake?
+3. Supportive Guidance — Does the tutor provide helpful hints
+                           or cues without directly giving the answer?
+4. Next-Step Guidance — Does the tutor provide clear, actionable guidance 
+                        to help the student move forward or self-correct?
+5. Conversational Flow — How natural and coherent is the dialogue?
+6. Encouraging Tone — How supportive, patient, 
+                      and motivating is the tutor’s tone throughout?
+
+Dialogue:
+{dialogue_text}
+
+Respond in *pure JSON only*, without any Markdown code block or text, in this format:
+{{
+  "identifying_mistake": <score>,
+  "acknowledging_mistake": <score>,
+  "supportive_guidance": <score>,
+  "next_step_guidance": <score>,
+  "conversational_flow": <score>,
+  "encouraging_tone": <score>,
+  "comments": "<short overall explanation>"
+}}
+```
+
+Building on the above prompt, we expanded the list of definitions as follows: 
+
+1. Depth of explanation
+2. Engagement (does it keep the learner interested?)
+3. Clarity of explanation
