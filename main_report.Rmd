@@ -23,7 +23,6 @@ institute:
 date: |
   `r format(Sys.Date(), 'This version: %B %d, %Y')`
 
-toc: false
 fontsize: 12pt # 11
 linestretch: 1.5 # 1.25
 colorlinks: true
@@ -32,8 +31,10 @@ graphics: true
 tables: true
 mainfont: Helvetica
 geometry: margin=2cm
-bibliography: [References/refs.bib]
 always_allow_html: true
+
+bibliography: [refs.bib]
+csl: [hssc.csl]
 
 header-includes: |
   ```{=latex}
@@ -77,8 +78,39 @@ header-includes: |
 ```{r setup, include = FALSE}
 library(patchwork)
 library(figpatch)
-knitr::opts_chunk$set(echo = FALSE, dev = "pdf")
+
+knitr::opts_chunk$set(
+    echo = FALSE,
+    cache = TRUE,
+    cache.path = "_cache/",
+    dev = "png",
+    dpi = 100
+)
 ```
 
-```{r child=list.files(pattern = "[0-9]+.*.Rmd", full = TRUE)}
+```{r, child = "01-intro.Rmd"}
 ```
+
+```{r, child = "02-methods.Rmd"}
+```
+
+```{r, child = "03-results.Rmd"}
+```
+
+```{r, child = "04-discussion.Rmd"}
+```
+
+# References {-}
+
+::: {#refs}
+:::
+
+```{r child = "90-supporting.Rmd"}
+```
+
+```{r child = "91-statements.Rmd"}
+```
+
+```{r child = "99-questionnaire.Rmd"}
+```
+

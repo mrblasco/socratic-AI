@@ -1,6 +1,6 @@
 # ---- Config  ------------------------
 CONFIG := _output.yml
-BIB_FILE := References/refs.bib
+BIB_FILE := refs.bib
 RMD_FILES := $(wildcard *.Rmd)
 
 SUBMIT_DIR := _output/v4
@@ -10,6 +10,9 @@ PDF_ANONYM := $(SUBMIT_DIR)/main_report_anonym.pdf
 DOC_REPORT := $(PDF_REPORT:.pdf=.docx)
 
 # Targets  ------------------------
+
+draft: $(PDF_REPORT)
+
 all: setup reports clean
 
 setup: 
@@ -21,7 +24,7 @@ setup:
 reports: $(PDF_REPORT) $(PDF_ANONYM) $(DOC_REPORT)
 
 $(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) $(CONFIG) $(BIB_FILE)
-	Rscript -e 'rmarkdown::render("$<", output_file = "$@")'
+	Rscript -e 'rmarkdown::render("$<", output_file = "$@", output_format="bookdown::pdf_document2")'
 
 $(SUBMIT_DIR)/%.docx : %.Rmd $(RMD_FILES) $(CONFIG)
 	Rscript -e 'rmarkdown::render("$<", output_format = "bookdown::word_document2", output_file = "$@")'
@@ -39,16 +42,16 @@ archive.zip: $(PDF_ANONYM:.pdf=.tex) $(PDF_ANONYM:.pdf=_files) $(pictures)
 
 # --- Mardked up difference --- 
 
-diff: diff.pdf
+diff: $(SUBMIT_DIR)/diff.pdf
 
-old.tex : 
-	git show diff:main_report.tex > $@
+OLD := ./_output/v3/HSSC_Revised_Submission/main_report.tex 
 
-diff.tex : old.tex $(PDF_REPORT:.pdf=.tex) 
-	latexdiff $+ > $@
+diff.tex : $(OLD) $(PDF_REPORT:.pdf=.tex) 
+	@latexdiff $+ > $@
 
-diff.pdf : diff.tex
-	pdflatex $<
+$(SUBMIT_DIR)/diff.pdf : diff.tex
+	@pdflatex $< && cp diff.pdf $@
+
 
 # ---- Submission Materials ----
 
@@ -68,17 +71,27 @@ $(SUBMIT_DIR)/acknowledgement.docx : $(SUBMIT_DIR)/acknowledgement.Rmd
 
 # ---- Review ----
 
-review: $(SUBMIT_DIR)/rebuttal_point_by_point.pdf $(SUBMIT_DIR)/rebuttal_point_by_point.docx
-	open $<
+rebuttal: rebuttal.pdf
+	@open -a Skim $<
 
-$(SUBMIT_DIR)/%.docx : peer_review/round_1/%.md
-	pandoc --from markdown --to docx -C $< -o $@
+rebuttal.pdf : peer_review/2025-11-fourth-round/rebuttal.md
+	@pandoc $< -C -o $@ --bibliography=References/refs.bib
 
-$(SUBMIT_DIR)/%.pdf : peer_review/round_1/%.md
-	pandoc --pdf-engine xelatex --from markdown --to pdf -C $< -o $@
+
+review: $(SUBMIT_DIR)/rebuttal.pdf
+
+$(SUBMIT_DIR)/%.pdf : peer_review/2025-11-fourth-round/%.md
+	@pandoc --from markdown --to pdf -C $< -o $@
+	@open $@
+
+# ----- 
+
+bib:
+	open -a Bibdesk ./refs.bib
 
 view:
 	open -a Skim $(PDF_REPORT)
 
 clean: 
-	rm -f *.ttt *.log *.fff
+	@rm -f *.ttt *.log *.fff
+	@rm diff.*

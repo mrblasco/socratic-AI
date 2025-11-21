@@ -2,6 +2,9 @@
 .env
 .venv/
 
+*_cache/
+*_files/
+
 assets/
 assets/pictures/*.jpg
 assets/lua-filters

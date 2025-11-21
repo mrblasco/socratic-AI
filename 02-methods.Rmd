@@ -1,5 +1,7 @@
 ```{r setup-methods, include = FALSE}
-require(kableExtra)
+library(kableExtra)
+library(dplyr)
+library(knitr)
 ```
 
 # Methods {#sec:methods}
@@ -29,8 +31,6 @@ All participants had appropriate levels of English proficiency, given the langua
 ### Ethical Approval and Data Privacy
 
 We recruited students after receiving ethical approval from the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`'s internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and experimental protocol complied with local laws and ethical research standards.^[Clearance obtained on May 17, 2023.] The data privacy protection protocol was approved by the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`'s data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
-
-<!-- ![](assets/pictures/classrooms.pdf){#fig:classrooms} -->
 
 ```{r classrooms, echo = FALSE, fig.cap = cap}
 cap <- "Classrooms used for the experiment in Seville (**A**) and in Brussels (**B**)." # nolint
@@ -67,15 +67,24 @@ The second manipulation involved randomly assigning students to one of two diffe
 [^prompts]: An AI's system message guides how the AI interprets the conversations by setting parameters for interaction.
 
 ```{r prompts}
-df_prompts <- data.frame(
-  "AI Tutor" = c("Socratic", "Non-Socratic"),
-  "Prompt instruction" = c("You are a Socratic tutor. You always answer using the Socratic style, asking just the right questions to help students learn to think for themselves and breaking down the problem into simpler parts until it's at the right level for them. You provide concise information and explanations understandable for 8th to 10th grade students.", "You are a didactic tutor. You provide concise information and explanations understandable for 8th to 10th grade students.") # nolint
+socratic_prompt <- paste(
+    "You are a Socratic tutor.",
+    "You always answer using the Socratic style, asking just the right questions to help students learn to think for themselves and breaking down the problem into simpler parts until it's at the right level for them. You provide concise information and explanations understandable for 8th to 10th grade students." #nolint
 )
-kbl(
-  df_prompts, booktabs = TRUE,
-  caption = "Prompt instructions associated with the AI Tutor's treatments"
-) |>
-  kableExtra::column_spec(2, "4in")
+didactic_prompt <- paste(
+    "You are a didactic tutor.",
+    "You provide concise information and explanations understandable for 8th to 10th grade students."
+)
+
+data.frame(
+    "AI Tutor" = c("Socratic", "Non-Socratic"),
+    "Prompt instruction" = c(socratic_prompt, didactic_prompt)
+) %>%
+    kableExtra::kbl(
+        booktabs = TRUE,
+        caption = "Prompt instructions associated with the AI Tutor's treatments"
+    ) %>%
+    kableExtra::column_spec(2, "4in")
 ```
 
 This setup allows us to investigate the impact of different pedagogical AI tutoring approaches on students' performance and perceptions. Specifically, we asked students to use the AI tutor while performing three tasks: guess an unknown quantity ("How much water in litres do students consume at our school each week?"), express an opinion and write a short essay ("What is your opinion about the effect of social media on teenagers?"); respond to physics questions on how sound propagates in different media ("In which of the following materials does sound travel faster?"). These questions enabled us to assess the AI tutor's impact on students' learning and problem-solving abilities. 

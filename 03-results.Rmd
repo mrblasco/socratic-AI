@@ -1,7 +1,7 @@
 ```{r setup-results, include = FALSE}
-require(dplyr)
-require(kableExtra)
-require(tidyr)
+library(dplyr)
+library(kableExtra)
+library(tidyr)
 library(ordinal) #clm()
 library(ggplot2)
 library(ggdist)
@@ -9,29 +9,24 @@ library(ggrepel)
 library(ggtext)
 library(knitr)
 library(patchwork)
+library(broom.mixed)
+library(boot)
+library(MASS)
+
 set.seed(4881)
 
-opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 
-source("analysis/R/text_functions.R")
-source("analysis/config.R")
+source("R/util_funs.R")
+source("R/text_funs.R")
+source("R/theme.R")
+
+theme_set(theme_custom())
 
 tutorgpt <- readRDS("analysis/data/processed/tutorgpt.rds")
 chats <- readRDS("analysis/data/processed/chats.rds")
 tutorgpt_wide <- readRDS("analysis/data/processed/tutorgpt_wide.rds")
-
-geom_coef <- function() {
-  list(
-    scale_color_manual(values = c("navy", "orange")),
-    geom_vline(xintercept = 0, linetype = "dashed"),
-    geom_linerange(linewidth = 3, alpha = 0.2),
-    geom_point(size = 3),
-    guides(colour = guide_legend(position = "inside"))
-  )
-}
 ```
-
-
 
 # Results {#sec:results}
 
@@ -43,79 +38,88 @@ Table \@ref(tab:summary-statistics) illustrates the distribution of student char
 
 ```{r summary-statistics, echo = FALSE, warning=FALSE, message=FALSE}
 tutorgpt_rename <- tutorgpt %>%
-  dplyr::select(
-    treatment_tutor_id, 
-    treatment_explain_id,
-    "Gender" = gender,
-    "Has used ChatGPT" = has_used_before,
-    "Location" = location,
-    "Grades" = top_grades,
-    "Homework weekly study" = hours_per_week,
-    "Homework on time" = on_time_completion,
-    "Homework difficulties" = factors_contributing,
-    "Self-efficacy (sound)" = q5_self_physics,
-    "Self-efficacy (essay)" = q6_self_technology,
-    "Self-efficacy (guess)" = q7_self_swimming_pool,
-  )
+    dplyr::select(
+        treatment_tutor_id,
+        treatment_explain_id,
+        "Gender" = gender,
+        "Has used ChatGPT" = has_used_before,
+        "Location" = location,
+        "Grades" = top_grades,
+        "Homework weekly study" = hours_per_week,
+        "Homework on time" = on_time_completion,
+        "Homework difficulties" = factors_contributing,
+        "Self-efficacy (sound)" = q5_self_physics,
+        "Self-efficacy (essay)" = q6_self_technology,
+        "Self-efficacy (guess)" = q7_self_swimming_pool,
+    )
 
 table_socratic <- tutorgpt_rename %>%
-  select(-treatment_explain_id) %>% 
-  tidyr::pivot_longer(-treatment_tutor_id) %>%
-  mutate(pval = xtabs(~ value + treatment_tutor_id) %>% 
-                fisher.test() %>% 
-                .$p.value,
-        .by = name)  %>% 
-  dplyr::count(name, value, pval, treatment_tutor_id) %>%
-  na.omit() %>%
-  dplyr::mutate(percent = 100 * n / sum(n), 
-                .by = c(name, treatment_tutor_id)) %>%
-  tidyr::pivot_wider(names_from = treatment_tutor_id,
-                     values_from = c(percent, n),
-                     values_fill = 0) %>%
-  dplyr::mutate(totals = n_non_socratic + n_socratic)
+    dplyr::select(-treatment_explain_id) %>% 
+    tidyr::pivot_longer(-treatment_tutor_id) %>%
+    dplyr::mutate(
+        pval = xtabs(~ value + treatment_tutor_id) %>% 
+            fisher.test() %>%
+            .$p.value,
+        .by = name
+    )  %>%
+    dplyr::count(name, value, pval, treatment_tutor_id) %>%
+    na.omit() %>%
+    dplyr::mutate(
+        percent = 100 * n / sum(n), 
+        .by = c(name, treatment_tutor_id)
+    ) %>%
+    tidyr::pivot_wider(names_from = treatment_tutor_id,
+                        values_from = c(percent, n),
+                        values_fill = 0) %>%
+    dplyr::mutate(totals = n_non_socratic + n_socratic)
 
 table_explain <- tutorgpt_rename %>%
-  select(-treatment_tutor_id) %>% 
-  tidyr::pivot_longer(-treatment_explain_id) %>%
-  dplyr::mutate(pval_explain = xtabs(~ value + treatment_explain_id) %>% 
-                               fisher.test() %>% 
-                                .$p.value, 
-                .by = name)  %>% 
-  dplyr::count(name, value, treatment_explain_id, pval_explain) %>%
-  na.omit() %>%
-  dplyr::mutate(percent = 100 * n / sum(n), 
-                .by = c(name, treatment_explain_id)) %>%
-  tidyr::pivot_wider(names_from = treatment_explain_id,
-                     values_from = c(percent, n),
-                     values_fill = 0) 
+    dplyr::select(-treatment_tutor_id) %>% 
+    tidyr::pivot_longer(-treatment_explain_id) %>%
+    dplyr::mutate(
+        pval_explain = xtabs(~ value + treatment_explain_id) %>% 
+            fisher.test() %>%
+            .$p.value,
+        .by = name,
+    )  %>%
+    dplyr::count(name, value, treatment_explain_id, pval_explain) %>%
+    na.omit() %>%
+    dplyr::mutate(
+        percent = 100 * n / sum(n), 
+        .by = c(name, treatment_explain_id)
+    ) %>%
+    tidyr::pivot_wider(names_from = treatment_explain_id,
+                        values_from = c(percent, n),
+                        values_fill = 0) 
 
-table_socratic %>% 
-  left_join(table_explain, by = c("name", "value")) %>% 
-  mutate(name = ifelse(row_number() == 1, name, ""), 
-         pval = ifelse(row_number() == 1, sprintf("%0.2f", pval), ""),
-         pval_explain = ifelse(row_number() == 1, sprintf("%0.2f", pval_explain), ""),
-         .by = name) %>%
-  dplyr::select(
-      name, value,
-      percent_socratic, percent_non_socratic, pval,
-      percent_explain_yes, percent_explain_no, pval_explain,
-      totals,
-  ) %>% 
-  kableExtra::kbl(
-    col.names = c(
-      "Name", "Value",
-      "Yes", "No", "p.",
-      "Yes", "No", "p.",
-      "N"
-    ),
-    digits = 0,
-    booktabs = TRUE,
-    caption = "Sample Characteristics",
-    linesep = if (knitr::is_latex_output()) "\\hline" else "",
-  ) %>% 
-  kableExtra::kable_styling() %>% 
-  kableExtra::add_header_above(c(" " = 2, "Socratic (%)" = 3,
-                                 "AI Explain (%)" = 3, " "))
+table_socratic %>%
+    dplyr::left_join(table_explain, by = c("name", "value")) %>% 
+    dplyr::mutate(
+        name = ifelse(row_number() == 1, name, ""), 
+        pval = ifelse(row_number() == 1, sprintf("%0.2f", pval), ""),
+        pval_explain = ifelse(row_number() == 1, sprintf("%0.2f", pval_explain), ""),
+        .by = name
+    ) %>%
+    dplyr::select(
+        name, value,
+        percent_socratic, percent_non_socratic, pval,
+        percent_explain_yes, percent_explain_no, pval_explain,
+        totals,
+    ) %>% 
+    kableExtra::kbl(
+        col.names = c(
+            "Name", "Value",
+            "Yes", "No", "p.",
+            "Yes", "No", "p.",
+            "N"
+        ),
+        digits = 0,
+        booktabs = TRUE,
+        caption = "Sample Characteristics",
+        linesep = if (knitr::is_latex_output()) "\\hline" else "",
+    ) %>% 
+    kableExtra::kable_styling() %>% 
+    kableExtra::add_header_above(c(" " = 2, "Socratic (%)" = 3, "AI Explain (%)" = 3, " "))
 ```
 
 ## Attitudes Towards AI
@@ -124,93 +128,79 @@ As illustrated in Figure \@ref(fig:attitudes-AI), students expressed conflicting
 
 ```{r attitudes-AI, echo = FALSE, fig.cap = "Student attitudes on AI in education"}
 agree_labels <- c(
-  strongly_agree = "S-Agree",
-  agree = "Agree",
-  neutral = "Neutral",
-  disagree = "Disagree",
-  strongly_disagree = "S-Disagree"
+    strongly_agree = "S-Agree",
+    agree = "Agree",
+    neutral = "Neutral",
+    disagree = "Disagree",
+    strongly_disagree = "S-Disagree"
 )
 
 palette <- c(
-  "#ca0020", "#f4a582", 
-  "#d1e5f0", "#92c5de", "#0571b0"
+    "#ca0020", "#f4a582", 
+    "#d1e5f0", "#92c5de", "#0571b0"
 )
 
-# Calculate response percentages
 attitudes_df <- tutorgpt %>%
-  dplyr::select(
-    "Society will benefit from a future of AI?" = q1_ai_future,
-    "AI is dangerous" = q2_ai_danger,
-    "AI is often misused by students" = q4_ai_misuse,
-    "AI will foster students' learning in the future" = q3_ai_learning
-  ) %>% 
-  tidyr::pivot_longer(cols = everything()) %>%
-  dplyr::count(name, value) %>% 
-  dplyr::mutate(percent = 100 * (n + 1) / (sum(n) + 5), .by = name)
+    dplyr::select(
+        "Society will benefit from a future of AI?" = q1_ai_future,
+        "AI is dangerous" = q2_ai_danger,
+        "AI is often misused by students" = q4_ai_misuse,
+        "AI will foster students' learning in the future" = q3_ai_learning
+    ) %>%
+    tidyr::pivot_longer(cols = everything()) %>%
+    dplyr::count(name, value) %>% 
+    dplyr::mutate(percent = 100 * (n + 1) / (sum(n) + 5), .by = name)
 
-# Create plot 
-attitudes_df %>% 
-  ggplot() + 
-  aes(
-    x = percent,
-    y = factor(value, levels = names(agree_labels)),
-    label = paste0(round(percent), "%"),
-    fill = factor(value, levels = names(agree_labels)),
-  ) +
-  geom_col(width = 0.8, show.legend = FALSE) +
-  geom_text(aes(hjust = ifelse(percent < 5, -0.5, 0.5)),
-            position = position_stack(vjust = 0.5)) +
-  facet_wrap(~ wrap_text(name), scales = "free") +
-  scale_y_discrete(labels = agree_labels) +
-  scale_fill_manual(values = rev(palette)) +
-  theme(
-    axis.line.x = element_blank(),
-    axis.ticks = element_blank(),
-    axis.text.x = element_blank(),
-    panel.spacing = unit(2, "lines")
-  ) + 
-  labs(
-    x = NULL, y = NULL, 
-    caption = "Source: Full sample (n = 122)",
-    title = "Student Attitudes on AI in Education",
-    subtitle = "% of students who agree or disagree with the statement:",
-  )
+attitudes_df %>%
+    ggplot() +
+    aes(
+        x = percent,
+        y = factor(value, levels = names(agree_labels)),
+        label = paste0(round(percent), "%"),
+        fill = factor(value, levels = names(agree_labels)),
+    ) +
+    geom_col(width = 0.8, show.legend = FALSE) +
+    geom_text(
+        aes(hjust = ifelse(percent < 5, -0.5, 0.5)),
+        position = position_stack(vjust = 0.5),
+    ) +
+    facet_wrap(~ wrap_text(name), scales = "free") +
+    scale_y_discrete(labels = agree_labels) +
+    scale_fill_manual(values = rev(palette)) +
+    theme(
+        axis.line.x = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_blank(),
+        panel.spacing = unit(2, "lines")
+    ) + 
+    labs(
+        x = NULL, y = NULL,
+        caption = "Source: Full sample (n = 122)",
+        title = "Student Attitudes on AI in Education",
+        subtitle = "% of students who agree or disagree with the statement:",
+    )
 ```
 
 ```{r update-propensity, include = FALSE}
-library(boot)
-library(MASS)
-
-names(tutorgpt)
-
-# data 
 update_ds <- tutorgpt %>% 
-  mutate(update = sign(q12_guess_coins_final - q9_guess_coins_initial),
-         initial_guess_100 = q9_guess_coins_initial / 100)
+    dplyr::mutate(
+        update = sign(q12_guess_coins_final - q9_guess_coins_initial), 
+        initial_guess_100 = q9_guess_coins_initial / 100
+    )
 
 update_propensity_table <- update_ds %>% 
-  xtabs(formula = ~ update  + treatment_explain_id) 
+    xtabs(formula = ~ update  + treatment_explain_id) 
 
 knitr::kable(update_propensity_table)
 fisher.test(update_propensity_table)
 
-# util functions
-center <- function(x) scale(x, center = TRUE, scale = FALSE)
-topcode <- function(x, value) ifelse(x > value, value, x)
-
-# Original fit
 model <- center(q12_guess_coins_final) ~ initial_guess_100 +
-  I(initial_guess_100^2) + treatment_explain_id + location
+    I(initial_guess_100^2) + treatment_explain_id + location
 
-# Fit regular ols
 fit_update_propensity <- lm(model, update_ds)
-
-# Robust regression
 fit_robust <- rlm(model, update_ds)
-
-# remove outliers
 fit_no_out <- fit_robust %>% 
-  update(subset = q9_guess_coins_initial < 1e5)
+    update(subset = q9_guess_coins_initial < 1e5)
 
 fit <- list(fit_update_propensity, fit_robust, fit_no_out)
 stargazer::stargazer(fit, type = "text", keep.stat = "n", digits = 1)
@@ -218,28 +208,31 @@ stargazer::stargazer(fit, type = "text", keep.stat = "n", digits = 1)
 # ---- Figure ----
 cap <- "Difference between first and second guess.  "
 tutorgpt %>% 
-  mutate(
-    final_tc = q12_guess_coins_final %>% 
-      topcode(1e3),
-    initial_tc = q9_guess_coins_initial %>% 
-      topcode(1e3),
-  ) %>%
-  ggplot(aes(x = initial_tc, 
-             y = final_tc,
-             color = treatment_explain_id,
-             pch = treatment_explain_id,
-             fill = treatment_explain_id,
-             linetype = treatment_explain_id)) +
-  geom_point() +
-  geom_smooth(alpha = .25) + 
-  #scale_y_log10() + scale_x_log10() +
-  labs(
-    x = "First Guess ($)",
-    y = "Second Guess ($)"
-  ) + 
-  theme(
-    legend.position = "bottom",
-  )
+    dplyr::mutate(
+        final_tc = q12_guess_coins_final %>% 
+            topcode(1e3),
+        initial_tc = q9_guess_coins_initial %>% 
+            topcode(1e3),
+    ) %>%
+    ggplot(
+        aes(
+            x = initial_tc,
+            y = final_tc,
+            color = treatment_explain_id,
+            pch = treatment_explain_id,
+            fill = treatment_explain_id,
+            linetype = treatment_explain_id
+        )
+    ) +
+    geom_point() +
+    geom_smooth(alpha = .25) + 
+    labs(
+        x = "First Guess ($)",
+        y = "Second Guess ($)"
+    ) + 
+    theme(
+        legend.position = "bottom",
+    )
 ```
 
 ## The Impact of AI Step-by-step Reasoning Exposure
@@ -269,33 +262,32 @@ palette <- c("#d95f02", "#7570b3")
 
 # # For each bootstrap sample we compute the sample median, boot_med
 resample_median <- function(n_boot, x) {
-  mat <- replicate(n_boot, sample(x, replace = TRUE))
-  apply(mat, 2, median)
+    mat <- replicate(n_boot, sample(x, replace = TRUE))
+    apply(mat, 2, median)
 }
 
 bootstrap_accuracy <- tutorgpt %>%
-  filter(q12_guess_coins_final < 6e3) %>% 
-  mutate(abs_err = abs(q12_guess_coins_final - coins_value)) %>%
-  reframe(
-    .by = treatment_explain_id,
-    boot_med = resample_median(n_boot, abs_err),
-    sim_id = seq(n_boot)
-  )
+    dplyr::filter(q12_guess_coins_final < 6e3) %>% 
+    dplyr::mutate(abs_err = abs(q12_guess_coins_final - coins_value)) %>%
+    dplyr::reframe(
+        .by = treatment_explain_id,
+        boot_med = resample_median(n_boot, abs_err),
+        sim_id = seq(n_boot)
+    )
 
 bootstrap_accuracy_diff <- bootstrap_accuracy %>% 
-  summarise(diff = diff(boot_med), .by = sim_id) 
+    dplyr::summarise(diff = diff(boot_med), .by = sim_id)
 
-# Test diffrence
+
 alpha <- 0.1
 diff_cis <- bootstrap_accuracy_diff %>%
-  reframe(quantile(diff, p = c(alpha / 2, 1 - alpha / 2)))
+    dplyr::reframe(quantile(diff, p = c(alpha / 2, 1 - alpha / 2)))
 
-# # Compute p-values two-sided test
 p_value <- bootstrap_accuracy_diff %>% 
-  with(1 - (sum(diff < 0) + 1) / (length(diff) + 2))
+    with(1 - (sum(diff < 0) + 1) / (length(diff) + 2))
 
 p_value_one_sided <- bootstrap_accuracy_diff %>% 
-  with(mean(diff > 0))
+    with(mean(diff > 0))
 
 p_dens_diff <- bootstrap_accuracy_diff %>% 
   ggplot() + 
@@ -559,9 +551,9 @@ p_combined + plot_annotation(tag_levels = "A")
 
 ### Automatic evaluation of Socratic dimensions 
 
-We conducted a detailed textual analysis of all AI–student conversations (n = 362) to (1) test the pedagogical differences between the Socratic and Non-Socratic tutors as they emerged in our experiment, and (2) derive additional indicators of student engagement that extend beyond simple measures such as word counts or the number of exchanges. To address the first aim, we adapted a rubric from Pauzi et al. [@pauzi2025automating], originally designed for automating the pedagogical evaluation of LLM-based conversational agents. The rubric captures key dimensions of Socratic tutoring, including providing support without directly giving answers ("scaffolding"), offering stepwise guidance, maintaining an encouraging tone, and sustaining a conversational style.
+We conducted a detailed textual analysis of all AI–student conversations to (1) test the pedagogical differences between the Socratic and Non-Socratic tutors as they emerged in our experiment, and (2) derive additional indicators of student engagement that extend beyond simple measures such as word counts or the number of exchanges. To address the first aim, we adapted a rubric from Pauzi et al. [@pauzi2025automating], originally designed for automating the pedagogical evaluation of LLM-based conversational agents. The rubric captures key dimensions of Socratic tutoring, including providing support without directly giving answers ("scaffolding"), offering stepwise guidance, maintaining an encouraging tone, and sustaining a conversational style.
 
-While the original rubric consisted of five binary items, we modified it in two ways. First, we replaced the binary response format with a 5-point scale to increase statistical power and improve granularity. Second, we expanded the set of items to capture additional pedagogically relevant dimensions of conversational agents, including clarity, engagement, and depth of response. Using this revised rubric, we evaluated all 366 conversations (122 students × 3 tasks) through an LLM-based coding procedure and subsequently conducted regression analyses that accounted for within-student correlation, included school fixed effects, and controlled for the number of conversational exchanges. (See the Rubric in the Appendix, Section \ref{sec:socratic-dimension}).
+While the original rubric consisted of five binary items, we modified it in two ways. First, we replaced the binary response format with a 5-point scale to increase statistical power and improve granularity. Second, we expanded the set of items to capture additional pedagogically relevant dimensions of conversational agents, including clarity, engagement, and depth of response. Using this revised rubric, we evaluated all 362 conversations^[We collected chats from 122 participants in 3 tasks. So, the total chats were 366. After excluding four with no proper conversation, we ended up with 362 chats for analysis.] through an LLM-based coding procedure and subsequently conducted regression analyses that accounted for within-student correlation, included school fixed effects, and controlled for the number of conversational exchanges. (See the Rubric in the Appendix, Section \ref{sec:socratic-dimension}).
 
 Figure \@ref(fig:socratic-dimensions) presents the regression results. The Socratic AI scored significantly higher on the core Socratic dimensions, showing greater average supportive guidance or scaffolding (coef = 0.55, SE = 0.12), more next-step guidance (coef = 0.54, SE = 0.12), and a more encouraging tone (coef = 0.53, SE = 0.12). We found no significant differences between conditions on the remaining Socratic dimensions. For the additional indicators, the Socratic AI elicited higher student engagement (coef = 0.43, SE = 0.12), although its clarity and depth of response were significantly lower (coef = -0.38, SE = 0.11; coef = -0.55, SE = 0.11, respectively). Taken together, these findings indicate that the Socratic AI followed Socratic principles (encouraging tone and supportive guidance) and, even after controlling for the number of exchanges, was more engaging. However, this increased conversational and encouraging style appears to have come at a cost to overall clarity and response depth.
 
@@ -570,10 +562,9 @@ library(dplyr)
 library(lme4)
 library(knitr)
 
-opts_chunk$set(error = TRUE)
-tutorgpt <- readRDS("analysis/data/processed/tutorgpt.rds")
+#tutorgpt <- readRDS("analysis/data/processed/tutorgpt.rds")
+#chats <- readRDS("analysis/data/processed/chats.rds")
 
-chats <- readRDS("analysis/data/processed/chats.rds")
 chat_info <- chats %>% 
     filter(role == "user") %>% 
     rename(student_id = user_id) %>%
@@ -584,12 +575,12 @@ ds_text <- read.csv(data_path, header = FALSE, col.names = c(
     "chat_id", "coherence", "accuracy", "depth", "engagement",
     "clarity", "learning_outcome", "comments"
 ))
+
 data_path <- "analysis/data/dialogues_socratic_eval.csv"
 ds_socratic <- read.csv(data_path, header = FALSE, col.names = c(
     "chat_id", "coherence_2", "identifying_mistake", "acknowledging_mistake", "supportive_guidance",
     "next_step_guidance", "conversational_flow", "encouraging_tone", "comments_socratic"
 ))
-
 
 ds <- left_join(ds_text, chat_info, by = "chat_id") %>% 
     left_join(ds_socratic, by = "chat_id") %>% 
@@ -614,7 +605,6 @@ fit_next_step <- update(fit_coherence, scale(next_step_guidance) ~ .)
 fit_conversational_flow <- update(fit_coherence, scale(conversational_flow) ~ .)
 fit_encouraging_tone <- update(fit_coherence, scale(encouraging_tone) ~ .)
 
-
 models_socratic <- list(
     "Supportive guidance" = fit_supportive_guidance,
     "Next step" = fit_next_step,
@@ -630,11 +620,9 @@ models_socratic <- list(
 
 ```{r socratic-dimensions, fig.cap = cap}
 cap <- paste(
-  "Coefficients and 95% confidence intervals for the effect of Socratic AI from mixed-effects regression models. Each row reports the estimated average difference between Socratic and non-Socratic AI for a distinct pedagogical dimension. All models include individual-level random effects to account for within-student correlation across chats, school-location fixed effects, and a control for the number of exchanges in each chat. Dependent variables were standardized from their original 1–5 scales, so all coefficients represent changes measured in standard-deviation units."
+  "Coefficients and 95% confidence intervals for the effect of Socratic AI from mixed-effects regression models. Each row reports the estimated average difference between Socratic and non-Socratic AI for a distinct pedagogical dimension. All models include individual-level random effects to account for within-student correlation across chats, school-location fixed effects, and a control for the number of exchanges in each chat. Dependent variables were standardized from their original 1–5 scales, so all coefficients represent changes measured in standard-deviation units." # nolint 
 )
 
-library(ggplot2)
-library(broom.mixed)
 
 coeffs <- models_socratic %>%
     lapply(broom::tidy, conf.int = TRUE) %>% 
@@ -1152,45 +1140,43 @@ coef_df <- interactions %>%
   bind_rows(.id = "model") 
 
 panel_b <- coef_df %>% 
-  filter(grepl(":", term), model == "all") %>% 
-  ggplot() + 
-  aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high, color = p.value < 0.1) +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  geom_linerange(linewidth = 3, alpha = .25) +
-  geom_point(size = 3) +
-  geom_text_repel(
-    nudge_y = -.25,
-    aes(
-      label = sprintf("%.1f%s", estimate, calc_stars(p.value))
+    filter(grepl(":", term), model == "all") %>% 
+    ggplot() +
+    aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high, color = p.value < 0.1) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_linerange(linewidth = 3, alpha = .25) +
+    geom_point(size = 3) +
+    geom_text_repel(
+        nudge_y = -.25,
+        aes(label = sprintf("%.1f%s", estimate, calc_stars(p.value)))
+    ) +
+    ## Add CIs
+    geom_text(x = Inf, aes(label = sprintf("(%s: %.1f, %.1f)", "95% CI", conf.low, conf.high)), size = 3.5) + 
+    coord_cartesian(clip = "off") + 
+    theme(
+        legend.position = "none",
+        axis.text.y = element_markdown(hjust = 0),
+        plot.margin = margin(t = .1, b = .1, r = 1, l = .1, unit = "in"),
+    ) + 
+    scale_color_manual(values = c("orange", "navy")) +
+    scale_y_discrete(
+        labels = function(x) {
+            x %>% 
+                gsub("^.*:", "Socratic x ", .) %>%
+                gsub("has_used_beforeYes", "ChatGPT experience", .) %>% 
+                gsub("locationSeville", "Seville", .) %>% 
+                gsub("top_grades", "", .) %>% 
+                gsub("gender", "", .) %>% 
+                gsub("nametask([123])_(.*)", "Task \\1 (\\2)", .)
+        }
+    ) +
+    labs(
+        title = "Socratic AI and Perceived Helpfulness",
+        subtitle = "Interaction effects between Socratic AI and task/student characteristics",
+        y = NULL,
+        x = "Regression coefficients and 95% confidence intervals",
+        caption = "Results from linear regression (n = 366); * p < 0.1"
     )
-  ) +
-  ## Add CIs
-  geom_text(x = Inf, aes(label = sprintf("(%s: %.1f, %.1f)", "95% CI", conf.low, conf.high)), size = 3.5) + 
-  coord_cartesian(clip = "off") + 
-  theme(
-    legend.position = "none",
-    axis.text.y = element_markdown(hjust = 0),
-    plot.margin = margin(t = .1, b = .1, r = 1, l = .1, unit = "in"),
-  ) + 
-  scale_color_manual(values = c("orange", "navy")) +
-  scale_y_discrete(
-    labels = function(x) {
-      x %>% 
-        gsub("^.*:", "Socratic x ", .) %>%
-        gsub("has_used_beforeYes", "ChatGPT experience", .) %>% 
-        gsub("locationSeville", "Seville", .) %>% 
-        gsub("top_grades", "", .) %>% 
-        gsub("gender", "", .) %>% 
-        gsub("nametask([123])_(.*)", "Task \\1 (\\2)", .)
-    }
-  ) +
-  labs(
-    title = "Socratic AI and Perceived Helpfulness",
-    subtitle = "Interaction effects between Socratic AI and task/student characteristics",
-    y = NULL,
-    x = "Regression coefficients and 95% confidence intervals",
-    caption = "Results from linear regression (n = 366); * p < 0.1"
-  )
 
 #ggsave("figures_and_tables/10_socratic_interact_helpfull.pdf")
 
