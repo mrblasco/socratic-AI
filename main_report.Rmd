@@ -3,7 +3,7 @@ params:
   anonymous: false
 
 title: |
-  AI Chatbots in K-12 Education: An Experimental Study of Socratic vs. Non-Socratic Approaches and the Role of Step-by-Step Reasoning
+  AI Chatbots in K-12 Education: An Experimental Study of Socratic vs. Non-Socratic AI Agents and the Role of Step-by-Step Reasoning
 
 author:
   - "`r ifelse(!params$anonymous, 'Andrea Blasco', 'Anonymous') `":
@@ -14,7 +14,7 @@ author:
   - "`r ifelse(!params$anonymous, 'Vicky Charisi', 'Anonymous') `":
       institute: [jrc, harvard]
       correspondence: "yes"
-      email: "`r ifelse(!params$anonymous, 'vcharisi@law.harvard.edu', 'Email') `"
+      email: "`r ifelse(!params$anonymous, 'vcharisi@cyber.harvard.edu', 'Email') `"
 
 institute:
   - jrc: "`r ifelse(!params$anonymous, 'European Commission, Joint Research Centre, Brussels, Belgium', 'Anonymous Institute') `"

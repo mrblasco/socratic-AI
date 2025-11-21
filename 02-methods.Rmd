@@ -6,11 +6,11 @@ library(knitr)
 
 # Methods {#sec:methods}
 
-We conducted a field experiment across two schools to investigate the impact of different AI tutoring strategies on students' critical thinking, self-confidence, and task performance. Participants engaged with a custom-designed web application, the _AI Tutor_, which randomly assigned students to interact with distinct versions of GPT-4-based chatbots during structured educational activities. The experimental design featured two primary manipulations: (1) the presence of step-by-step reasoning by the AI and (2) the use of Socratic versus non-Socratic dialogue styles. To assess the effects, we employed objective performance measures alongside pre- and post-task surveys capturing students' cognitive and affective responses. The following subsections detail the AI Tutor system, participant characteristics, and experimental procedures.
+We conducted a field experiment across two schools to investigate the impact of different AI interaction strategies on students' critical thinking, self-confidence, and task performance. Participants engaged with a custom-designed web application, the _AI Agent_, which randomly assigned students to interact with distinct versions of GPT-4-based chatbots during structured educational activities. The experimental design featured two primary manipulations: (1) the presence of step-by-step reasoning by the AI and (2) the use of Socratic versus non-Socratic dialogue styles. To assess the effects, we employed objective performance measures alongside pre- and post-task surveys capturing students' cognitive and affective responses. The following subsections detail the AI Agent system, participant characteristics, and experimental procedures.
 
-## AI Tutor
+## AI Agent
 
-To assess the impact of LLMs on students' critical thinking, we developed an _AI Tutor_, a web-based application built using Python with the Flask framework. The application integrates OpenAI APIs, allowing students to interact with the GPT-4.0 model while performing different educational tasks. This app's key features include:
+To assess the impact of LLMs on students' critical thinking, we developed an _AI Agent_, a web-based application built using Python with the Flask framework. The application integrates OpenAI APIs, allowing students to interact with the GPT-4.0 model while performing different educational tasks. This app's key features include:
 
 - **User authentication**: A secure and anonymous login system for students.
 - **Web Survey**: A web interface to collect data from students, including answering survey questions and performing simple tasks, such as writing a short essay or solving simple math problems.
@@ -24,7 +24,7 @@ To assess the impact of LLMs on students' critical thinking, we developed an _AI
 
 We recruited N=122 students between 14 and 16 years old enrolled in secondary education from two schools: one located in Brussels, Belgium, and the other in Seville, Spain.[^justify-location] The experiment was conducted during school hours at the participating schools (Fig. \@ref(fig:classrooms)). Both schools are bilingual secondary institutions that follow a European curriculum framework, with English as the primary language of instruction across most subjects. The student populations at both schools are culturally and linguistically diverse, including a mix of local and expatriate families. Many students come from middle- to upper-middle-class socioeconomic backgrounds and are accustomed to using digital technologies in their academic work: both schools are equipped with computer laboratories and digital interactive whiteboards for classroom instruction.
 
-All participants had appropriate levels of English proficiency, given the language policy of the schools. Even so, the AI Tutor was multilingual, allowing students to interact with it either in English or in their native language. The experimental instructions were in English to ensure consistency across sites. However, if needed, students could translate the instructions using the browser's automatic translation service.
+All participants had appropriate levels of English proficiency, given the language policy of the schools. Even so, the AI Agent was multilingual, allowing students to interact with it either in English or in their native language. The experimental instructions were in English to ensure consistency across sites. However, if needed, students could translate the instructions using the browser's automatic translation service.
 
 [^justify-location]: We recruited schools in different countries to increase the external validity of our study. The country choice was by convenience as the authors lived in Brussels and Seville at the time of the experiment.
 
@@ -39,11 +39,11 @@ knitr::include_graphics("assets/pictures/classrooms.pdf")
 
 ## Experimental sessions
 
-About ten experimental sessions were conducted at the schools between November 11 and 12, 2023, in Brussels and February 8 and 9, 2024, in Seville. Each session took about two hours. In the first 45-60 minutes, students received a personal computer and were asked to perform three main tasks using the AI tutor and answer a questionnaire without the AI tutor. In the following 45-60, there was a group discussion on how the students judged the interactions with the AI tutor and a more general debate on how they perceived the potential benefits and drawbacks of integrating LLMs in the classroom. The results of the group discussions are not discussed in this paper; however, they were used as material for interpreting the results of the experimental study.
+About ten experimental sessions were conducted at the schools between November 11 and 12, 2023, in Brussels and February 8 and 9, 2024, in Seville. Each session took about two hours. In the first 45-60 minutes, students received a personal computer and were asked to perform three main tasks using the AI Agent and answer a questionnaire without the AI Agent. In the following 45-60, there was a group discussion on how the students judged the interactions with the AI Agent and a more general debate on how they perceived the potential benefits and drawbacks of integrating LLMs in the classroom. The results of the group discussions are not discussed in this paper; however, they were used as material for interpreting the results of the experimental study.
 
 ## Experimental Conditions
 
-Figure \@ref(fig:design) illustrates the two  randomised manipulations in our experimental design: (1) AI step-by-step reasoning and (2) Socratic vs non-Socratic AI. It is important to note that these were conducted as independent experiments, with different dependent and independent variables, rather than a factorial 2x2 design.
+Figure \@ref(fig:design) illustrates the two randomised manipulations in our experimental design: (1) AI step-by-step reasoning and (2) Socratic vs non-Socratic AI. It is important to note that these were conducted as independent experiments, with different dependent and independent variables, rather than a factorial 2x2 design.
 
 ```{r design, echo = FALSE, fig.cap = cap}
 cap <- "The experimental design involves two manipulations: **A.** Socratic vs Non-Socratic; **B.** AI solution with explanation vs AI solution (without explanation)" # nolint
@@ -52,7 +52,7 @@ knitr::include_graphics("assets/pictures/experimental_design.pdf")
 
 ### AI step-by-step reasoning
 
-The first manipulation focuses on a task in which students are asked to estimate the value of coins in a jar (see Section \@ref(sec:si-ai-explanation) for the details).[^jar] Specifically, we used the coin jar from Steiner's experiment [@steiner2015turns], aimed originally at assessing Internet users' guessing accuracy. For this intervention, we varied the AI's response by providing either a complete answer, which included both an estimated value and a step-by-step explanation generated by the AI tutor, or a partial answer that provided only the estimate without additional details. In both conditions, all participants received the same estimated value ($213), but those in the full-answer condition also viewed an explanation outlining the step-by-step reasoning the AI used to arrive at this estimation based on the jar image.[^jar-gpt4]
+The first manipulation focuses on a task in which students are asked to estimate the value of coins in a jar (see Section \@ref(sec:si-ai-explanation) for the details).[^jar] Specifically, we used the coin jar from Steiner's experiment [@steiner2015turns], aimed originally at assessing Internet users' guessing accuracy. For this intervention, we varied the AI's response by providing either a complete answer, which included both an estimated value and a step-by-step explanation generated by the AI Agent, or a partial answer that provided only the estimate without additional details. In both conditions, all participants received the same estimated value ($213), but those in the full-answer condition also viewed an explanation outlining the step-by-step reasoning the AI used to arrive at this estimation based on the jar image.[^jar-gpt4]
 
 [^jar]: This is a common experimental activity in economics, especially in the context of auction theory [@thaler1988anomalies]. The task is ideal in our setting because it requires participants to guess based on limited information, thus creating a situation where AI-generated assistance could potentially influence their decisions.
 
@@ -62,7 +62,7 @@ This setup allows us to examine how AI-provided explanations affect students' pe
 
 ### Socratic vs Non-Socratic AI
 
-The second manipulation involved randomly assigning students to one of two different types of AI tutors: Socratic or non-Socratic AI tutors. Both tutors were powered by the same underlying large language model (GPT-4). Still, each was instructed with different "system messages" to create different behaviours, as illustrated in Table \@ref(tab:prompts).[^prompts] For the Socratic tutor, the system message asked the model to engage students with open-ended, thought-provoking questions, encouraging them to think critically about their responses. In contrast, the non-Socratic AI tutor was instructed to provide concise, direct answers without necessarily engaging in deeper dialogue or posing further questions.
+The second manipulation involved randomly assigning students to one of two different types of AI agentss: Socratic or non-Socratic AI agents. Both agents were powered by the same underlying large language model (GPT-4). Still, each was instructed with different "system messages" to create different behaviours, as illustrated in Table \@ref(tab:prompts).[^prompts] For the Socratic agent, the system message asked the model to engage students with open-ended, thought-provoking questions, encouraging them to think critically about their responses. In contrast, the non-Socratic AI agent was instructed to provide concise, direct answers without necessarily engaging in deeper dialogue or posing further questions.
 
 [^prompts]: An AI's system message guides how the AI interprets the conversations by setting parameters for interaction.
 
@@ -77,19 +77,19 @@ didactic_prompt <- paste(
 )
 
 data.frame(
-    "AI Tutor" = c("Socratic", "Non-Socratic"),
+    "AI Agent" = c("Socratic", "Non-Socratic"),
     "Prompt instruction" = c(socratic_prompt, didactic_prompt)
 ) %>%
     kableExtra::kbl(
         booktabs = TRUE,
-        caption = "Prompt instructions associated with the AI Tutor's treatments"
+        caption = "Prompt instructions associated with the AI Agent's treatments"
     ) %>%
     kableExtra::column_spec(2, "4in")
 ```
 
-This setup allows us to investigate the impact of different pedagogical AI tutoring approaches on students' performance and perceptions. Specifically, we asked students to use the AI tutor while performing three tasks: guess an unknown quantity ("How much water in litres do students consume at our school each week?"), express an opinion and write a short essay ("What is your opinion about the effect of social media on teenagers?"); respond to physics questions on how sound propagates in different media ("In which of the following materials does sound travel faster?"). These questions enabled us to assess the AI tutor's impact on students' learning and problem-solving abilities. 
+This setup allows us to investigate the impact of different pedagogical AI tutoring approaches on students' performance and perceptions. Specifically, we asked students to use the AI Agent while performing three tasks: guess an unknown quantity ("How much water in litres do students consume at our school each week?"), express an opinion and write a short essay ("What is your opinion about the effect of social media on teenagers?"); respond to physics questions on how sound propagates in different media ("In which of the following materials does sound travel faster?"). These questions enabled us to assess the AI agent's impact on students' learning and problem-solving abilities. 
 
-We focused on two primary metrics: (1) confidence in their answers and (2) perceived usefulness of interacting with the AI tutor. Specifically,  students were asked, "How confident are you that the answer you provided is accurate?" on a five-point scale ranging from "not confident at all" to "very confident." They were also asked, "How helpful was it to interact with the AI tutor?" This was also rated on a five-point scale, from "Not at all helpful" to "Very helpful." Only for task 3, we had an additional metric, which was the correctness of their answers.
+We focused on two primary metrics: (1) confidence in their answers and (2) perceived usefulness of interacting with the AI agent. Specifically,  students were asked, "How confident are you that the answer you provided is accurate?" on a five-point scale ranging from "not confident at all" to "very confident." They were also asked, "How helpful was it to interact with the AI tutor?" This was also rated on a five-point scale, from "Not at all helpful" to "Very helpful." Only for task 3, we had an additional metric, which was the correctness of their answers.
 
 ## Student Characteristics
 
@@ -105,4 +105,4 @@ Academic skills or habits may moderate the effect of AI interactions on problem-
 
 ### Student-AI Interaction Metrics
 
-To quantify engagement, we analyzed students' interaction logs with the AI Tutor, recording the number of turns and the word counts as a proxy for interaction intensity. While this provides a basic behavioural metric, it does not capture the quality of cognitive engagement or helpfulness, limiting its direct relevance to RQ-1 and RQ-2. Therefore, we also asked students about how useful they found the AI interactions and how confident they were in their answers to selected tasks. These self-reported metrics are needed to assess whether explanations were helpful to students (for RQ-1) and whether Socratic dialogue promoted critical thinking or confidence (for RQ-2).
+To quantify engagement, we analyzed students' interaction logs with the AI agent, recording the number of turns and the word counts as a proxy for interaction intensity. While this provides a basic behavioural metric, it does not capture the quality of cognitive engagement or helpfulness, limiting its direct relevance to RQ-1 and RQ-2. Therefore, we also asked students about how useful they found the AI interactions and how confident they were in their answers to selected tasks. These self-reported metrics are needed to assess whether explanations were helpful to students (for RQ-1) and whether Socratic dialogue promoted critical thinking or confidence (for RQ-2).
