@@ -1,20 +1,20 @@
-# Acknowledgements
+# Acknowledgements {.appendix}
 
 ```{r, eval = !params$anonymous, results = "asis"}
 cat("The contents of this publication do not necessarily reflect the position or opinion of the European Commission or Joint Research Centre. We thank Lucas Bagnari de Seabra and the colleagues in the JRC, especially those in the Digital Economy unit for their support and generous collaboration. Special thanks for the Data Privacy Coordinator of the JRC, who helped us with the data privacy statement, ensuring the highest safeguard to the students participating in the study. Many thanks go to the schools, including their leadership teams, parents and pupils who participated in the study. All errors are our own.") # nolint
 ```
 
-# Statements and Declarations
+# Statements and Declarations {.appendix}
 
-## Data Availability
+## Data Availability {.appendix}
 
 The data that support the findings of this study are available in the following open data repository [DOI available upon publication]. All relevant data have been anonymized to comply with ethical guidelines and institutional policies.
 
-## Ethical approval
+## Ethical approval {.appendix}
 
 This study was conducted in accordance with the ethical standards and guidelines of the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`. Ethical approval was obtained from the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`'s Ethical Review Board prior to the commencement of the research. Approval reference number: 32530 / Ares(2023)3278765. All procedures involving human participants/data complied with the relevant institutional and European ethical regulations. Clearance received on May 17, 2023.
 
-## Informed consent for Participation 
+## Informed Consent {.appendix} 
 
 Informed consent was obtained prior to the experimental sessions. The text of the informed consent is provided below.
 
@@ -45,10 +45,10 @@ Informed consent was obtained prior to the experimental sessions. The text of th
 
 > If you would like to exercise your rights under Regulation (EU) 2018/1725, or if you have comments, questions or concerns, or if you would like to submit a complaint regarding the collection and use of your personal data, please feel free to contact the Data Controller at: EMAIL
 
-## Competing Interests
+## Competing Interests {.appendix}
 
 The authors declare no competing interests directly or indirectly related to the work submitted for publication. 
 
-## Declaration of generative AI and AI-assisted technologies in the writing process
+## Declaration of generative AI and AI-assisted technologies in the writing process {.appendix}
 
 During the preparation of this work the author(s) used Grammarly, ChatGPT in order to improve the readability and language of the manuscript. After using this tool/service, the author(s) reviewed and edited the content as needed and take(s) full responsibility for the content of the published article.
