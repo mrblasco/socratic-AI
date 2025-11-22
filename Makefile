@@ -3,8 +3,7 @@ CONFIG := _output.yml
 BIB_FILE := refs.bib
 RMD_FILES := $(wildcard *.Rmd)
 
-SUBMIT_DIR := _output/v4
-
+SUBMIT_DIR := docs
 PDF_REPORT := $(SUBMIT_DIR)/main_report.pdf
 PDF_ANONYM := $(SUBMIT_DIR)/main_report_anonym.pdf
 DOC_REPORT := $(PDF_REPORT:.pdf=.docx)
@@ -42,14 +41,14 @@ archive.zip: $(PDF_ANONYM:.pdf=.tex) $(PDF_ANONYM:.pdf=_files) $(pictures)
 
 # --- Mardked up difference --- 
 
-diff: $(SUBMIT_DIR)/diff.pdf
+diff: docs/main_report_diff.pdf
 
 OLD := ./_output/v3/HSSC_Revised_Submission/main_report.tex 
 
 diff.tex : $(OLD) $(PDF_REPORT:.pdf=.tex) 
 	@latexdiff $+ > $@
 
-$(SUBMIT_DIR)/diff.pdf : diff.tex
+$(SUBMIT_DIR)/main_report_diff.pdf : diff.tex
 	@pdflatex $< && cp diff.pdf $@
 
 

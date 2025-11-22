@@ -1,15 +1,14 @@
 distill::distill_article:
   toc: true
+  toc_level: 1
 
 bookdown::pdf_document2:
+  toc: false
   latex_engine: xelatex
   keep_tex: true
   pandoc_args:
     - --lua-filter=assets/lua-filters/scholarly-metadata.lua
     - --lua-filter=assets/lua-filters/author-info-blocks.lua
-
-bookdown::html_document2:
-  toc: false
 
 bookdown::word_document2:
   toc: true
