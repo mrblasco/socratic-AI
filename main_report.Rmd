@@ -23,8 +23,8 @@ institute:
 date: |
   `r format(Sys.Date(), 'This version: %B %d, %Y')`
 
-fontsize: 12pt # 11
-linestretch: 1.5 # 1.25
+fontsize: 11pt # 11
+linestretch: 1.25 # 1.25
 colorlinks: true
 link-citations: true
 graphics: true
@@ -81,14 +81,16 @@ library(figpatch)
 
 knitr::opts_chunk$set(
     echo = FALSE,
-    cache = TRUE,
-    cache.path = "_cache/",
-    dev = "png",
+    cache = FALSE,
+    dev = ifelse(knitr::is_html_output(), "png", "pdf"),
     dpi = 100
 )
 ```
 
 ```{r, child = "01-intro.Rmd"}
+```
+
+```{r, child = "02-literature.Rmd"}
 ```
 
 ```{r, child = "02-methods.Rmd"}
