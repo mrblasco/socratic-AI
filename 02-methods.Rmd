@@ -6,42 +6,9 @@ library(knitr)
 
 # Methods {#sec:methods}
 
-We conducted a field experiment across two schools to investigate the impact of different AI interaction strategies on students' critical thinking, self-confidence, and task performance. Participants engaged with a custom-designed web application, the _AI Agent_, which randomly assigned students to interact with distinct versions of GPT-4-based chatbots during structured educational activities. The experimental design featured two primary manipulations: (1) the presence of step-by-step reasoning by the AI and (2) the use of Socratic versus non-Socratic dialogue styles. To assess the effects, we employed objective performance measures alongside pre- and post-task surveys capturing students' cognitive and affective responses. The following subsections detail the AI Agent system, participant characteristics, and experimental procedures.
+We conducted a field experiment across two schools to investigate the impact of different AI interaction strategies on students' critical thinking, self-confidence, and task performance. Participants engaged with a custom-designed web application, the _AI Agent_, which randomly assigned students to interact with distinct versions of GPT-4-based chatbots during structured educational activities. The experimental design featured two primary manipulations: (1) the presence of step-by-step reasoning by the AI and (2) the use of Socratic versus non-Socratic dialogue styles. To assess the effects, we employed objective performance measures alongside pre- and post-task surveys capturing students' cognitive and affective responses. The following subsections detail the experimental design and procedures, the design of the AI agents, and the participant characteristics.
 
-## AI Agent
-
-To assess the impact of LLMs on students' critical thinking, we developed an _AI Agent_, a web-based application built using Python with the Flask framework. The application integrates OpenAI APIs, allowing students to interact with the GPT-4.0 model while performing different educational tasks. This app's key features include:
-
-- **User authentication**: A secure and anonymous login system for students.
-- **Web Survey**: A web interface to collect data from students, including answering survey questions and performing simple tasks, such as writing a short essay or solving simple math problems.
-- **AI Chatbot**: A chatbot powered by GPT-4 provided students with personalised assistance and tutoring during the session. A new chatbot instance was associated with each question for each student, isolating each conversation from interactions in previous questions. The chatbot was available to students only for specific questions or tasks under the researchers' control.
-- **Data logging**: A SQL database storing students' conversation logs with the AI chatbot, including texts, timestamps, and survey responses. 
-- **Randomised assignment**: A system to randomly assign registered students to different versions of the AI chatbot or treatment groups to explore the causal impact of various configurations on students' interactions and performance. 
-
-<!-- ![AI Tutor Screen Shot](pictures/placeholder.jpg) -->
-
-## Participants
-
-We recruited N=122 students between 14 and 16 years old enrolled in secondary education from two schools: one located in Brussels, Belgium, and the other in Seville, Spain.[^justify-location] The experiment was conducted during school hours at the participating schools (Fig. \@ref(fig:classrooms)). Both schools are bilingual secondary institutions that follow a European curriculum framework, with English as the primary language of instruction across most subjects. The student populations at both schools are culturally and linguistically diverse, including a mix of local and expatriate families. Many students come from middle- to upper-middle-class socioeconomic backgrounds and are accustomed to using digital technologies in their academic work: both schools are equipped with computer laboratories and digital interactive whiteboards for classroom instruction.
-
-All participants had appropriate levels of English proficiency, given the language policy of the schools. Even so, the AI Agent was multilingual, allowing students to interact with it either in English or in their native language. The experimental instructions were in English to ensure consistency across sites. However, if needed, students could translate the instructions using the browser's automatic translation service.
-
-[^justify-location]: We recruited schools in different countries to increase the external validity of our study. The country choice was by convenience as the authors lived in Brussels and Seville at the time of the experiment.
-
-### Ethical Approval and Data Privacy
-
-We recruited students after receiving ethical approval from the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`'s internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and experimental protocol complied with local laws and ethical research standards.^[Clearance obtained on May 17, 2023.] The data privacy protection protocol was approved by the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`'s data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
-
-```{r classrooms, echo = FALSE, fig.cap = cap}
-cap <- "Classrooms used for the experiment in Seville (**A**) and in Brussels (**B**)." # nolint
-knitr::include_graphics("assets/pictures/classrooms.pdf")
-```
-
-## Experimental sessions
-
-About ten experimental sessions were conducted at the schools between November 11 and 12, 2023, in Brussels and February 8 and 9, 2024, in Seville. Each session took about two hours. In the first 45-60 minutes, students received a personal computer and were asked to perform three main tasks using the AI Agent and answer a questionnaire without the AI Agent. In the following 45-60, there was a group discussion on how the students judged the interactions with the AI Agent and a more general debate on how they perceived the potential benefits and drawbacks of integrating LLMs in the classroom. The results of the group discussions are not discussed in this paper; however, they were used as material for interpreting the results of the experimental study.
-
-## Experimental Conditions
+## Experimental Design
 
 Figure \@ref(fig:design) illustrates the two randomised manipulations in our experimental design: (1) AI step-by-step reasoning and (2) Socratic vs non-Socratic AI. It is important to note that these were conducted as independent experiments, with different dependent and independent variables, rather than a factorial 2x2 design.
 
@@ -78,7 +45,8 @@ didactic_prompt <- paste(
 
 data.frame(
     "AI Agent" = c("Socratic", "Non-Socratic"),
-    "Prompt instruction" = c(socratic_prompt, didactic_prompt)
+    "Prompt instruction" = c(socratic_prompt, didactic_prompt),
+    check.names = FALSE
 ) %>%
     kableExtra::kbl(
         booktabs = TRUE,
@@ -91,13 +59,46 @@ This setup allows us to investigate the impact of different pedagogical AI tutor
 
 We focused on two primary metrics: (1) confidence in their answers and (2) perceived usefulness of interacting with the AI agent. Specifically,  students were asked, "How confident are you that the answer you provided is accurate?" on a five-point scale ranging from "not confident at all" to "very confident." They were also asked, "How helpful was it to interact with the AI tutor?" This was also rated on a five-point scale, from "Not at all helpful" to "Very helpful." Only for task 3, we had an additional metric, which was the correctness of their answers.
 
-## Student Characteristics
+## Experimental sessions
 
-To examine student interactions with AI and their potential impact on learning and critical thinking, we collected a range of self-reported and behavioural data. The full questionnaire is provided in the Appendix (Section \@ref(sec:questionnaire)).
+About ten experimental sessions were conducted at the schools between November 11 and 12, 2023, in Brussels and February 8 and 9, 2024, in Seville. Each session took about two hours. In the first 45-60 minutes, students received a personal computer and were asked to perform three main tasks using the AI Agent and answer a questionnaire without the AI Agent. In the following 45-60, there was a group discussion on how the students judged the interactions with the AI Agent and a more general debate on how they perceived the potential benefits and drawbacks of integrating LLMs in the classroom. The results of the group discussions are not discussed in this paper; however, they were used as material for interpreting the results of the experimental study.
+
+## Participants
+
+We recruited N=122 students between 14 and 16 years old enrolled in secondary education from two schools: one located in Brussels, Belgium, and the other in Seville, Spain.[^justify-location] The experiment was conducted during school hours at the participating schools (Fig. \@ref(fig:classrooms)). Both schools are bilingual secondary institutions that follow a European curriculum framework, with English as the primary language of instruction across most subjects. The student populations at both schools are culturally and linguistically diverse, including a mix of local and expatriate families. Many students come from middle- to upper-middle-class socioeconomic backgrounds and are accustomed to using digital technologies in their academic work: both schools are equipped with computer laboratories and digital interactive whiteboards for classroom instruction.
+
+All participants had appropriate levels of English proficiency, given the language policy of the schools. Even so, the AI Agent was multilingual, allowing students to interact with it either in English or in their native language. The experimental instructions were in English to ensure consistency across sites. However, if needed, students could translate the instructions using the browser's automatic translation service.
+
+[^justify-location]: We recruited schools in different countries to increase the external validity of our study. The country choice was by convenience as the authors lived in Brussels and Seville at the time of the experiment.
+
+## Ethical Approval and Data Privacy
+
+We recruited students after receiving ethical approval from the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`'s internal Ethical Review Board, ensuring that the consent procedures, data protection requirements, and experimental protocol complied with local laws and ethical research standards.^[Clearance obtained on May 17, 2023.] The data privacy protection protocol was approved by the `r ifelse(params$anonymous, 'Anonymous Institution', 'European Commission')`'s data protection officer. As an additional safeguard, given the minor age of the participants, we required their parents or legal guardians to provide us with written consent, allowing their children to participate in the study. The students also had to give their assent to participate by completing an online consent form.
+
+```{r classrooms, echo = FALSE, fig.cap = cap}
+cap <- "Classrooms used for the experiment in Seville (**A**) and in Brussels (**B**)." # nolint
+knitr::include_graphics("assets/pictures/classrooms.pdf")
+```
+
+## Development of the AI Agent
+
+To assess the impact of LLMs on students' critical thinking, we developed an _AI Agent_, a web-based application built using Python with the Flask framework. The application integrates OpenAI APIs, allowing students to interact with the GPT-4.0 model while performing different educational tasks. This app's key features include:
+
+- **User authentication**: A secure and anonymous login system for students.
+- **Web Survey**: A web interface to collect data from students, including answering survey questions and performing simple tasks, such as writing a short essay or solving simple math problems.
+- **AI Chatbot**: A chatbot powered by GPT-4 provided students with personalised assistance and tutoring during the session. A new chatbot instance was associated with each question for each student, isolating each conversation from interactions in previous questions. The chatbot was available to students only for specific questions or tasks under the researchers' control.
+- **Data logging**: A SQL database storing students' conversation logs with the AI chatbot, including texts, timestamps, and survey responses. 
+- **Randomised assignment**: A system to randomly assign registered students to different versions of the AI chatbot or treatment groups to explore the causal impact of various configurations on students' interactions and performance. 
+
+<!-- ![AI Tutor Screen Shot](pictures/placeholder.jpg) -->
+
+## Data
+
+To examine student interactions with AI and their potential impact on learning and critical thinking, we collected a range of self-reported and behavioural data. The full questionnaire is provided in the Appendix (Section \@ref(questionnaire)).
 
 ### AI Attitudes and Usage
 
-To better understand students' general attitudes toward AI, we selected four questions from Schepman and Rodway's AI Attitudes Scale [@schepman2020initial]. These questions explored students; beliefs about AI's societal benefits, potential dangers, capacity to support learning, and the likelihood of misuse by students (Appendix, Section \@ref(sec:questionnaire)). We also asked students about their direct experience using ChatGPT for homework --- the most common chatbot at the time of the study --- and their beliefs about how many of their peers use ChatGPT for their homework, thereby capturing both individual behaviour and the perceived social norm around AI usage. These measures help establish baseline orientations that may moderate how students engage with and evaluate AI explanations (related to RQ-1) and how they perceive different AI interaction styles (related to RQ-3).
+To better understand students' general attitudes toward AI, we selected four questions from Schepman and Rodway's AI Attitudes Scale [@schepman2020initial]. These questions explored students; beliefs about AI's societal benefits, potential dangers, capacity to support learning, and the likelihood of misuse by students (Appendix, Section \@ref(questionnaire)). We also asked students about their direct experience using ChatGPT for homework --- the most common chatbot at the time of the study --- and their beliefs about how many of their peers use ChatGPT for their homework, thereby capturing both individual behaviour and the perceived social norm around AI usage. These measures help establish baseline orientations that may moderate how students engage with and evaluate AI explanations (related to RQ-1) and how they perceive different AI interaction styles (related to RQ-3).
 
 ### AI Academic Habits and Skills
 
