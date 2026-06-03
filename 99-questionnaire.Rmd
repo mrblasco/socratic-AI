@@ -148,12 +148,46 @@
 
 26. What is your average grade at school?
 
+- Below 5 (F),
+- Between 5 and 6 (E),
+- Between 6 and 7 (D),
+- Between 7 and 8 (C), 
+- Between 8 and 9 (B)
+- Above 9 (A)
+
 27. How many hours per day do you spend completing homework assignments?
+
+- Less than 1 hour
+- 1-2 hours
+- 2-3 hours
+- 3-4 hours
+- More than 4 hours
 
 28. How often do you complete your homework assignment on time?
 
+- Never
+- Rarely
+- Sometimes
+- Usually
+- Always
+
 29. What single factor contributes the most to your ability to complete homework assignments on time?
+
+- Lack of distractions
+- Understanding the material
+- Clear instructions from teachers
+- Support from family or peers
+- Effective time management
 
 30. Have you ever used ChatGPT before today?
 
+- No
+- Yes
+
 31. In your opinion, how many of your classmates are using ChatGPT for homework?
+
+- I don't know
+- None
+- Some
+- Most
+- All

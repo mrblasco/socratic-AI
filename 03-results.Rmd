@@ -2,7 +2,7 @@
 library(dplyr)
 library(kableExtra)
 library(tidyr)
-library(ordinal) #clm()
+library(ordinal) # clm()
 library(ggplot2)
 library(ggdist)
 library(ggrepel)
@@ -54,48 +54,52 @@ tutorgpt_rename <- tutorgpt %>%
     )
 
 table_socratic <- tutorgpt_rename %>%
-    dplyr::select(-treatment_explain_id) %>% 
+    dplyr::select(-treatment_explain_id) %>%
     tidyr::pivot_longer(-treatment_tutor_id) %>%
     dplyr::mutate(
-        pval = xtabs(~ value + treatment_tutor_id) %>% 
+        pval = xtabs(~ value + treatment_tutor_id) %>%
             fisher.test() %>%
             .$p.value,
         .by = name
-    )  %>%
+    ) %>%
     dplyr::count(name, value, pval, treatment_tutor_id) %>%
     na.omit() %>%
     dplyr::mutate(
-        percent = 100 * n / sum(n), 
+        percent = 100 * n / sum(n),
         .by = c(name, treatment_tutor_id)
     ) %>%
-    tidyr::pivot_wider(names_from = treatment_tutor_id,
-                        values_from = c(percent, n),
-                        values_fill = 0) %>%
+    tidyr::pivot_wider(
+        names_from = treatment_tutor_id,
+        values_from = c(percent, n),
+        values_fill = 0
+    ) %>%
     dplyr::mutate(totals = n_non_socratic + n_socratic)
 
 table_explain <- tutorgpt_rename %>%
-    dplyr::select(-treatment_tutor_id) %>% 
+    dplyr::select(-treatment_tutor_id) %>%
     tidyr::pivot_longer(-treatment_explain_id) %>%
     dplyr::mutate(
-        pval_explain = xtabs(~ value + treatment_explain_id) %>% 
+        pval_explain = xtabs(~ value + treatment_explain_id) %>%
             fisher.test() %>%
             .$p.value,
         .by = name,
-    )  %>%
+    ) %>%
     dplyr::count(name, value, treatment_explain_id, pval_explain) %>%
     na.omit() %>%
     dplyr::mutate(
-        percent = 100 * n / sum(n), 
+        percent = 100 * n / sum(n),
         .by = c(name, treatment_explain_id)
     ) %>%
-    tidyr::pivot_wider(names_from = treatment_explain_id,
-                        values_from = c(percent, n),
-                        values_fill = 0) 
+    tidyr::pivot_wider(
+        names_from = treatment_explain_id,
+        values_from = c(percent, n),
+        values_fill = 0
+    )
 
 table_socratic %>%
-    dplyr::left_join(table_explain, by = c("name", "value")) %>% 
+    dplyr::left_join(table_explain, by = c("name", "value")) %>%
     dplyr::mutate(
-        name = ifelse(row_number() == 1, name, ""), 
+        name = ifelse(row_number() == 1, name, ""),
         pval = ifelse(row_number() == 1, sprintf("%0.2f", pval), ""),
         pval_explain = ifelse(row_number() == 1, sprintf("%0.2f", pval_explain), ""),
         .by = name
@@ -105,7 +109,7 @@ table_socratic %>%
         percent_socratic, percent_non_socratic, pval,
         percent_explain_yes, percent_explain_no, pval_explain,
         totals,
-    ) %>% 
+    ) %>%
     kableExtra::kbl(
         col.names = c(
             "Name", "Value",
@@ -117,8 +121,8 @@ table_socratic %>%
         booktabs = TRUE,
         caption = "Sample Characteristics",
         linesep = if (knitr::is_latex_output()) "\\hline" else "",
-    ) %>% 
-    kableExtra::kable_styling() %>% 
+    ) %>%
+    kableExtra::kable_styling() %>%
     kableExtra::add_header_above(c(" " = 2, "Socratic (%)" = 3, "AI Explain (%)" = 3, " "))
 ```
 
@@ -136,7 +140,7 @@ agree_labels <- c(
 )
 
 palette <- c(
-    "#ca0020", "#f4a582", 
+    "#ca0020", "#f4a582",
     "#d1e5f0", "#92c5de", "#0571b0"
 )
 
@@ -148,7 +152,7 @@ attitudes_df <- tutorgpt %>%
         "AI will foster students' learning in the future" = q3_ai_learning
     ) %>%
     tidyr::pivot_longer(cols = everything()) %>%
-    dplyr::count(name, value) %>% 
+    dplyr::count(name, value) %>%
     dplyr::mutate(percent = 100 * (n + 1) / (sum(n) + 5), .by = name)
 
 attitudes_df %>%
@@ -172,7 +176,7 @@ attitudes_df %>%
         axis.ticks = element_blank(),
         axis.text.x = element_blank(),
         panel.spacing = unit(2, "lines")
-    ) + 
+    ) +
     labs(
         x = NULL, y = NULL,
         caption = "Source: Full sample (n = 122)",
@@ -182,14 +186,14 @@ attitudes_df %>%
 ```
 
 ```{r update-propensity, include = FALSE}
-update_ds <- tutorgpt %>% 
+update_ds <- tutorgpt %>%
     dplyr::mutate(
-        update = sign(q12_guess_coins_final - q9_guess_coins_initial), 
+        update = sign(q12_guess_coins_final - q9_guess_coins_initial),
         initial_guess_100 = q9_guess_coins_initial / 100
     )
 
-update_propensity_table <- update_ds %>% 
-    xtabs(formula = ~ update  + treatment_explain_id) 
+update_propensity_table <- update_ds %>%
+    xtabs(formula = ~ update + treatment_explain_id)
 
 knitr::kable(update_propensity_table)
 fisher.test(update_propensity_table)
@@ -199,7 +203,7 @@ model <- center(q12_guess_coins_final) ~ initial_guess_100 +
 
 fit_update_propensity <- lm(model, update_ds)
 fit_robust <- rlm(model, update_ds)
-fit_no_out <- fit_robust %>% 
+fit_no_out <- fit_robust %>%
     update(subset = q9_guess_coins_initial < 1e5)
 
 fit <- list(fit_update_propensity, fit_robust, fit_no_out)
@@ -207,11 +211,11 @@ stargazer::stargazer(fit, type = "text", keep.stat = "n", digits = 1)
 
 # ---- Figure ----
 cap <- "Difference between first and second guess.  "
-tutorgpt %>% 
+tutorgpt %>%
     dplyr::mutate(
-        final_tc = q12_guess_coins_final %>% 
+        final_tc = q12_guess_coins_final %>%
             topcode(1e3),
-        initial_tc = q9_guess_coins_initial %>% 
+        initial_tc = q9_guess_coins_initial %>%
             topcode(1e3),
     ) %>%
     ggplot(
@@ -225,11 +229,11 @@ tutorgpt %>%
         )
     ) +
     geom_point() +
-    geom_smooth(alpha = .25) + 
+    geom_smooth(alpha = .25) +
     labs(
         x = "First Guess ($)",
         y = "Second Guess ($)"
-    ) + 
+    ) +
     theme(
         legend.position = "bottom",
     )
@@ -267,7 +271,7 @@ resample_median <- function(n_boot, x) {
 }
 
 bootstrap_accuracy <- tutorgpt %>%
-    dplyr::filter(q12_guess_coins_final < 6e3) %>% 
+    dplyr::filter(q12_guess_coins_final < 6e3) %>%
     dplyr::mutate(abs_err = abs(q12_guess_coins_final - coins_value)) %>%
     dplyr::reframe(
         .by = treatment_explain_id,
@@ -275,7 +279,7 @@ bootstrap_accuracy <- tutorgpt %>%
         sim_id = seq(n_boot)
     )
 
-bootstrap_accuracy_diff <- bootstrap_accuracy %>% 
+bootstrap_accuracy_diff <- bootstrap_accuracy %>%
     dplyr::summarise(diff = diff(boot_med), .by = sim_id)
 
 
@@ -283,114 +287,133 @@ alpha <- 0.1
 diff_cis <- bootstrap_accuracy_diff %>%
     dplyr::reframe(quantile(diff, p = c(alpha / 2, 1 - alpha / 2)))
 
-p_value <- bootstrap_accuracy_diff %>% 
+p_value <- bootstrap_accuracy_diff %>%
     with(1 - (sum(diff < 0) + 1) / (length(diff) + 2))
 
-p_value_one_sided <- bootstrap_accuracy_diff %>% 
+p_value_one_sided <- bootstrap_accuracy_diff %>%
     with(mean(diff > 0))
 
-p_dens_diff <- bootstrap_accuracy_diff %>% 
-  ggplot() + 
-  aes(x = diff) +
-  geom_density(alpha = .4, bw = "sj", fill = "lightgray") +
-  labs(
-    x = "Difference in Median Absolute Error",
-    y = "Density"
-  ) + 
-  scale_fill_manual(values = palette) +
-  scale_color_manual(values = palette) +
-  theme(
-    axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-    legend.position = "top", legend.title = element_blank()
-  ) + 
-  geom_vline(xintercept = 0, linetype = "dashed") + 
-  annotate(
-    "text", x = -35, y = 0.015, color = palette[2], 
-    label = sprintf(
-      "Bootstrapped median difference\np.value = %0.3f", p_value
+p_dens_diff <- bootstrap_accuracy_diff %>%
+    ggplot() +
+    aes(x = diff) +
+    geom_density(alpha = .4, bw = "sj", fill = "lightgray") +
+    labs(
+        x = "Difference in Median Absolute Error",
+        y = "Density"
+    ) +
+    scale_fill_manual(values = palette) +
+    scale_color_manual(values = palette) +
+    theme(
+        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        legend.position = "top", legend.title = element_blank()
+    ) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    annotate(
+        "text",
+        x = -35, y = 0.015, color = palette[2],
+        label = sprintf(
+            "Bootstrapped median difference\np.value = %0.3f", p_value
+        )
     )
-  )
 
-p_dens <- bootstrap_accuracy %>% 
-  ggplot() +
-  aes(x = boot_med, fill = treatment_explain_id, color = treatment_explain_id) +
-  geom_density(alpha = 0.4, bw = "nrd") +
-  labs(
-    x = "Median Absolute Error",
-    y = "Density (bootstrap)"
-  ) +
-  scale_fill_manual(values = palette) +
-  scale_color_manual(values = palette) +
-  theme(
-    axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-    legend.position = "top",
-    legend.title = element_blank()
-  )
+p_dens <- bootstrap_accuracy %>%
+    ggplot() +
+    aes(x = boot_med, fill = treatment_explain_id, color = treatment_explain_id) +
+    geom_density(alpha = 0.4, bw = "nrd") +
+    labs(
+        x = "Median Absolute Error",
+        y = "Density (bootstrap)"
+    ) +
+    scale_fill_manual(values = palette) +
+    scale_color_manual(values = palette) +
+    theme(
+        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        legend.position = "top",
+        legend.title = element_blank()
+    )
 
 # Combine plots
-(p_dens + p_dens_diff) + 
-  plot_annotation(
-    tag_levels = "A",
-    caption = "Source: Full sample (N = 121, excluding one outlier)."
-  )
+(p_dens + p_dens_diff) +
+    plot_annotation(
+        tag_levels = "A",
+        caption = "Source: Full sample (N = 121, excluding one outlier)."
+    )
 ```
 
-To examine the impact of AI explanations on students' perceived credibility of AI predictions (RQ2), we analysed students' five-point ratings of the perceived accuracy of the AI estimated value of coins. We noticed that 53% of students who did not receive step-by-step reasoning considered the AI estimate as either “good” (39%) or “very good” (14%) compared to 43% of students exposed to the AI reasoning (19% and 24%, respectively). This gap of ten percentage points suggests that students viewed the AI as more accurate when the AI-generated guess was presented as a "black box." However, we didn't have enough observations to reach a statistically significant association (Fisher's test, p = .27), and even regression analysis, controlling for individual characteristics, showed no significant association (Figure \@ref(fig:perceived-accuracy-coins)).
+To examine the impact of AI explanations on students' perceived credibility of AI predictions (RQ2), we analysed students' five-point ratings of the perceived accuracy of the AI estimated value of coins. We noticed that 53% of students who did not receive step-by-step reasoning considered the AI estimate as either “good” (39%) or “very good” (14%) compared to 43% of students exposed to the AI reasoning (19% and 24%, respectively). This gap of ten percentage points suggests that students viewed the AI as more accurate when the AI-generated guess was presented as a "black box."  However, a non-parametric Mann-Whitney U test found no significant difference between the conditions ($W = 1754.5$, $p = .59$), and even regression analysis controlling for individual characteristics showed no significant differences (Figure \@ref(fig:perceived-accuracy-coins)).
 
-```{r, include = FALSE, tab.cap = "Percentage of students who perceived the accuracy of the AI-generated estimate for the coin value in the jar as accurate"}
+```{r credibility-ai, include = FALSE, tab.cap = cap}
+cap <- paste(
+    "Percentage of students who perceived the accuracy of the AI-generated",
+    "estimate for the coin value in the jar as accurate"
+)
+
 xtab <- xtabs(~ q10_guess_coins_ai_accuracy + treatment_explain_id, tutorgpt)
 kable(prop.table(addmargins(xtab, 2), margin = 2) * 100, digits = 0)
+
+wilcox.test(as.numeric(q10_guess_coins_ai_accuracy) ~ treatment_explain_id, tutorgpt)
 ```
 
-```{r, include = FALSE, tab.cap = "% of students who perceived the accuracy of the Human-generated average guess for the coin value in the jar as _____"}
+```{r credibility-human, include = FALSE, tab.cap = cap}
+cap <- paste(
+    "% of students who perceived the accuracy of the Human-generated average",
+    "guess for the coin value in the jar as _____"
+)
 xtab <- xtabs(~ q11_guess_coins_human_accuracy + treatment_explain_id, tutorgpt)
 kable(prop.table(xtab, margin = 2) * 100, digits = 0)
+
+wilcox.test(as.numeric(q11_guess_coins_human_accuracy) ~ treatment_explain_id, tutorgpt)
 ```
 
-Conversely, exposure to the AI step-by-step reasoning seemed associated with students' perception of the accuracy of the "human" guess --- the average guess from 600 participants reported in the original study [@steiner2015turns].^[Notably, this guess was $596, exceeding the correct value ($379.54) by about the same amount as the AI guess underestimated it ($213).] While all groups received the same human and AI estimates, 64% of students in the control rated the human estimate as "poor" or "very poor" against 45% of students exposed to AI reasoning. Although this difference was insignificant (Fisher's exact test, p = 0.15),  regression analysis, controlling for fixed differences across schools and across individuals, such as their gender, the initial guess of the value of coins, and experience with ChatGPT, showed a significant effect (p < 0.05) of the assignment to AI reasoning on students' perceptions of the human guess, as shown in Figure \@ref(fig:perceived-accuracy-coins). This finding underscores the complex relationship between AI and learning. It suggests that students exposed to the AI's step-by-step reasoning may have identified minor errors, thus increasing their expectations of human accuracy, and those who viewed AI as a "black box" tended to underrate human estimates.
+Conversely, exposure to the AI step-by-step reasoning seemed associated with students' perception of the accuracy of the "human" guess --- the average guess from 600 participants reported in the original study [@steiner2015turns].^[
+    Notably, this guess was $596, exceeding the correct value ($379.54) by about the same amount as the AI guess underestimated it ($213).
+] While all groups received the same human and AI estimates, 64% of students in the control rated the human estimate as "poor" or "very poor" against 45% of students exposed to AI reasoning. 
+
+Statistically, a Mann-Whitney U test indicates a significant difference between the two conditions at the 10% level ($W = 2179$, $p = .087$). Likewise, regression analysis that controls for fixed differences across schools and across individuals (including gender, the initial guess of the value of coins, and experience with ChatGPT) showed a significant effect (p < 0.05) of the assignment to AI reasoning on students' perceptions of the human guess, as shown in Figure \@ref(fig:perceived-accuracy-coins). These findings underscore the complex relationship between AI and learning. It suggests that students exposed to the AI's step-by-step reasoning may have identified minor errors, thus increasing their expectations of human accuracy, and those who viewed AI as a "black box" tended to underrate human estimates.
 
 ```{r perceived-accuracy-coins, fig.cap = "Comparison of students' perceived accuracy of AI and human estimates across treatments on a five-point scale. Coefficients from separate ordinal logistic regressions controlling for students' location,  gender, and prior experience with ChatGPT. Positive coefficients indicate increased perceived accuracy associated with students' exposure to AI reasoning.", fig.width = 7, fig.height=3.5, echo = FALSE, warning = FALSE, message = FALSE}
-
 reverse_order <- function(x) {
-  factor(x, rev(levels(x)), ordered = TRUE)
+    factor(x, rev(levels(x)), ordered = TRUE)
 }
 
 # Fit model
 model <- reverse_order(q11_guess_coins_human_accuracy) ~ treatment_explain_id +
-  location + has_used_before + gender
+    location + has_used_before + gender
 
 fit <- MASS::polr(model, tutorgpt)
 fit_ai <- update(fit, reverse_order(q10_guess_coins_ai_accuracy) ~ .)
 
-list("Human" = fit, "AI" = fit_ai) %>% 
-  lapply(broom::tidy, conf.int = TRUE) %>% 
-  dplyr::bind_rows(.id = "depvar") %>% 
-  filter(term == "treatment_explain_idexplain_yes") %>%
-  ggplot() + 
-  aes(
-    color = "95% CI",
-    x = estimate, y = depvar,
-    xmin = conf.low, xmax = conf.high
-  ) +
-  scale_y_discrete(
-    labels = c(Human = "Perceived human accuracy", 
-               AI = "Perceived AI accuracy")
-  ) +
-  scale_color_manual(values = "navy") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  geom_linerange(linewidth = 3, alpha = 0.2) + 
-  geom_point(size = 3) +
-  guides(
-    colour = guide_legend(position = "inside")
-  ) + 
-  theme(
-    legend.position.inside = c(0.1, 0.9),
-    legend.title = element_blank(),
-  ) + 
-  labs(
-    x = "Regression coefficient (ordinal logistic)", 
-    y = "Dep. var.",
-  )
+list("Human" = fit, "AI" = fit_ai) %>%
+    lapply(broom::tidy, conf.int = TRUE) %>%
+    dplyr::bind_rows(.id = "depvar") %>%
+    filter(term == "treatment_explain_idexplain_yes") %>%
+    ggplot() +
+    aes(
+        color = "95% CI",
+        x = estimate, y = depvar,
+        xmin = conf.low, xmax = conf.high
+    ) +
+    scale_y_discrete(
+        labels = c(
+            Human = "Perceived human accuracy",
+            AI = "Perceived AI accuracy"
+        )
+    ) +
+    scale_color_manual(values = "navy") +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_linerange(linewidth = 3, alpha = 0.2) +
+    geom_point(size = 3) +
+    guides(
+        colour = guide_legend(position = "inside")
+    ) +
+    theme(
+        legend.position.inside = c(0.1, 0.9),
+        legend.title = element_blank(),
+    ) +
+    labs(
+        x = "Regression coefficient (ordinal logistic)",
+        y = "Dep. var.",
+    )
 ```
 
 ## A Comparison of Socratic vs Non-Socratic AI
@@ -399,174 +422,176 @@ list("Human" = fit, "AI" = fit_ai) %>%
 
 Figure \@ref(fig:messages) shows the students' message length and frequency in the Socratic AI and Non-Socratic AI groups, allowing us to compare the student-AI interactions across treatment groups. As shown in the figure, Socratic AI students exchanged a median of 20 messages, significantly more than the eight messages by non-Socratic AI students (Wilcoxon test, p < 0.01). In addition, the Socratic AI’s messages were significantly shorter, with a median of 42 words, compared to 123 for the non-Socratic tutor (Wilcoxon test, p < 0.01). Socratic students also used fewer words, with two peaks: one at ten and the other at one word. This evidence supports the hypothesis that the Socratic tutor encouraged more engagement and interaction, resembling a relatively more genuine student-tutor talk.
 
-```{r messages, fig.cap = "Comparison of message frequency and word count per message across Socratic and non-Socratic treatments. Top panel (**A**) shows differences in the frequency of messages exchanged, while the bottom panels (**B** ) depict the word counts per message for the AI tutor (left) and the students (right).", fig.width = 7, fig.height = 7, echo = FALSE}
+```{r messages, fig.cap = "Comparison of message frequency and word count per message across Socratic and non-Socratic treatments. Top panel (**A**) shows differences in the frequency of messages exchanged, while the bottom panels (**B** ) depict the word counts per message for the AI agent (left) and the students (right).", fig.width = 7, fig.height = 7, echo = FALSE}
 palette <- c("#d95f02", "#7570b3")
 
 # Step 1. count messages per users for Panel A
 messages <- chats %>%
-  dplyr::filter(!is.na(created_at)) %>%
-  dplyr::count(location, user_id, treatment_tutor_id, sort = TRUE)
+    dplyr::filter(!is.na(created_at)) %>%
+    dplyr::count(location, user_id, treatment_tutor_id, sort = TRUE)
 
 # Show KS-test differences
 # wilcox.test(n ~ treatment_tutor_id, data = messages)
 
 # Compute medians
 df_med_messages <- messages %>%
-  summarise(n = median(n), .by = c(treatment_tutor_id)) %>% 
-  mutate(
-    label = case_when(
-      treatment_tutor_id == "socratic" ~ 
-        paste0("Socratic median exchanges = ", n),
-      TRUE  ~ paste0("Non-Socratic median exchanges = ", n)
+    summarise(n = median(n), .by = c(treatment_tutor_id)) %>%
+    mutate(
+        label = case_when(
+            treatment_tutor_id == "socratic" ~
+                paste0("Socratic median exchanges = ", n),
+            TRUE ~ paste0("Non-Socratic median exchanges = ", n)
+        )
     )
-  )
 
 # Step 2: compute med word counts for panel B
 df_med_words <- chats %>%
-  summarise(words = median(words),
-            .by = c(treatment_tutor_id, role_label)) %>%
-  mutate(
-    label = case_when(
-      treatment_tutor_id == "socratic" ~ 
-        paste0("Socratic med. words = ", words),
-      TRUE  ~ paste0("Non-Socratic med. words = ", words)
+    summarise(
+        words = median(words),
+        .by = c(treatment_tutor_id, role_label)
+    ) %>%
+    mutate(
+        label = case_when(
+            treatment_tutor_id == "socratic" ~
+                paste0("Socratic med. words = ", words),
+            TRUE ~ paste0("Non-Socratic med. words = ", words)
+        )
     )
-  )
 
 # Step 3: Create Panel A - Message frequency plot
 p_messages <- ggplot(messages) +
-  aes(
-    x = n,
-    y = treatment_tutor_id,
-    color = treatment_tutor_id,
-    fill = treatment_tutor_id
-  ) + 
-  geom_boxplot(
-    width = .15,
-    fill = "whitesmoke",
-    outlier.shape = NA
-  ) +
-  ggdist::stat_halfeye(
-    adjust = .75,
-    alpha = .25,
-    width = 1,
-    justification = -.2,
-    point_colour = NA,
-    point_interval = NULL
-  )  +
-  geom_point(
-    size = .75,
-    alpha = .5,
-    position = position_jitter(width = .05, height = 0.05)
-  ) +
-  geom_text(
-    data = df_med_messages,
-    nudge_y = .25,
-    aes(label = label),
-    size = 3,
-    fontface = "bold"
-  ) +
-  scale_y_discrete(
-    labels = c(socratic = "Socratic", non_socratic = "Non-Socratic")
-  ) + 
-  scale_x_log10() +
-  scale_fill_manual(values = palette) + 
-  scale_color_manual(values = palette) +
-  theme(
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank(),
-    legend.position = "none",
-    panel.spacing = unit(3, "lines"),
-  )
+    aes(
+        x = n,
+        y = treatment_tutor_id,
+        color = treatment_tutor_id,
+        fill = treatment_tutor_id
+    ) +
+    geom_boxplot(
+        width = .15,
+        fill = "whitesmoke",
+        outlier.shape = NA
+    ) +
+    ggdist::stat_halfeye(
+        adjust = .75,
+        alpha = .25,
+        width = 1,
+        justification = -.2,
+        point_colour = NA,
+        point_interval = NULL
+    ) +
+    geom_point(
+        size = .75,
+        alpha = .5,
+        position = position_jitter(width = .05, height = 0.05)
+    ) +
+    geom_text(
+        data = df_med_messages,
+        nudge_y = .25,
+        aes(label = label),
+        size = 3,
+        fontface = "bold"
+    ) +
+    scale_y_discrete(
+        labels = c(socratic = "Socratic", non_socratic = "Non-Socratic")
+    ) +
+    scale_x_log10() +
+    scale_fill_manual(values = palette) +
+    scale_color_manual(values = palette) +
+    theme(
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "none",
+        panel.spacing = unit(3, "lines"),
+    )
 
 # Stpe 4: Create Panel B
-p_words <- chats %>% 
-  ggplot() +
-  aes(
-    x = words,
-    y = treatment_tutor_id,
-    color = treatment_tutor_id,
-    fill = treatment_tutor_id
-  ) + 
-  geom_boxplot(
-    width = .15,
-    fill = "whitesmoke",
-    outlier.shape = NA
-  ) +
-  ggdist::stat_halfeye(
-    alpha = .25,
-    width = .5,
-    .width = 0,
-    justification = -.2,
-    point_colour = NA,
-    point_interval = NULL
-  )  +
-  geom_point(
-    size = .15,
-    alpha = .3, 
-    position = position_jitter(width = .05, height = 0.05)
-  ) +
-  geom_text(
-    data = df_med_words,
-    nudge_y = .25,
-    aes(label = label), 
-    size = 3,
-    fontface = "bold"
-  ) + 
-  facet_wrap(. ~ role_label) + 
-  scale_color_manual(values = palette) + 
-  scale_fill_manual(values = palette) + 
-  scale_y_discrete(
-    labels = c(socratic = "Socratic", non_socratic = "Non-Socratic")
-  ) + 
-  scale_x_log10() + 
-  theme(
-    legend.position = "none",
-    panel.spacing = unit(3, "lines"),
-    axis.text.y = element_blank(), 
-    axis.ticks.y = element_blank(),
-  ) + 
-  coord_cartesian(clip = FALSE)
+p_words <- chats %>%
+    ggplot() +
+    aes(
+        x = words,
+        y = treatment_tutor_id,
+        color = treatment_tutor_id,
+        fill = treatment_tutor_id
+    ) +
+    geom_boxplot(
+        width = .15,
+        fill = "whitesmoke",
+        outlier.shape = NA
+    ) +
+    ggdist::stat_halfeye(
+        alpha = .25,
+        width = .5,
+        .width = 0,
+        justification = -.2,
+        point_colour = NA,
+        point_interval = NULL
+    ) +
+    geom_point(
+        size = .15,
+        alpha = .3,
+        position = position_jitter(width = .05, height = 0.05)
+    ) +
+    geom_text(
+        data = df_med_words,
+        nudge_y = .25,
+        aes(label = label),
+        size = 3,
+        fontface = "bold"
+    ) +
+    facet_wrap(. ~ role_label) +
+    scale_color_manual(values = palette) +
+    scale_fill_manual(values = palette) +
+    scale_y_discrete(
+        labels = c(socratic = "Socratic", non_socratic = "Non-Socratic")
+    ) +
+    scale_x_log10() +
+    theme(
+        legend.position = "none",
+        panel.spacing = unit(3, "lines"),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+    ) +
+    coord_cartesian(clip = FALSE)
 
 # Panels A and B - combined
 p_combined <-
-  (p_messages + labs(
-    title = NULL, 
-    subtitle = NULL, 
-    caption = NULL, 
-    x = "Messages Exchanged with AI Tutor (per student)",
-    y = NULL,
-  )) /
-  (p_words + labs(
-    title = NULL, 
-    subtitle = NULL, 
-    caption = NULL, 
-    y = NULL,
-    x = "Word Counts (per message)"
-  ))
+    (p_messages + labs(
+        title = NULL,
+        subtitle = NULL,
+        caption = NULL,
+        x = "Messages Exchanged with AI Agent (per student)",
+        y = NULL,
+    )) /
+        (p_words + labs(
+            title = NULL,
+            subtitle = NULL,
+            caption = NULL,
+            y = NULL,
+            x = "Word Counts (per message)"
+        ))
 
-p_combined + plot_annotation(tag_levels = "A") 
+p_combined + plot_annotation(tag_levels = "A")
 ```
 
 
 ### Automatic evaluation of Socratic dimensions 
 
-We conducted a detailed textual analysis of all AI–student conversations to (1) test the pedagogical differences between the Socratic and Non-Socratic tutors as they emerged in our experiment, and (2) derive additional indicators of student engagement that extend beyond simple measures such as word counts or the number of exchanges. To address the first aim, we adapted a rubric from Pauzi et al. [@pauzi2025automating], originally designed for automating the pedagogical evaluation of LLM-based conversational agents. The rubric captures key dimensions of Socratic tutoring, including providing support without directly giving answers ("scaffolding"), offering stepwise guidance, maintaining an encouraging tone, and sustaining a conversational style.
+We conducted a detailed textual analysis of all AI–student conversations to (1) test the pedagogical differences between the Socratic and Non-Socratic tutors as they emerged in our experiment, and (2) derive additional indicators of student engagement that extend beyond simple measures such as word counts or the number of exchanges. To address the first aim, we adapted a rubric from Pauzi et al. [@pauzi2025automating], originally designed for automating the pedagogical evaluation of LLM-based conversational agents. The rubric captures key dimensions of Socratic tutoring, including providing support without directly giving answers ("scaffolding"), offering stepwise guidance, maintaining an encouraging tone, and sustaining a conversational guidance.
 
 While the original rubric consisted of five binary items, we modified it in two ways. First, we replaced the binary response format with a 5-point scale to increase statistical power and improve granularity. Second, we expanded the set of items to capture additional pedagogically relevant dimensions of conversational agents, including clarity, engagement, and depth of response. Using this revised rubric, we evaluated all 362 conversations^[We collected chats from 122 participants in 3 tasks. So, the total chats were 366. After excluding four with no proper conversation, we ended up with 362 chats for analysis.] through an LLM-based coding procedure and subsequently conducted regression analyses that accounted for within-student correlation, included school fixed effects, and controlled for the number of conversational exchanges. (See the Rubric in the Appendix, Section \ref{sec:socratic-dimension}).
 
-Figure \@ref(fig:socratic-dimensions) presents the regression results. The Socratic AI scored significantly higher on the core Socratic dimensions, showing greater average supportive guidance or scaffolding (coef = 0.55, SE = 0.12), more next-step guidance (coef = 0.54, SE = 0.12), and a more encouraging tone (coef = 0.53, SE = 0.12). We found no significant differences between conditions on the remaining Socratic dimensions. For the additional indicators, the Socratic AI elicited higher student engagement (coef = 0.43, SE = 0.12), although its clarity and depth of response were significantly lower (coef = -0.38, SE = 0.11; coef = -0.55, SE = 0.11, respectively). Taken together, these findings indicate that the Socratic AI followed Socratic principles (encouraging tone and supportive guidance) and, even after controlling for the number of exchanges, was more engaging. However, this increased conversational and encouraging style appears to have come at a cost to overall clarity and response depth.
+Figure \@ref(fig:socratic-dimensions) presents the regression results. The Socratic AI scored significantly higher on the core Socratic dimensions, showing greater average supportive guidance or scaffolding (coef = 0.55, SE = 0.12), more next-step guidance (coef = 0.54, SE = 0.12), and a more encouraging tone (coef = 0.53, SE = 0.12). We found no significant differences between conditions on the remaining Socratic dimensions. For the additional indicators, the Socratic AI elicited higher student engagement (coef = 0.43, SE = 0.12), although its clarity and depth of response were significantly lower (coef = -0.38, SE = 0.11; coef = -0.55, SE = 0.11, respectively). Taken together, these findings indicate that the Socratic AI followed Socratic principles (encouraging tone and supportive guidance) and, even after controlling for the number of exchanges, was more engaging. However, this increased conversational and encouraging guidance appears to have come at a cost to overall clarity and response depth.
 
 ```{r socratic-eval, include = FALSE}
 library(dplyr)
 library(lme4)
 library(knitr)
 
-#tutorgpt <- readRDS("analysis/data/processed/tutorgpt.rds")
-#chats <- readRDS("analysis/data/processed/chats.rds")
+# tutorgpt <- readRDS("analysis/data/processed/tutorgpt.rds")
+# chats <- readRDS("analysis/data/processed/chats.rds")
 
-chat_info <- chats %>% 
-    filter(role == "user") %>% 
+chat_info <- chats %>%
+    filter(role == "user") %>%
     rename(student_id = user_id) %>%
     distinct(chat_id, student_id, treatment_tutor_id, location)
 
@@ -582,8 +607,8 @@ ds_socratic <- read.csv(data_path, header = FALSE, col.names = c(
     "next_step_guidance", "conversational_flow", "encouraging_tone", "comments_socratic"
 ))
 
-ds <- left_join(ds_text, chat_info, by = "chat_id") %>% 
-    left_join(ds_socratic, by = "chat_id") %>% 
+ds <- left_join(ds_text, chat_info, by = "chat_id") %>%
+    left_join(ds_socratic, by = "chat_id") %>%
     left_join(count(chats, chat_id, name = "interactions"), by = "chat_id") %>%
     filter(student_id != 1)
 
@@ -620,12 +645,12 @@ models_socratic <- list(
 
 ```{r socratic-dimensions, fig.cap = cap}
 cap <- paste(
-  "Coefficients and 95% confidence intervals for the effect of Socratic AI from mixed-effects regression models. Each row reports the estimated average difference between Socratic and non-Socratic AI for a distinct pedagogical dimension. All models include individual-level random effects to account for within-student correlation across chats, school-location fixed effects, and a control for the number of exchanges in each chat. Dependent variables were standardized from their original 1–5 scales, so all coefficients represent changes measured in standard-deviation units." # nolint 
+    "Coefficients and 95% confidence intervals for the effect of Socratic AI from mixed-effects regression models. Each row reports the estimated average difference between Socratic and non-Socratic AI for a distinct pedagogical dimension. All models include individual-level random effects to account for within-student correlation across chats, school-location fixed effects, and a control for the number of exchanges in each chat. Dependent variables were standardized from their original 1–5 scales, so all coefficients represent changes measured in standard-deviation units." # nolint
 )
 
 
 coeffs <- models_socratic %>%
-    lapply(broom::tidy, conf.int = TRUE) %>% 
+    lapply(broom::tidy, conf.int = TRUE) %>%
     bind_rows(.id = "depvar")
 
 coeffs %>%
@@ -645,7 +670,7 @@ coeffs %>%
         caption = "Source: AI-student conversations (n = 362)"
     ) +
     theme(
-        legend.position.inside = c(.1, .9), 
+        legend.position.inside = c(.1, .9),
         legend.title = element_blank(),
         plot.title.position = "plot",
     )
@@ -658,256 +683,262 @@ To test whether Socratic AI increased students' confidence in their answers (RQ4
 
 ```{r confidence, fig.width = 7, fig.height = 7, fig.cap = "This figure shows the impact of Socratic AI on students' confidence levels in their performance across three different tasks. Despite some differences between the Socratic and Non-Socratic groups, we found no significant association between the treatment assignment and students' declared confidence levels."}
 create_impact_figure <- function(data, measure) {
-  # Flip and bind data
-  data_long <- data %>%
-    bind_rows(mutate(data, name = "All")) %>%
-    xtabs(
-      formula = as.formula(paste("~", measure, "+ treatment_tutor_id + name")),
-      data = .,
-      exclude = "Other"
-    )
+    # Flip and bind data
+    data_long <- data %>%
+        bind_rows(mutate(data, name = "All")) %>%
+        xtabs(
+            formula = as.formula(paste("~", measure, "+ treatment_tutor_id + name")),
+            data = .,
+            exclude = "Other"
+        )
 
-  # Run Fisher's tests and get p-values
-  test_results <- apply(data_long, 3, fisher.test)
-  p_values <- sapply(test_results, function(x) x$p.value)
+    # Run Fisher's tests and get p-values
+    test_results <- apply(data_long, 3, fisher.test)
+    p_values <- sapply(test_results, function(x) x$p.value)
 
-  # Convert xtabs results to dataframe and add percentage calculations
-  plot_df <- as.data.frame(data_long) %>%
-    dplyr::mutate(percent = 100 * (Freq + 1) / (sum(Freq) + 5),
-         .by = c(treatment_tutor_id, name)) %>%
-    dplyr::mutate(
-      treatment_tutor_id = case_when(
-        treatment_tutor_id == "socratic" ~ "Socratic AI",
-        TRUE ~ "Non-Socratic AI"
-      ),
-      name = case_match(name,
-        "All" ~ sprintf("All tasks<br>p = %2.3f", p_values["All"]),
-        "task1_water" ~ sprintf("Task 1: Guess<br>p = %2.3f", p_values["task1_water"]),
-        "task2_media" ~ sprintf("Task 2: Essay<br>p = %2.3f", p_values["task2_media"]),
-        "task3_sound" ~ sprintf("Task 3: Physics<br>p = %2.3f", p_values["task3_sound"])
-      )
-    )
+    # Convert xtabs results to dataframe and add percentage calculations
+    plot_df <- as.data.frame(data_long) %>%
+        dplyr::mutate(
+            percent = 100 * (Freq + 1) / (sum(Freq) + 5),
+            .by = c(treatment_tutor_id, name)
+        ) %>%
+        dplyr::mutate(
+            treatment_tutor_id = case_when(
+                treatment_tutor_id == "socratic" ~ "Socratic AI",
+                TRUE ~ "Non-Socratic AI"
+            ),
+            name = case_match(
+                name,
+                "All" ~ sprintf("All tasks<br>p = %2.3f", p_values["All"]),
+                "task1_water" ~ sprintf("Task 1: Guess<br>p = %2.3f", p_values["task1_water"]),
+                "task2_media" ~ sprintf("Task 2: Essay<br>p = %2.3f", p_values["task2_media"]),
+                "task3_sound" ~ sprintf("Task 3: Physics<br>p = %2.3f", p_values["task3_sound"])
+            )
+        )
 
-  # Set color palette
-  palette <- c("#ca0020", "#f4a582", "#d1e5f0", "#92c5de", "#0571b0")
-  
-  # Create the plot
-  this_plot <- ggplot(plot_df) +
-    aes(
-      x = percent,
-      label = paste0(round(percent), "%"),
-      y = get(measure),
-      hjust = ifelse(percent < 5, -1, 0),
-      fill = get(measure),
-      position = name,
-    ) +
-    facet_grid(name ~ treatment_tutor_id, scales = "free") +
-    scale_fill_manual(values = palette) +
-    geom_col(width = .8, show.legend = FALSE, position = position_dodge(1), alpha = .75) +
-    geom_text(position = position_stack(.5)) +
-    theme(
-      axis.line.x = element_blank(),
-      axis.ticks = element_blank(),
-      axis.text.x = element_blank(),
-      strip.text.y = ggtext::element_markdown(face = "plain"),
-      panel.spacing = unit(2, "lines")
-    ) +
-    labs(
-      x = NULL,
-      y = NULL,
-      caption = "Source: Full sample of student-task combinations (n = 364)"
-    )
+    # Set color palette
+    palette <- c("#ca0020", "#f4a582", "#d1e5f0", "#92c5de", "#0571b0")
 
-  return(this_plot)
+    # Create the plot
+    this_plot <- ggplot(plot_df) +
+        aes(
+            x = percent,
+            label = paste0(round(percent), "%"),
+            y = get(measure),
+            hjust = ifelse(percent < 5, -1, 0),
+            fill = get(measure),
+            position = name,
+        ) +
+        facet_grid(name ~ treatment_tutor_id, scales = "free") +
+        scale_fill_manual(values = palette) +
+        geom_col(width = .8, show.legend = FALSE, position = position_dodge(1), alpha = .75) +
+        geom_text(position = position_stack(.5)) +
+        theme(
+            axis.line.x = element_blank(),
+            axis.ticks = element_blank(),
+            axis.text.x = element_blank(),
+            strip.text.y = ggtext::element_markdown(face = "plain"),
+            panel.spacing = unit(2, "lines")
+        ) +
+        labs(
+            x = NULL,
+            y = NULL,
+            caption = "Source: Full sample of student-task combinations (n = 364)"
+        )
+
+    return(this_plot)
 }
 
-# Invert confidence levels 
-tutorgpt_wide <- tutorgpt_wide %>% 
-  mutate(value = factor(value, rev(levels(value))))
+# Invert confidence levels
+tutorgpt_wide <- tutorgpt_wide %>%
+    mutate(value = factor(value, rev(levels(value))))
 
 p1 <- create_impact_figure(data = tutorgpt_wide, measure = "value")
 print(p1)
-
 ```
 
 ```{r confidence-regression, fig.width = 7, fig.height = 4, fig.cap = "This figure shows the coefficients from separate ordinal logistic regressions on students' confidence in their answer on a five-point scale, controlling for students' self-efficacy per task and task fixed effect. Results show no significant association between the treatment assignment and students' confidence levels.", message=FALSE, warning=FALSE}
-
 fit_all <- ordinal::clm(
-  value ~ treatment_tutor_id + name + conf_value,
-  data = tutorgpt_wide
+    value ~ treatment_tutor_id + name + conf_value,
+    data = tutorgpt_wide
 )
 
 fit_task_1 <- ordinal::clm(
-  value ~ treatment_tutor_id + conf_value + location, 
-  data = tutorgpt_wide, subset = name == "task1_water"
+    value ~ treatment_tutor_id + conf_value + location,
+    data = tutorgpt_wide, subset = name == "task1_water"
 )
 
 fit_task_2 <- ordinal::clm(
-  value ~ treatment_tutor_id + location + gender + has_used_before, 
-  data = tutorgpt_wide, subset = name == "task2_media"
+    value ~ treatment_tutor_id + location + gender + has_used_before,
+    data = tutorgpt_wide, subset = name == "task2_media"
 )
 
 fit_task_3 <- ordinal::clm(
-  value ~ treatment_tutor_id + conf_value + location, 
-  data = tutorgpt_wide, subset = name == "task3_sound"
+    value ~ treatment_tutor_id + conf_value + location,
+    data = tutorgpt_wide, subset = name == "task3_sound"
 )
 
 df_coef <- list(
-  all = fit_all, task1 = fit_task_1, 
-  task2=fit_task_2, task3=fit_task_3
-) %>% 
-  lapply(broom::tidy, conf.int = TRUE) %>% 
-  bind_rows(.id = "name")
+    all = fit_all, task1 = fit_task_1,
+    task2 = fit_task_2, task3 = fit_task_3
+) %>%
+    lapply(broom::tidy, conf.int = TRUE) %>%
+    bind_rows(.id = "name")
 
-df_coef %>% 
-  filter(grepl("treat", term)) %>%
-  ggplot() +
-  aes(
-    color = "95% CI",
-    x = estimate, y = name,
-    xmin = conf.low, xmax = conf.high
-  ) + 
-  geom_coef() +
-  scale_y_discrete(
-    labels = c(
-      task1 = "Task 1 (guessing)", 
-      task2 = "Task 2 (writing)", 
-      task3 = "Task 3 (physics)",
-      all = "All tasks"
+df_coef %>%
+    filter(grepl("treat", term)) %>%
+    ggplot() +
+    aes(
+        color = "95% CI",
+        x = estimate, y = name,
+        xmin = conf.low, xmax = conf.high
+    ) +
+    geom_coef() +
+    scale_y_discrete(
+        labels = c(
+            task1 = "Task 1 (guessing)",
+            task2 = "Task 2 (writing)",
+            task3 = "Task 3 (physics)",
+            all = "All tasks"
+        )
+    ) +
+    theme(
+        legend.position.inside = c(.1, .9), legend.title = element_blank(),
+        plot.title.position = "plot",
+    ) +
+    labs(
+        x = "Regression coefficient (ordinal logistic)",
+        y = "Tasks",
     )
-  ) +
-  theme(
-    legend.position.inside = c(.1, .9), legend.title = element_blank(),
-    plot.title.position = "plot",
-  ) +
-  labs(
-    x = "Regression coefficient (ordinal logistic)", 
-    y = "Tasks",
-  )
 ```
 
-Further explorative regression analysis to examine potential treatment interactions shows that Socratic AI students with prior ChatGPT experience reported significantly less confidence (p < 0.1) than Non-Socratic AI students (see Figure \@ref(fig:interactions)). This explorative finding suggests that experienced users may perceive new or unconventional AI tutoring methods as less effective or even counterproductive, indicating that encouraging the use of such AI tutoring tools among experienced ChatGPT students can be challenging.
+Further explorative regression analysis to examine potential treatment interactions shows that Socratic AI students with prior ChatGPT experience reported significantly less confidence (p < 0.1) than Non-Socratic AI students (see Figure \@ref(fig:interactions)). This explorative finding suggests that experienced users may perceive new or unconventional AI chatbots as less effective or even counterproductive, indicating that encouraging the use of such AI chatbots among experienced ChatGPT students can be challenging.
 
-### Perceived Helpfulness of AI Tutor
+### Perceived Helpfulness of AI Agent
 
-To test differences in students' perceptions of the AI tutor's helpfulness (RQ5), we examined students' ratings of helpfulness of the AI interaction at the end of each task. These ratings were on a five-point scale, from "Not at all helpful" to "Very helpful."[^mistake]
+To test differences in students' perceptions of the AI agent's helpfulness (RQ5), we examined students' ratings of helpfulness of the AI interaction at the end of each task. These ratings were on a five-point scale, from "Not at all helpful" to "Very helpful."[^mistake]
 
 [^mistake]: Due to a coding issue, the scale used in Brussels and Seville differed slightly in the labels: Seville's students saw "Extremely helpful" whereas Brussels students saw "Very helpful." However, this issue has a minimal impact on the overall results, as results focus on the negative labels ("not at all helpful" or "not helpful") and they remain the same even after controlling for location effects in a regression. Additionally, open discussions held with students after the experimental session confirmed that they found the Socratic AI less helpful. This feedback, combined with the observed differences in negative labels, reinforces that the coding discrepancy has a minimal impact on the overall findings.
 
-In both treatment groups, many students found interacting with the AI tutor “very helpful” or “helpful”, with 56% of the non-Socratic and 44% of the Socratic students, as shown in Figure \@ref(fig:helpfulness). However, the Socratic treatment group showed a bimodal distribution, with a substantial fraction of students (21%) finding the interaction "not at all helpful." The association between perceived helpfulness and treatment assignment was statistically significant (Fisher's exact test, p = 0.025), providing evidence that Socratic AI was less helpful to certain students. This association, however, was stronger for Task 1 and Taks 3 than Task 2, suggesting an association between the perceived AI's helpfulness and the type of task. Ordinal logistic regression accounting for individual student and task characteristics, including self-efficacy per task, revealed a statistically significant negative difference that corresponds to a drop of approximately 13 percentage points in perceived helpfulness associated with the Socratic AI, as illustrated in Figure \@ref(fig:helpful-regression). See Section \@ref(sec:regress-confidence) for more details. 
+In both treatment groups, many students found interacting with the AI agent “very helpful” or “helpful”, with 56% of the non-Socratic and 44% of the Socratic students, as shown in Figure \@ref(fig:helpfulness). However, the Socratic treatment group showed a bimodal distribution, with a substantial fraction of students (21%) finding the interaction "not at all helpful." The association between perceived helpfulness and treatment assignment was statistically significant (Fisher's exact test, p = 0.025), providing evidence that Socratic AI was less helpful to certain students. This association, however, was stronger for Task 1 and Taks 3 than Task 2, suggesting an association between the perceived AI's helpfulness and the type of task. Ordinal logistic regression accounting for individual student and task characteristics, including self-efficacy per task, revealed a statistically significant negative difference that corresponds to a drop of approximately 13 percentage points in perceived helpfulness associated with the Socratic AI, as illustrated in Figure \@ref(fig:helpful-regression). See Section \@ref(sec:regress-confidence) for more details. 
 
-```{r helpfulness, fig.width = 7, fig.height = 7, fig.cap = "This figure shows the impact of Socratic AI on students' perceived helpfulness of the AI tutor across three different tasks."}
+```{r helpfulness, fig.width = 7, fig.height = 7, fig.cap = "This figure shows the impact of Socratic AI on students' perceived helpfulness of the AI agent across three different tasks."}
 p2 <- create_impact_figure(data = tutorgpt_wide, measure = "helpful")
 print(p2)
 ```
 
 ```{r helpful-regression, fig.width = 7, fig.height = 4, fig.cap = "The impact of Socratic AI on students' confidence levels in their performance across three different tasks. Despite some differences between the Socratic and Non-Socratic groups, we found no significant association between the treatment assignment and students' declared confidence levels", message=FALSE, warning=FALSE}
-
 fit_all <- MASS::polr(helpful ~ treatment_tutor_id + name, tutorgpt_wide)
 fit_task_1 <- MASS::polr(helpful ~ treatment_tutor_id, tutorgpt_wide, subset = name == "task1_water")
 fit_task_2 <- MASS::polr(helpful ~ treatment_tutor_id, tutorgpt_wide, subset = name == "task2_media")
 fit_task_3 <- MASS::polr(helpful ~ treatment_tutor_id, tutorgpt_wide, subset = name == "task3_sound")
 
-df_coef <- list(all = fit_all, task1 = fit_task_1, task2=fit_task_2, task3=fit_task_3) %>% 
-  lapply(broom::tidy, conf.int = TRUE) %>% bind_rows(.id = "name")
+df_coef <- list(all = fit_all, task1 = fit_task_1, task2 = fit_task_2, task3 = fit_task_3) %>%
+    lapply(broom::tidy, conf.int = TRUE) %>%
+    bind_rows(.id = "name")
 
-df_coef %>% 
-  filter(grepl("treat", term)) %>%
-  ggplot() +
-  aes(
-    color = "95% CI",
-    x = estimate, y = name,
-    xmin = conf.low, xmax = conf.high
-  ) + 
-  geom_coef() +
-  scale_y_discrete(
-    labels = c(
-      task1 = "Task 1 (guessing)", 
-      task2 = "Task 2 (writing)", 
-      task3 = "Task 3 (sound propagation)",
-      all = "All tasks"
+df_coef %>%
+    filter(grepl("treat", term)) %>%
+    ggplot() +
+    aes(
+        color = "95% CI",
+        x = estimate, y = name,
+        xmin = conf.low, xmax = conf.high
+    ) +
+    geom_coef() +
+    scale_y_discrete(
+        labels = c(
+            task1 = "Task 1 (guessing)",
+            task2 = "Task 2 (writing)",
+            task3 = "Task 3 (sound propagation)",
+            all = "All tasks"
+        )
+    ) +
+    theme(
+        legend.position.inside = c(.1, .9), legend.title = element_blank(),
+        plot.title.position = "plot",
+    ) +
+    labs(
+        x = "Regression coefficient (ordinal logistic)",
+        y = "Sample",
+        title = "Effect of Socratic AI on Students' Perceived Helpfulness of the AI Agent",
     )
-  ) +
-  theme(
-    legend.position.inside = c(.1, .9), legend.title = element_blank(),
-    plot.title.position = "plot",
-  ) +
-  labs(
-    x = "Regression coefficient (ordinal logistic)", 
-    y = "Sample",
-    title = "Effect of Socratic AI on Students' Perceived Helpfulness of the AI Tutor",
-  )
 ```
 
 ### Learning Outcomes and Knowledge Retention
 
-To evaluate the impact of learning (RQ3), we compared the correctness of responses to Task 3, which focused on sound propagation, and assessed knowledge retention using a follow-up question on the same topic without AI assistance. As shown in Figure \@ref(fig:learning), the use of AI significantly enhanced students' response accuracy. Before interacting with the AI tutor, only 32% of students correctly answered that sound travels faster in water than air due to water's higher density. After AI interaction, this percentage nearly doubled increasing to 68%. However, there was no significant difference in learning outcomes between the Socratic and non-Socratic AI approaches, as illustrated in the figure. Moreover, when presented with a follow-up question (asking in which medium sound travels fastest among gold, rubber, warm air, cold air, and water), only 18% of students responded correctly by selecting the denser material (i.e., gold), again with no significant difference across treatments. This result suggests two implications. Firstly, we found no evidence of Socratic AI improving learning. Secondly, our results seems to suggest a problem of limited retention of the insights obtained with AI assistance or difficulty in applying such learning to novel scenarios.[^limitation]
+To evaluate the impact of learning (RQ3), we compared the correctness of responses to Task 3, which focused on sound propagation, and assessed knowledge retention using a follow-up question on the same topic without AI assistance. As shown in Figure \@ref(fig:learning), the use of AI significantly enhanced students' response accuracy. Before interacting with the AI agent, only 32% of students correctly answered that sound travels faster in water than air due to water's higher density. After AI interaction, this percentage nearly doubled increasing to 68%. However, there was no significant difference in learning outcomes between the Socratic and non-Socratic AI approaches, as illustrated in the figure. Moreover, when presented with a follow-up question (asking in which medium sound travels fastest among gold, rubber, warm air, cold air, and water), only 18% of students responded correctly by selecting the denser material (i.e., gold), again with no significant difference across treatments. This result suggests two implications. Firstly, we found no evidence of Socratic AI improving learning. Secondly, our results seems to suggest a problem of limited retention of the insights obtained with AI assistance or difficulty in applying such learning to novel scenarios.[^limitation]
 
 [^limitation]: While it is true that gold is significantly denser than water or air, it is possible that some students did not fully understand this fact or were unsure how to compare the densities of the materials. If that were the case, even if the AI effectively conveyed that sound travels faster in denser media, students lacking this knowledge may still have been unable to select the correct answer. However, this explanation seems unlikely, as the relative densities of air, water, and metals, like gold, are commonly taught and conceptually straightforward, suggesting that other factors have contributed to students' outcomes.
 
-```{r learning, fig.cap ="Effects on learning: **A** shows the % of correct responses about the physics of sound propagation, illustrating the positive effect of interacting with the AI tutor, while no differences are associated with the Socratic AI. **B** shows the results of the verification question asking students to identify the fastest material for sound propagation (speed as meter per second reported) without AI assistance. Only 18% responded accurately, indicating limited learning."}
-
-# Verification question 
-tutorgpt <- tutorgpt %>% 
-  mutate(
-    q29_sound_speed_verify = case_match(
-      q29_sound_speed_verify,
-      c("0", "very_helpful") ~ "Rubber",
-      c("helpful", "1", "2") ~ "Warm/Cold Air",
-      c("3", "neutral") ~ "Gold",
-      c("4", "not_very_helpful") ~ "Water",
-      .default = q29_sound_speed_verify
+```{r learning, fig.cap ="Effects on learning: **A** shows the % of correct responses about the physics of sound propagation, illustrating the positive effect of interacting with the AI agent, while no differences are associated with the Socratic AI. **B** shows the results of the verification question asking students to identify the fastest material for sound propagation (speed as meter per second reported) without AI assistance. Only 18% responded accurately, indicating limited learning."}
+# Verification question
+tutorgpt <- tutorgpt %>%
+    mutate(
+        q29_sound_speed_verify = case_match(
+            q29_sound_speed_verify,
+            c("0", "very_helpful") ~ "Rubber",
+            c("helpful", "1", "2") ~ "Warm/Cold Air",
+            c("3", "neutral") ~ "Gold",
+            c("4", "not_very_helpful") ~ "Water",
+            .default = q29_sound_speed_verify
+        )
     )
-  )
- 
-# Create table 1. 
-tab <- tutorgpt %>% 
-  bind_rows(., mutate(., treatment_tutor_id = "All")) %>% 
-  xtabs(~ q25_sound_speed + treatment_tutor_id, .) %>%
-  prop.table(2) * 100
 
-colnames(tab) <- case_match(colnames(tab), 
-                            "All" ~ "Full sample", 
-                            "socratic" ~ "Socratic AI",
-                            "non_socratic" ~ "Non-Socratic")
+# Create table 1.
+tab <- tutorgpt %>%
+    bind_rows(., mutate(., treatment_tutor_id = "All")) %>%
+    xtabs(~ q25_sound_speed + treatment_tutor_id, .) %>%
+    prop.table(2) * 100
 
-rownames(tab) <- case_match(rownames(tab), 
-                            "same_speed" ~ "Same speed", 
-                            "water_faster_higher_density" ~ "Water is faster because higher density (correct)",
-                            "water_faster_lower_density" ~ "Water is faster because lower density",
-                            "water_slower_higher_density" ~ "Water is slower because higher density",
-                            "water_slower_lower_density" ~ "Water is slower because lower density",
-                            .default = rownames(tab))
+colnames(tab) <- case_match(
+    colnames(tab),
+    "All" ~ "Full sample",
+    "socratic" ~ "Socratic AI",
+    "non_socratic" ~ "Non-Socratic"
+)
 
-tab %>% 
-  kbl(
-    caption = "% of students in each treatment group by responses to the question 'Does sound travel faster in water than air?'",
-    format = "pipe", digits = 1
-  )
+rownames(tab) <- case_match(rownames(tab),
+    "same_speed" ~ "Same speed",
+    "water_faster_higher_density" ~ "Water is faster because higher density (correct)",
+    "water_faster_lower_density" ~ "Water is faster because lower density",
+    "water_slower_higher_density" ~ "Water is slower because higher density",
+    "water_slower_lower_density" ~ "Water is slower because lower density",
+    .default = rownames(tab)
+)
+
+tab %>%
+    kbl(
+        caption = "% of students in each treatment group by responses to the question 'Does sound travel faster in water than air?'",
+        format = "pipe", digits = 1
+    )
 
 
 tutorgpt <- tutorgpt %>%
-  mutate(
-    q25_sound_speed_correct = ifelse(
-      q25_sound_speed == "water_faster_higher_density", "correct", "incorrect"), 
-    q26_sound_speed_with_ai_correct = ifelse(
-      q26_sound_speed_with_ai ==  "water_faster_higher_density", "correct", "incorrect"),
-    q26_update = ifelse(
-      q25_sound_speed != q26_sound_speed_with_ai, "update_yes", "update_no")
-  )
+    mutate(
+        q25_sound_speed_correct = ifelse(
+            q25_sound_speed == "water_faster_higher_density", "correct", "incorrect"
+        ),
+        q26_sound_speed_with_ai_correct = ifelse(
+            q26_sound_speed_with_ai == "water_faster_higher_density", "correct", "incorrect"
+        ),
+        q26_update = ifelse(
+            q25_sound_speed != q26_sound_speed_with_ai, "update_yes", "update_no"
+        )
+    )
 
 # tab <- tutorgpt %>%
-#   bind_rows(., mutate(., treatment_tutor_id = "All")) %>% 
+#   bind_rows(., mutate(., treatment_tutor_id = "All")) %>%
 #   xtabs(~ q26_update + treatment_tutor_id, .) %>%
 #   prop.table(margin = 2) * 100
 
-# colnames(tab) <- case_match(colnames(tab), 
-#                             "All" ~ "Full sample", 
+# colnames(tab) <- case_match(colnames(tab),
+#                             "All" ~ "Full sample",
 #                             "socratic" ~ "Socratic AI",
 #                             "non_socratic" ~ "Non-Socratic")
 
-# rownames(tab) <- case_match(rownames(tab), 
-#                             "update_yes" ~ "Update answer", 
+# rownames(tab) <- case_match(rownames(tab),
+#                             "update_yes" ~ "Update answer",
 #                             "update_no" ~ "No update answer",
 #                             .default = rownames(tab))
 
@@ -920,25 +951,25 @@ tutorgpt <- tutorgpt %>%
 # p_value <- with(tutorgpt, fisher.test(q26_update, treatment_explain_id))$p.value
 
 
-# tab <- tutorgpt %>% 
-#   bind_rows(., mutate(., treatment_tutor_id = "All")) %>% 
+# tab <- tutorgpt %>%
+#   bind_rows(., mutate(., treatment_tutor_id = "All")) %>%
 #   xtabs(~ q26_sound_speed_with_ai + treatment_tutor_id, .) %>%
 #   prop.table(2) * 100
 
-# colnames(tab) <- case_match(colnames(tab), 
-#                             "All" ~ "Full sample", 
+# colnames(tab) <- case_match(colnames(tab),
+#                             "All" ~ "Full sample",
 #                             "socratic" ~ "Socratic AI",
 #                             "non_socratic" ~ "Non-Socratic")
 
-# rownames(tab) <- case_match(rownames(tab), 
-#                             "same_speed" ~ "Same speed", 
+# rownames(tab) <- case_match(rownames(tab),
+#                             "same_speed" ~ "Same speed",
 #                             "water_faster_higher_density" ~ "Water is faster because higher density (correct)",
 #                             "water_faster_lower_density" ~ "Water is faster because lower density",
 #                             "water_slower_higher_density" ~ "Water is slower because higher density",
 #                             "water_slower_lower_density" ~ "Water is slower because lower density",
 #                             .default = rownames(tab))
 
-# tab %>% 
+# tab %>%
 #   kbl(
 #     caption = "% of students in each treatment group by responses to the question 'Does sound travel faster in water than air?' after interacting with the AI tutor",
 #     format = "pipe", digits = 1
@@ -946,25 +977,25 @@ tutorgpt <- tutorgpt %>%
 
 #' ## Verification question
 #+ echo = FALSE
-# tab <- tutorgpt %>% 
-#   bind_rows(., mutate(., treatment_tutor_id = "All")) %>% 
+# tab <- tutorgpt %>%
+#   bind_rows(., mutate(., treatment_tutor_id = "All")) %>%
 #   xtabs(~ q29_sound_speed_verify + treatment_tutor_id, .) %>%
 #   prop.table(2) * 100
 
-# colnames(tab) <- case_match(colnames(tab), 
-#                             "All" ~ "Full sample", 
+# colnames(tab) <- case_match(colnames(tab),
+#                             "All" ~ "Full sample",
 #                             "socratic" ~ "Socratic AI",
 #                             "non_socratic" ~ "Non-Socratic")
 
-# rownames(tab) <- case_match(rownames(tab), 
-#                             "same_speed" ~ "Same speed", 
+# rownames(tab) <- case_match(rownames(tab),
+#                             "same_speed" ~ "Same speed",
 #                             "water_faster_higher_density" ~ "Water is faster because higher density (correct)",
 #                             "water_faster_lower_density" ~ "Water is faster because lower density",
 #                             "water_slower_higher_density" ~ "Water is slower because higher density",
 #                             "water_slower_lower_density" ~ "Water is slower because lower density",
 #                             .default = rownames(tab))
 
-# tab %>% 
+# tab %>%
 #   kbl(
 #     caption = "% of students in each treatment group by responses to the question 'Does sound travel faster in water than air?' after interacting with the AI tutor",
 #     format = "pipe", digits = 1
@@ -972,175 +1003,178 @@ tutorgpt <- tutorgpt %>%
 
 
 strip_labels <- c(
-  "(Intercept)" = "Non-Socratic AI", 
-  "treatment_tutor_idsocratic" = "Diff. with Socratic AI"
+    "(Intercept)" = "Non-Socratic AI",
+    "treatment_tutor_idsocratic" = "Diff. with Socratic AI"
 )
 
-# First panel 
-panel_a <- tutorgpt %>% 
-  pivot_longer(c(q25_sound_speed_correct, q26_sound_speed_with_ai_correct)) %>% 
-  reframe(
-    broom::tidy(lm(value == "correct" ~ treatment_tutor_id), conf.int = TRUE), .by = name
-  ) %>%
-  mutate(
-    name = case_match(name, 
-                      "q25_sound_speed_correct" ~ "Before AI",
-                      "q26_sound_speed_with_ai_correct" ~ "After AI")
-  ) %>%
-  ggplot() +
-  aes(x = estimate, y = name, xmin = conf.low, xmax = conf.high, color = "95% CI") +
-  facet_grid(~ term, labeller = labeller(term = strip_labels)) + 
-  geom_coef() + 
-  geom_text_repel(aes(label = paste0(round(estimate * 100), "%"))) +
-  theme(
-    legend.position = "none",
-    panel.spacing = unit(3, "lines"),
-  ) +
-  scale_x_continuous(labels = function(x) 100 * x) +
-  labs(
-    x = "Correct answers (%)",
-    y = NULL,
-    title = "Impact of AI on Answer Accuracy",
-    subtitle = "Comparison of Correct Answers Before and After Interacting with AI Tutor"
-  )
+# First panel
+panel_a <- tutorgpt %>%
+    pivot_longer(c(q25_sound_speed_correct, q26_sound_speed_with_ai_correct)) %>%
+    reframe(
+        broom::tidy(lm(value == "correct" ~ treatment_tutor_id), conf.int = TRUE),
+        .by = name
+    ) %>%
+    mutate(
+        name = case_match(
+            name,
+            "q25_sound_speed_correct" ~ "Before AI",
+            "q26_sound_speed_with_ai_correct" ~ "After AI"
+        )
+    ) %>%
+    ggplot() +
+    aes(x = estimate, y = name, xmin = conf.low, xmax = conf.high, color = "95% CI") +
+    facet_grid(~term, labeller = labeller(term = strip_labels)) +
+    geom_coef() +
+    geom_text_repel(aes(label = paste0(round(estimate * 100), "%"))) +
+    theme(
+        legend.position = "none",
+        panel.spacing = unit(3, "lines"),
+    ) +
+    scale_x_continuous(labels = function(x) 100 * x) +
+    labs(
+        x = "Correct answers (%)",
+        y = NULL,
+        title = "Impact of AI on Answer Accuracy",
+        subtitle = "Comparison of Correct Answers Before and After Interacting with AI Agent"
+    )
 
 water <- data.frame(
-  q29_sound_speed_verify = c("Gold", "Water", "Warm/Cold Air", "Rubber"),
-  speed = c(3200, 1500, 350, 60)/1e3
+    q29_sound_speed_verify = c("Gold", "Water", "Warm/Cold Air", "Rubber"),
+    speed = c(3200, 1500, 350, 60) / 1e3
 )
 
 
 panel_b_data <- tutorgpt %>%
-  xtabs(~ q29_sound_speed_verify, .) %>% 
-  as.data.frame() %>%
-  left_join(water) %>% 
-  mutate(
-    percent = 100 * (Freq + 1) / (sum(Freq) + 4), 
-    name = sprintf("%s<br>(%.1f km/s)", q29_sound_speed_verify, speed)
-  )
+    xtabs(~q29_sound_speed_verify, .) %>%
+    as.data.frame() %>%
+    left_join(water) %>%
+    mutate(
+        percent = 100 * (Freq + 1) / (sum(Freq) + 4),
+        name = sprintf("%s<br>(%.1f km/s)", q29_sound_speed_verify, speed)
+    )
 
-panel_b <- panel_b_data %>% 
-  ggplot() +
-  aes(
-    x = percent, y = reorder(q29_sound_speed_verify, speed),
-    label = paste0(round(percent), "%"),
-    hjust = ifelse(percent > 10, 1.2, -.2),
-  ) +
-  geom_col(fill = "orange") + 
-  geom_text() +
-  geom_text(aes(label = sprintf("%.1f m/s",speed)), x = 0, hjust = 0, color = "white") +
-  theme(
-    axis.text.y = element_markdown(lineheight = 1.3, hjust = 0)
-  ) + 
-  labs(
-    x = "Students (%)", y = NULL
-  )
+panel_b <- panel_b_data %>%
+    ggplot() +
+    aes(
+        x = percent, y = reorder(q29_sound_speed_verify, speed),
+        label = paste0(round(percent), "%"),
+        hjust = ifelse(percent > 10, 1.2, -.2),
+    ) +
+    geom_col(fill = "orange") +
+    geom_text() +
+    geom_text(aes(label = sprintf("%.1f m/s", speed)), x = 0, hjust = 0, color = "white") +
+    theme(
+        axis.text.y = element_markdown(lineheight = 1.3, hjust = 0)
+    ) +
+    labs(
+        x = "Students (%)", y = NULL
+    )
 
-(panel_a + labs(title = NULL, subtitle = NULL)) / (panel_b) + 
-  plot_annotation(tag_levels = "A")
+(panel_a + labs(title = NULL, subtitle = NULL)) / (panel_b) +
+    plot_annotation(tag_levels = "A")
 ```
 
 
 
 ```{r interactions, include = TRUE, fig.cap = cap, fig.asp = 1}
-cap <- "Regression coefficients and 95% confidence intervals from a linear regression using as dependent variable the (**A**) students' self-reported confidence level and (**B**) perceived helpfulness of the AI tutor. The controls include student's gender, grades, location, and ChatGPT experience. Treatment dummies are interacted with all the controls and the task type. All models also include individual student random effects, and the student's rated confidence in their skills before performing each task." # nolint
+cap <- "Regression coefficients and 95% confidence intervals from a linear regression using as dependent variable the (**A**) students' self-reported confidence level and (**B**) perceived helpfulness of the AI agent. The controls include student's gender, grades, location, and ChatGPT experience. Treatment dummies are interacted with all the controls and the task type. All models also include individual student random effects, and the student's rated confidence in their skills before performing each task." # nolint
 
 tutorgpt_wide <- tutorgpt_wide %>%
-  mutate(
-    helpful_yes = helpful %in% c("Helpful", "Very helpful"),
-    confident_yes = value %in% c("Very confident", "Confident")
-  )
+    mutate(
+        helpful_yes = helpful %in% c("Helpful", "Very helpful"),
+        confident_yes = value %in% c("Very confident", "Confident")
+    )
 
 fit_lmer <- lmerTest::lmer(
-  100 * confident_yes ~ treatment_tutor_id + name + 
-    conf_value + location + gender + has_used_before + 
-    top_grades + (1 | student_id), tutorgpt_wide
+    100 * confident_yes ~ treatment_tutor_id + name +
+        conf_value + location + gender + has_used_before +
+        top_grades + (1 | student_id), tutorgpt_wide
 )
 
 interactions <- list(baseline = fit_lmer)
-interactions$used   <- update(fit_lmer, ~ . + treatment_tutor_id:has_used_before)
-interactions$name   <- update(fit_lmer, ~ . + treatment_tutor_id:name)
+interactions$used <- update(fit_lmer, ~ . + treatment_tutor_id:has_used_before)
+interactions$name <- update(fit_lmer, ~ . + treatment_tutor_id:name)
 interactions$gender <- update(fit_lmer, ~ . + treatment_tutor_id:gender)
 interactions$grades <- update(fit_lmer, ~ . + treatment_tutor_id:top_grades)
-interactions$all    <- update(fit_lmer, ~ . + treatment_tutor_id:(has_used_before + top_grades + gender + location + name))
+interactions$all <- update(fit_lmer, ~ . + treatment_tutor_id:(has_used_before + top_grades + gender + location + name))
 
-coef_df <- interactions %>% 
-  lapply(broom.mixed::tidy, conf.int = TRUE) %>% 
-  bind_rows(.id = "model") 
+coef_df <- interactions %>%
+    lapply(broom.mixed::tidy, conf.int = TRUE) %>%
+    bind_rows(.id = "model")
 
 calc_stars <- function(p.value) {
-  dplyr::case_when(
-    p.value < 0.01 ~ "***",
-    (p.value < 0.05 & p.value > 0.01) ~ "**",
-    (p.value < 0.1 & p.value > 0.05) ~ "*",
-    TRUE ~ ""
-  )
+    dplyr::case_when(
+        p.value < 0.01 ~ "***",
+        (p.value < 0.05 & p.value > 0.01) ~ "**",
+        (p.value < 0.1 & p.value > 0.05) ~ "*",
+        TRUE ~ ""
+    )
 }
 
 panel_a <- coef_df %>%
-  filter(grepl(":", term), model == "all") %>% 
-  ggplot() + 
-  aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high, color = p.value < 0.1) +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  geom_linerange(linewidth = 3, alpha = .25) +
-  geom_point(size = 3) +
-  geom_text_repel(
-    nudge_y = -.25,
-    aes(
-      label = sprintf("%.1f%s", estimate, calc_stars(p.value))
+    filter(grepl(":", term), model == "all") %>%
+    ggplot() +
+    aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high, color = p.value < 0.1) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_linerange(linewidth = 3, alpha = .25) +
+    geom_point(size = 3) +
+    geom_text_repel(
+        nudge_y = -.25,
+        aes(
+            label = sprintf("%.1f%s", estimate, calc_stars(p.value))
+        )
+    ) +
+    ## Add CIs
+    geom_text(x = Inf, aes(label = sprintf("(%s: %.1f, %.1f)", "95% CI", conf.low, conf.high)), size = 3.5) +
+    coord_cartesian(clip = "off") +
+    theme(
+        legend.position = "none",
+        axis.text.y = element_markdown(hjust = 0),
+        plot.margin = margin(t = .1, b = .1, r = 1, l = .1, unit = "in"),
+    ) +
+    scale_color_manual(values = c("orange", "navy")) +
+    scale_y_discrete(
+        labels = function(x) {
+            x %>%
+                gsub("^.*:", "Socratic x ", .) %>%
+                gsub("has_used_beforeYes", "ChatGPT experience", .) %>%
+                gsub("locationSeville", "Seville", .) %>%
+                gsub("top_grades", "", .) %>%
+                gsub("gender", "", .) %>%
+                gsub("nametask([123])_(.*)", "Task \\1 (\\2)", .)
+        }
+    ) +
+    labs(
+        title = "Socratic AI and Student Confidence Levels",
+        subtitle = "Interaction effects between Socratic AI and task/student characteristics",
+        y = NULL,
+        x = "Regression coefficients and 95% confidence intervals",
+        caption = "Results from linear regression (n = 366); * p < 0.1"
     )
-  ) +
-  ## Add CIs
-  geom_text(x = Inf, aes(label = sprintf("(%s: %.1f, %.1f)", "95% CI", conf.low, conf.high)), size = 3.5) + 
-  coord_cartesian(clip = "off") + 
-  theme(
-    legend.position = "none",
-    axis.text.y = element_markdown(hjust = 0),
-    plot.margin = margin(t = .1, b = .1, r = 1, l = .1, unit = "in"),
-  ) + 
-  scale_color_manual(values = c("orange", "navy")) +
-  scale_y_discrete(
-    labels = function(x) {
-      x %>% 
-        gsub("^.*:", "Socratic x ", .) %>%
-        gsub("has_used_beforeYes", "ChatGPT experience", .) %>% 
-        gsub("locationSeville", "Seville", .) %>% 
-        gsub("top_grades", "", .) %>% 
-        gsub("gender", "", .) %>% 
-        gsub("nametask([123])_(.*)", "Task \\1 (\\2)", .)
-    }
-  ) +
-  labs(
-    title = "Socratic AI and Student Confidence Levels",
-    subtitle = "Interaction effects between Socratic AI and task/student characteristics",
-    y = NULL,
-    x = "Regression coefficients and 95% confidence intervals",
-    caption = "Results from linear regression (n = 366); * p < 0.1"
-  )
 
-#ggsave("figures_and_tables/10_socratic_interact_confidence.pdf")
+# ggsave("figures_and_tables/10_socratic_interact_confidence.pdf")
 
 #' ### Helpfulness
 
 fit_lmer <- lmerTest::lmer(
-  100 * helpful_yes ~ treatment_tutor_id + name + 
-    conf_value + location + gender + has_used_before + 
-    top_grades + (1 | student_id), tutorgpt_wide
+    100 * helpful_yes ~ treatment_tutor_id + name +
+        conf_value + location + gender + has_used_before +
+        top_grades + (1 | student_id), tutorgpt_wide
 )
 
 interactions <- list(baseline = fit_lmer)
-interactions$used   <- update(fit_lmer, ~ . + treatment_tutor_id:has_used_before)
-interactions$name   <- update(fit_lmer, ~ . + treatment_tutor_id:name)
+interactions$used <- update(fit_lmer, ~ . + treatment_tutor_id:has_used_before)
+interactions$name <- update(fit_lmer, ~ . + treatment_tutor_id:name)
 interactions$gender <- update(fit_lmer, ~ . + treatment_tutor_id:gender)
 interactions$grades <- update(fit_lmer, ~ . + treatment_tutor_id:top_grades)
-interactions$all    <- update(fit_lmer, ~ . + treatment_tutor_id:(has_used_before + top_grades + gender + location + name))
+interactions$all <- update(fit_lmer, ~ . + treatment_tutor_id:(has_used_before + top_grades + gender + location + name))
 
-coef_df <- interactions %>% 
-  lapply(broom.mixed::tidy, conf.int = TRUE) %>% 
-  bind_rows(.id = "model") 
+coef_df <- interactions %>%
+    lapply(broom.mixed::tidy, conf.int = TRUE) %>%
+    bind_rows(.id = "model")
 
-panel_b <- coef_df %>% 
-    filter(grepl(":", term), model == "all") %>% 
+panel_b <- coef_df %>%
+    filter(grepl(":", term), model == "all") %>%
     ggplot() +
     aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high, color = p.value < 0.1) +
     geom_vline(xintercept = 0, linetype = "dashed") +
@@ -1151,22 +1185,22 @@ panel_b <- coef_df %>%
         aes(label = sprintf("%.1f%s", estimate, calc_stars(p.value)))
     ) +
     ## Add CIs
-    geom_text(x = Inf, aes(label = sprintf("(%s: %.1f, %.1f)", "95% CI", conf.low, conf.high)), size = 3.5) + 
-    coord_cartesian(clip = "off") + 
+    geom_text(x = Inf, aes(label = sprintf("(%s: %.1f, %.1f)", "95% CI", conf.low, conf.high)), size = 3.5) +
+    coord_cartesian(clip = "off") +
     theme(
         legend.position = "none",
         axis.text.y = element_markdown(hjust = 0),
         plot.margin = margin(t = .1, b = .1, r = 1, l = .1, unit = "in"),
-    ) + 
+    ) +
     scale_color_manual(values = c("orange", "navy")) +
     scale_y_discrete(
         labels = function(x) {
-            x %>% 
+            x %>%
                 gsub("^.*:", "Socratic x ", .) %>%
-                gsub("has_used_beforeYes", "ChatGPT experience", .) %>% 
-                gsub("locationSeville", "Seville", .) %>% 
-                gsub("top_grades", "", .) %>% 
-                gsub("gender", "", .) %>% 
+                gsub("has_used_beforeYes", "ChatGPT experience", .) %>%
+                gsub("locationSeville", "Seville", .) %>%
+                gsub("top_grades", "", .) %>%
+                gsub("gender", "", .) %>%
                 gsub("nametask([123])_(.*)", "Task \\1 (\\2)", .)
         }
     ) +
@@ -1178,9 +1212,9 @@ panel_b <- coef_df %>%
         caption = "Results from linear regression (n = 366); * p < 0.1"
     )
 
-#ggsave("figures_and_tables/10_socratic_interact_helpfull.pdf")
+# ggsave("figures_and_tables/10_socratic_interact_helpfull.pdf")
 
 panel_a / panel_b + plot_annotation(tag_levels = "A")
 
-##ggsave("figures_and_tables/10_socratic_interactions.pdf")
+## ggsave("figures_and_tables/10_socratic_interactions.pdf")
 ```

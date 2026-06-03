@@ -209,9 +209,9 @@ A key feature of AI chatbots is their ability to reason \emph{step by step}, rat
 
 AI chatbots providing step-by-step reasoning can help students solve complex problems (e.g., \citeproc{ref-saxton2019analysing}{Saxton et al. 2019}; \citeproc{ref-hendrycks2021measuring}{Hendrycks et al. 2021}; \citeproc{ref-kalyan2021how}{Kalyan et al. 2021}), support learning, and increase their trust in AI systems (\citeproc{ref-rai2020explainable}{Rai 2020}; \citeproc{ref-ferrario2022explainability}{Ferrario and Loi 2022}). But it can also have adverse effects. AI reasoning can be flawed (``hallucination'') or biased, misleading students. Furthermore, providing complex explanations or excessive guidance can reduce opportunities for student discovery or create cognitive overload (e.g., \citeproc{ref-paas2003cognitive}{Paas et al. 2003}), ultimately hindering their learning.
 
-These dynamics raise questions about how AI chatbots can help students, which connect to a central issue in educational research: how much guidance should students receive? As noted by H. S. Lee and Anderson (\citeproc{ref-lee2013student}{2013}), the answer lies between two opposing positions. On the one hand, discovery-based learning, such as the Socratic method, encourages students to construct their knowledge actively. On the other hand, providing direct instruction often produces more efficient learning outcomes. However, the empirical evidence in an AI-student environment is scarce, and the rise of AI chatbots makes this debate increasingly urgent: should AI tutors provide answers directly, guide students Socratically, or balance both?
+These dynamics raise questions about how AI chatbots can help students, which connect to a central issue in educational research: how much guidance should students receive? As noted by H. S. Lee and Anderson (\citeproc{ref-lee2013student}{2013}), the answer lies between two opposing positions. On the one hand, discovery-based learning, such as the Socratic method, encourages students to construct their knowledge actively. On the other hand, providing direct instruction often produces more efficient learning outcomes. However, the empirical evidence in an AI-student environment is scarce, and the rise of AI chatbots makes this debate increasingly urgent: should AI agents provide answers directly, guide students Socratically, or balance both?
 
-To explore these questions, we conducted two randomised experiments with K-12 students (n = 122). In the first, students had to estimate the value of coins in a jar with AI assistance. All students received the same AI-generated prediction, but only half received the AI system's step-by-step reasoning. This experimental design isolates the effect of explanations from the effect of receiving the solution itself, addressing our first research question (RQ):
+To explore these questions, we conducted two randomised experiments with K-12 students (n = 122). In the first, students had to estimate the value of coins in a jar with AI assistance. All students received the same AI-generated prediction, but only half received the AI system's step-by-step reasoning. This manipulation isolates the effect of explanations from the effect of receiving the solution itself, addressing our first research question (RQ):
 
 \textbf{RQ1: How does receiving explanations provided by AI affect learner outcomes relative to receiving solutions without explanations?}
 
@@ -223,11 +223,11 @@ By establishing whether AI-generated explanations can drive student learning, th
 
 Specifically, the second experiment tested the impact of two forms of AI support across multiple tasks. In the first condition, the AI chatbot acted as a didactic teacher (``non-Socratic AI''), providing direct solutions and explanations, as is typical in many popular AI chatbots, such as ChatGPT, and similar to the AI assistance in the first experiment. In the second condition, the AI chatbot acted as a Socratic teacher (``Socratic AI''), refraining from giving direct solutions and instead guiding students to discover the answers themselves, inspired by the classical Socratic method (\citeproc{ref-lam2011socratic}{Lam 2011}; \citeproc{ref-cleveland2015beyond}{Cleveland 2015}; \citeproc{ref-wilberding2021socratic}{Wilberding 2021}; \citeproc{ref-dalim2022promoting}{Dalim et al. 2022}). This comparison allowed us to address a third research question:
 
-\textbf{RQ3: How does the instructional style of AI agents (Socratic vs.~non-Socratic) influence students' learning outcomes, engagement, and confidence?}
+\textbf{RQ3: How does the instructional guidance of AI agents (Socratic vs.~non-Socratic) influence students' learning outcomes, engagement, and confidence?}
 
 Exploring the trade-offs between Socratic and non-Socratic AI raises an important question about students' long-term engagement in these tools. If students find interacting with Socratic AI chatbots unengaging, such perceptions might drive them to short-term interactions or even to use other (non-Socratic) tools. Indeed, research on the length of conversations with LLM-powered chatbots has shown that people tend to have mixed reactions when chatbots are instructed to engage in more extended discussions (\citeproc{ref-huang2024does}{Huang et al. 2024}). Therefore, aligning educational benefits with user satisfaction is crucial for ensuring the long-term adoption of AI learning tools. This consideration leads to our last research question:
 
-\textbf{RQ4: How does the instructional style of AI (Socratic vs.~non-Socratic) affect students' perceptions of the helpfulness of AI-assisted learning tools?}
+\textbf{RQ4: How does the instructional guidance of AI (Socratic vs.~non-Socratic) affect students' perceptions of the helpfulness of AI-assisted learning tools?}
 
 Taken together, addressing these questions aims to contribute to a growing debate about using pedagogical principles and techniques, such as step-by-step explanations and the Socratic approach, to integrate general-purpose LLMs into education in ways that benefit students. With our approach, we aim to provide an ecologically valid scenario inspired by educators' practices of prompting LLMs to align with pedagogical goals and methods, while the evaluation of established, especially-designed educational applications is beyond the scope of this study.
 
@@ -237,11 +237,13 @@ Research on AI-assisted learning builds on decades of educational research, part
 
 \subsection{Active learning and instructional guidance}\label{active-learning-and-instructional-guidance}
 
-A central debate in educational research concerns the balance between discovery learning and direct instruction (see \citeproc{ref-lee2013student}{H. S. Lee and Anderson 2013} for a review). Research consistently shows that instructional guidance can improve student performance, although its effectiveness varies across contexts and learner characteristics (\citeproc{ref-wittwer2008instructional}{Wittwer and Renkl 2008}; \citeproc{ref-wittwer2010effective}{Wittwer and Renkl 2010}). Excessive or overly detailed explanations may limit learners' opportunities to generate their own reasoning, an essential mechanism for more profound understanding (\citeproc{ref-schworm2006computer}{Schworm and Renkl 2006}), and may impose additional cognitive load, particularly on students with lower prior knowledge (\citeproc{ref-paas2003cognitive}{Paas et al. 2003}).
+A central debate in educational research concerns the optimal degree of instructional guidance in learning environments, particularly the balance between discovery-based and highly structured learning conditions (see \citeproc{ref-lee2013student}{H. S. Lee and Anderson 2013} for a review). Rather than viewing instruction as a binary distinction between ``teaching'' and ``discovery,'' contemporary learning sciences conceptualize instructional support as a continuum ranging from minimal guidance to highly structured scaffolding (\citeproc{ref-kirschner2006unguided}{Kirschner et al. 2006}).
+
+Research consistently shows that structured instructional guidance can improve student performance, although its effectiveness depends on context and learners' prior knowledge (\citeproc{ref-wittwer2008instructional}{Wittwer and Renkl 2008}; \citeproc{ref-wittwer2010effective}{Wittwer and Renkl 2010}). Excessive or overly detailed explanations may limit learners' opportunities to generate their own reasoning, an essential mechanism for more profound understanding (\citeproc{ref-schworm2006computer}{Schworm and Renkl 2006}), and may impose additional cognitive load, particularly on students with lower prior knowledge (\citeproc{ref-paas2003cognitive}{Paas et al. 2003}).
 
 In contrast, active learning emphasises students' engagement in cognitively demanding tasks rather than passive knowledge reception. Evidence across K--12 and higher education demonstrates that active learning enhances conceptual understanding, reasoning, and long-term retention (\citeproc{ref-hake1998interactive}{Hake 1998}; \citeproc{ref-freeman2014active}{Freeman et al. 2014}). These benefits arise through processes such as inquiry, Socratic questioning, reflection, and confronting misconceptions.
 
-Yet implementing active learning at scale remains challenging, especially when personalised scaffolding is required. AI chatbots offer a promising avenue for adaptable instructional support, but empirical evidence on how specific design choices, such as Socratic questioning versus direct explanation or the inclusion of step-by-step reasoning, shape learning and engagement is still limited. This study addresses this gap by comparing these approaches in K--12 classrooms.
+Emerging AI systems offer a means of delivering such adaptive instructional support at scale. Importantly, in this study, AI is not conceptualized as a human instructor but as a mechanism for delivering varying degrees of instructional guidance along the continuum described above. This allows us to systematically compare scaffolded, dialogic support with high-structure, solution-providing support in a controlled learning environment with k-12 students.
 
 \subsection{AI agents in education}\label{ai-agents-in-education}
 
@@ -267,16 +269,18 @@ Most existing research focuses on general AI chatbots, like ChatGPT, which are n
 
 \section{Methods}\label{sec:methods}
 
-We conducted a field experiment across two schools to investigate the impact of different AI interaction strategies on students' critical thinking, self-confidence, and task performance. Participants engaged with a custom-designed web application, the \emph{AI Agent}, which randomly assigned students to interact with distinct versions of GPT-4-based chatbots during structured educational activities. The experimental design featured two primary manipulations: (1) the presence of step-by-step reasoning by the AI and (2) the use of Socratic versus non-Socratic dialogue styles. To assess the effects, we employed objective performance measures alongside pre- and post-task surveys capturing students' cognitive and affective responses. The following subsections detail the experimental design and procedures, the design of the AI agents, and the participant characteristics.
+We conducted a study across two schools to investigate the impact of different AI interaction strategies on students' critical thinking, self-confidence, and task performance.\footnote{
+  In this paper, critical thinking refers to the ability to purposefully analyze, evaluate, and interpret information in order to form reasoned judgments based on evidence.} Participants engaged with a custom-designed web application, the \emph{AI Agent}, which randomly assigned students to interact with distinct versions of GPT-4-based chatbots during structured educational activities. The study featured two experiments: (1) the presence of step-by-step reasoning by the AI and (2) the use of Socratic versus non-Socratic dialogue guidance. To assess the effects, we employed objective performance measures alongside pre- and post-task surveys capturing students' cognitive and affective responses. The following subsections detail the experimental designs and procedures, the design of the AI agents, and the participant characteristics.
 
-\subsection{Experimental Design}\label{experimental-design}
+\subsection{Experimental Designs}\label{experimental-designs}
 
-Figure \ref{fig:design} illustrates the two randomised manipulations in our experimental design: (1) AI step-by-step reasoning and (2) Socratic vs non-Socratic AI. It is important to note that these were conducted as independent experiments, with different dependent and independent variables, rather than a factorial 2x2 design.
+Figure \ref{fig:design} illustrates the two randomised experiments: (1) AI step-by-step reasoning and (2) Socratic vs non-Socratic AI. It is important to note that these were conducted as independent experiments, with different dependent and independent variables, rather than a factorial 2x2 design. Consequently, students were randomly assigned to conditions independently for each experiment.\footnote{
+  Given the independence of the randomization procedures, the treatment assignment in one experiment is assumed not to systematically influence the treatment effects estimated in the other. Consequently, in the analysis, the effects of the other experiment are treated as random variation that does not bias the estimated treatment effects, although they may contribute to increased standard errors and greater uncertainty in the estimates.}
 
 \begin{figure}
 \centering
 \pandocbounded{\includegraphics[keepaspectratio]{output/main_report_files/assets/pictures/experimental_design.pdf}}
-\caption{\label{fig:design}The experimental design involves two manipulations: \textbf{A.} Socratic vs Non-Socratic; \textbf{B.} AI solution with explanation vs AI solution (without explanation)}
+\caption{\label{fig:design}The study involves two experiments: \textbf{A.} Socratic vs Non-Socratic; \textbf{B.} AI solution with explanation vs AI solution (without explanation)}
 \end{figure}
 
 \subsubsection{AI step-by-step reasoning}\label{ai-step-by-step-reasoning}
@@ -329,7 +333,7 @@ We recruited students after receiving ethical approval from the European Commiss
 
 \subsection{Development of the AI Agent}\label{development-of-the-ai-agent}
 
-To assess the impact of LLMs on students' critical thinking, we developed an \emph{AI Agent}, a web-based application built using Python with the Flask framework. The application integrates OpenAI APIs, allowing students to interact with the GPT-4.0 model while performing different educational tasks. This app's key features include:
+To assess the impact of LLMs on students' performance, we developed an \emph{AI Agent}, a web-based application built using Python with the Flask framework. The application integrates OpenAI APIs, allowing students to interact with the GPT-4.0 model while performing different educational tasks. This app's key features include:
 
 \begin{itemize}
 \tightlist
@@ -347,19 +351,50 @@ To assess the impact of LLMs on students' critical thinking, we developed an \em
 
 \subsection{Data}\label{data}
 
-To examine student interactions with AI and their potential impact on learning and critical thinking, we collected a range of self-reported and behavioural data. The full questionnaire is provided in the Appendix (Section \ref{questionnaire}).
+To examine student interactions with AI and their potential impact on learning and performance, we collected a range of self-reported and behavioural data. The full questionnaire is provided in the Appendix (Section \ref{questionnaire}).
 
 \subsubsection{AI Attitudes and Usage}\label{ai-attitudes-and-usage}
 
-To better understand students' general attitudes toward AI, we selected four questions from Schepman and Rodway's AI Attitudes Scale (\citeproc{ref-schepman2020initial}{Schepman and Rodway 2020}). These questions explored students; beliefs about AI's societal benefits, potential dangers, capacity to support learning, and the likelihood of misuse by students (Appendix, Section \ref{questionnaire}). We also asked students about their direct experience using ChatGPT for homework --- the most common chatbot at the time of the study --- and their beliefs about how many of their peers use ChatGPT for their homework, thereby capturing both individual behaviour and the perceived social norm around AI usage. These measures help establish baseline orientations that may moderate how students engage with and evaluate AI explanations (related to RQ-1) and how they perceive different AI interaction styles (related to RQ-3).
+To better understand students' general attitudes toward AI, we selected four questions from Schepman and Rodway's AI Attitudes Scale (\citeproc{ref-schepman2020initial}{Schepman and Rodway 2020}). These questions explored students; beliefs about AI's societal benefits, potential dangers, capacity to support learning, and the likelihood of misuse by students (Appendix, Section \ref{questionnaire}). We also asked students about their direct experience using ChatGPT for homework --- the most common chatbot at the time of the study --- and their beliefs about how many of their peers use ChatGPT for their homework, thereby capturing both individual behaviour and the perceived social norm around AI usage. These measures help establish baseline orientations that may moderate how students engage with and evaluate AI explanations (related to RQ-1) and how they perceive different AI interaction guidance (related to RQ-3).
 
 \subsubsection{AI Academic Habits and Skills}\label{ai-academic-habits-and-skills}
 
-Academic skills or habits may moderate the effect of AI interactions on problem-solving activities. Accordingly, to account for participants' heterogeneity in academic skills, we asked students to report their average school grades within five categories. We also asked students about their academic habits or the challenges they face at school, such as how often they complete their homework assignments on time and what factors affect their ability to do so.
+Academic skills or habits may moderate the effect of AI interactions on problem-solving activities. Accordingly, to account for participants' heterogeneity in academic skills, we asked students to report their average school grades (from 5/F to 9/A). We also asked students about their academic habits or the challenges they face at school, such as how often they complete their homework assignments on time (five-item scale from Never to Always) and what factors affect their ability to do so, such as distraction, poor time management or lack of clear instructions from teachers (Appendix, Section \ref{questionnaire}).
 
 \subsubsection{Student-AI Interaction Metrics}\label{student-ai-interaction-metrics}
 
-To quantify engagement, we analyzed students' interaction logs with the AI agent, recording the number of turns and the word counts as a proxy for interaction intensity. While this provides a basic behavioural metric, it does not capture the quality of cognitive engagement or helpfulness, limiting its direct relevance to RQ-1 and RQ-2. Therefore, we also asked students about how useful they found the AI interactions and how confident they were in their answers to selected tasks. These self-reported metrics are needed to assess whether explanations were helpful to students (for RQ-1) and whether Socratic dialogue promoted critical thinking or confidence (for RQ-2).
+To quantify engagement, we analyzed students' interaction logs with the AI agent, recording the number of turns and the word counts as a proxy for interaction intensity. While this provides a basic behavioural metric, it does not capture the quality of cognitive engagement or helpfulness, limiting its direct relevance to RQ-1 and RQ-2. Therefore, we also asked students about how useful they found the AI interactions and how confident they were in their answers to selected tasks. These self-reported metrics are needed to assess whether explanations were helpful to students (for RQ-1) and whether Socratic dialogue promoted confidence (for RQ-2).
+
+\subsection{Testing Hypotheses}\label{testing-hypotheses}
+
+To guide the empirical analysis, we specified a set of hypotheses corresponding to the five research questions (RQ1--RQ5). Each hypothesis maps directly to a specific outcome domain and is tested using the statistical procedures described in the Section \ref{sec:results}.
+
+\textbf{H1 (RQ1: Accuracy and learning gains)}.
+We hypothesise that exposure to AI-generated step-by-step reasoning improves students' ability to update and refine their answers to the first task (guessing coins in a jar), leading to lower absolute prediction error and higher post-intervention accuracy compared to students receiving only the AI-generated output. This hypothesis is tested using differences in absolute error distributions and non-parametric bootstrap inference for median differences.
+
+\textbf{H2 (RQ2: Perceived credibility and trust)}.
+We hypothesise that providing explicit AI-generated reasoning may reduce perceived reliability of AI outputs by making uncertainty more salient, while also potentially reshaping evaluations of human benchmark performance. This hypothesis is tested using Fisher's exact tests and ordinal logistic regression models comparing perceived accuracy ratings across treatments.
+
+\textbf{H3a (RQ3: Learning outcomes)}.
+We hypothesise that Socratic AI improves learning outcomes relative to non-Socratic tutoring.
+
+\textbf{H3b (RQ3: Confidence)}.
+We hypothesise that Socratic AI increases students' self-confidence in their answers.
+
+\textbf{H3c (RQ3: Perceived helpfulness)}.
+We hypothesise that Socratic AI increases perceived helpfulness of the AI agent.
+
+These hypotheses are tested using regression models with student-level clustering and task fixed effects, as well as ordinal logistic regressions for Likert-scale outcomes.
+
+\textbf{H4 (RQ4: Engagement and interaction behaviour).}
+We hypothesise that Socratic AI increases engagement, as reflected in a higher number of student--AI exchanges and shorter message length per exchange, compared to non-Socratic AI. This hypothesis is tested using non-parametric comparisons of message frequency and word-count distributions.
+
+\textbf{H5a (RQ5: Pedagogical quality)}.
+We hypothesise that Socratic AI improves pedagogical quality along core dimensions such as scaffolding, stepwise guidance, and encouraging tone.
+
+\textbf{H5b (RQ5: Heterogeneous effects)}. We further hypothesise that treatment effects vary by student characteristics (e.g., prior ChatGPT experience, gender, and task type), reflecting heterogeneous responsiveness to Socratic guidance.
+
+These hypotheses are tested using mixed-effects regressions on LLM-coded rubric scores, including student random effects and interaction terms between treatment and covariates.
 
 \section{Results}\label{sec:results}
 
@@ -472,9 +507,12 @@ Figure \ref{fig:boot-accuracy} illustrates that students' prediction accuracy wa
 \caption{\label{fig:boot-accuracy}Comparison of Students' Absolute Error in Estimating Coin Jar Value with and without AI Explanations. All students received the AI-generated estimate of \$213 (the correct value was \$379.54). Still, those in the AI reasoning treatment also viewed the AI-generated step-by-step explanation for the estimation. Exposure to the AI-generated explanation significantly reduced the students' median absolute error.}
 \end{figure}
 
-To examine the impact of AI explanations on students' perceived credibility of AI predictions (RQ2), we analysed students' five-point ratings of the perceived accuracy of the AI estimated value of coins. We noticed that 53\% of students who did not receive step-by-step reasoning considered the AI estimate as either ``good'' (39\%) or ``very good'' (14\%) compared to 43\% of students exposed to the AI reasoning (19\% and 24\%, respectively). This gap of ten percentage points suggests that students viewed the AI as more accurate when the AI-generated guess was presented as a ``black box.'' However, we didn't have enough observations to reach a statistically significant association (Fisher's test, p = .27), and even regression analysis, controlling for individual characteristics, showed no significant association (Figure \ref{fig:perceived-accuracy-coins}).
+To examine the impact of AI explanations on students' perceived credibility of AI predictions (RQ2), we analysed students' five-point ratings of the perceived accuracy of the AI estimated value of coins. We noticed that 53\% of students who did not receive step-by-step reasoning considered the AI estimate as either ``good'' (39\%) or ``very good'' (14\%) compared to 43\% of students exposed to the AI reasoning (19\% and 24\%, respectively). This gap of ten percentage points suggests that students viewed the AI as more accurate when the AI-generated guess was presented as a ``black box.'' However, a non-parametric Mann-Whitney U test found no significant difference between the conditions (\(W = 1754.5\), \(p = .59\)), and even regression analysis controlling for individual characteristics showed no significant differences (Figure \ref{fig:perceived-accuracy-coins}).
 
-Conversely, exposure to the AI step-by-step reasoning seemed associated with students' perception of the accuracy of the ``human'' guess --- the average guess from 600 participants reported in the original study (\citeproc{ref-steiner2015turns}{Steiner 2015}).\footnote{Notably, this guess was \$596, exceeding the correct value (\$379.54) by about the same amount as the AI guess underestimated it (\$213).} While all groups received the same human and AI estimates, 64\% of students in the control rated the human estimate as ``poor'' or ``very poor'' against 45\% of students exposed to AI reasoning. Although this difference was insignificant (Fisher's exact test, p = 0.15), regression analysis, controlling for fixed differences across schools and across individuals, such as their gender, the initial guess of the value of coins, and experience with ChatGPT, showed a significant effect (p \textless{} 0.05) of the assignment to AI reasoning on students' perceptions of the human guess, as shown in Figure \ref{fig:perceived-accuracy-coins}. This finding underscores the complex relationship between AI and learning. It suggests that students exposed to the AI's step-by-step reasoning may have identified minor errors, thus increasing their expectations of human accuracy, and those who viewed AI as a ``black box'' tended to underrate human estimates.
+Conversely, exposure to the AI step-by-step reasoning seemed associated with students' perception of the accuracy of the ``human'' guess --- the average guess from 600 participants reported in the original study (\citeproc{ref-steiner2015turns}{Steiner 2015}).\footnote{
+  Notably, this guess was \$596, exceeding the correct value (\$379.54) by about the same amount as the AI guess underestimated it (\$213).} While all groups received the same human and AI estimates, 64\% of students in the control rated the human estimate as ``poor'' or ``very poor'' against 45\% of students exposed to AI reasoning.
+
+Statistically, a Mann-Whitney U test indicates a significant difference between the two conditions at the 10\% level (\(W = 2179\), \(p = .087\)). Likewise, regression analysis that controls for fixed differences across schools and across individuals (including gender, the initial guess of the value of coins, and experience with ChatGPT) showed a significant effect (p \textless{} 0.05) of the assignment to AI reasoning on students' perceptions of the human guess, as shown in Figure \ref{fig:perceived-accuracy-coins}. These findings underscore the complex relationship between AI and learning. It suggests that students exposed to the AI's step-by-step reasoning may have identified minor errors, thus increasing their expectations of human accuracy, and those who viewed AI as a ``black box'' tended to underrate human estimates.
 
 \begin{figure}
 \centering
@@ -491,16 +529,16 @@ Figure \ref{fig:messages} shows the students' message length and frequency in th
 \begin{figure}
 \centering
 \pandocbounded{\includegraphics[keepaspectratio]{output/main_report_files/output/main_report_files/figure-latex/messages-1.pdf}}
-\caption{\label{fig:messages}Comparison of message frequency and word count per message across Socratic and non-Socratic treatments. Top panel (\textbf{A}) shows differences in the frequency of messages exchanged, while the bottom panels (\textbf{B} ) depict the word counts per message for the AI tutor (left) and the students (right).}
+\caption{\label{fig:messages}Comparison of message frequency and word count per message across Socratic and non-Socratic treatments. Top panel (\textbf{A}) shows differences in the frequency of messages exchanged, while the bottom panels (\textbf{B} ) depict the word counts per message for the AI agent (left) and the students (right).}
 \end{figure}
 
 \subsubsection{Automatic evaluation of Socratic dimensions}\label{automatic-evaluation-of-socratic-dimensions}
 
-We conducted a detailed textual analysis of all AI--student conversations to (1) test the pedagogical differences between the Socratic and Non-Socratic tutors as they emerged in our experiment, and (2) derive additional indicators of student engagement that extend beyond simple measures such as word counts or the number of exchanges. To address the first aim, we adapted a rubric from Pauzi et al. (\citeproc{ref-pauzi2025automating}{Pauzi et al. 2025}), originally designed for automating the pedagogical evaluation of LLM-based conversational agents. The rubric captures key dimensions of Socratic tutoring, including providing support without directly giving answers (``scaffolding''), offering stepwise guidance, maintaining an encouraging tone, and sustaining a conversational style.
+We conducted a detailed textual analysis of all AI--student conversations to (1) test the pedagogical differences between the Socratic and Non-Socratic tutors as they emerged in our experiment, and (2) derive additional indicators of student engagement that extend beyond simple measures such as word counts or the number of exchanges. To address the first aim, we adapted a rubric from Pauzi et al. (\citeproc{ref-pauzi2025automating}{Pauzi et al. 2025}), originally designed for automating the pedagogical evaluation of LLM-based conversational agents. The rubric captures key dimensions of Socratic tutoring, including providing support without directly giving answers (``scaffolding''), offering stepwise guidance, maintaining an encouraging tone, and sustaining a conversational guidance.
 
 While the original rubric consisted of five binary items, we modified it in two ways. First, we replaced the binary response format with a 5-point scale to increase statistical power and improve granularity. Second, we expanded the set of items to capture additional pedagogically relevant dimensions of conversational agents, including clarity, engagement, and depth of response. Using this revised rubric, we evaluated all 362 conversations\footnote{We collected chats from 122 participants in 3 tasks. So, the total chats were 366. After excluding four with no proper conversation, we ended up with 362 chats for analysis.} through an LLM-based coding procedure and subsequently conducted regression analyses that accounted for within-student correlation, included school fixed effects, and controlled for the number of conversational exchanges. (See the Rubric in the Appendix, Section \ref{sec:socratic-dimension}).
 
-Figure \ref{fig:socratic-dimensions} presents the regression results. The Socratic AI scored significantly higher on the core Socratic dimensions, showing greater average supportive guidance or scaffolding (coef = 0.55, SE = 0.12), more next-step guidance (coef = 0.54, SE = 0.12), and a more encouraging tone (coef = 0.53, SE = 0.12). We found no significant differences between conditions on the remaining Socratic dimensions. For the additional indicators, the Socratic AI elicited higher student engagement (coef = 0.43, SE = 0.12), although its clarity and depth of response were significantly lower (coef = -0.38, SE = 0.11; coef = -0.55, SE = 0.11, respectively). Taken together, these findings indicate that the Socratic AI followed Socratic principles (encouraging tone and supportive guidance) and, even after controlling for the number of exchanges, was more engaging. However, this increased conversational and encouraging style appears to have come at a cost to overall clarity and response depth.
+Figure \ref{fig:socratic-dimensions} presents the regression results. The Socratic AI scored significantly higher on the core Socratic dimensions, showing greater average supportive guidance or scaffolding (coef = 0.55, SE = 0.12), more next-step guidance (coef = 0.54, SE = 0.12), and a more encouraging tone (coef = 0.53, SE = 0.12). We found no significant differences between conditions on the remaining Socratic dimensions. For the additional indicators, the Socratic AI elicited higher student engagement (coef = 0.43, SE = 0.12), although its clarity and depth of response were significantly lower (coef = -0.38, SE = 0.11; coef = -0.55, SE = 0.11, respectively). Taken together, these findings indicate that the Socratic AI followed Socratic principles (encouraging tone and supportive guidance) and, even after controlling for the number of exchanges, was more engaging. However, this increased conversational and encouraging guidance appears to have come at a cost to overall clarity and response depth.
 
 \begin{figure}
 \centering
@@ -532,18 +570,18 @@ To test whether Socratic AI increased students' confidence in their answers (RQ4
 \caption{\label{fig:confidence-regression}This figure shows the coefficients from separate ordinal logistic regressions on students' confidence in their answer on a five-point scale, controlling for students' self-efficacy per task and task fixed effect. Results show no significant association between the treatment assignment and students' confidence levels.}
 \end{figure}
 
-Further explorative regression analysis to examine potential treatment interactions shows that Socratic AI students with prior ChatGPT experience reported significantly less confidence (p \textless{} 0.1) than Non-Socratic AI students (see Figure \ref{fig:interactions}). This explorative finding suggests that experienced users may perceive new or unconventional AI tutoring methods as less effective or even counterproductive, indicating that encouraging the use of such AI tutoring tools among experienced ChatGPT students can be challenging.
+Further explorative regression analysis to examine potential treatment interactions shows that Socratic AI students with prior ChatGPT experience reported significantly less confidence (p \textless{} 0.1) than Non-Socratic AI students (see Figure \ref{fig:interactions}). This explorative finding suggests that experienced users may perceive new or unconventional AI chatbots as less effective or even counterproductive, indicating that encouraging the use of such AI chatbots among experienced ChatGPT students can be challenging.
 
-\subsubsection{Perceived Helpfulness of AI Tutor}\label{perceived-helpfulness-of-ai-tutor}
+\subsubsection{Perceived Helpfulness of AI Agent}\label{perceived-helpfulness-of-ai-agent}
 
-To test differences in students' perceptions of the AI tutor's helpfulness (RQ5), we examined students' ratings of helpfulness of the AI interaction at the end of each task. These ratings were on a five-point scale, from ``Not at all helpful'' to ``Very helpful.''\footnote{Due to a coding issue, the scale used in Brussels and Seville differed slightly in the labels: Seville's students saw ``Extremely helpful'' whereas Brussels students saw ``Very helpful.'' However, this issue has a minimal impact on the overall results, as results focus on the negative labels (``not at all helpful'' or ``not helpful'') and they remain the same even after controlling for location effects in a regression. Additionally, open discussions held with students after the experimental session confirmed that they found the Socratic AI less helpful. This feedback, combined with the observed differences in negative labels, reinforces that the coding discrepancy has a minimal impact on the overall findings.}
+To test differences in students' perceptions of the AI agent's helpfulness (RQ5), we examined students' ratings of helpfulness of the AI interaction at the end of each task. These ratings were on a five-point scale, from ``Not at all helpful'' to ``Very helpful.''\footnote{Due to a coding issue, the scale used in Brussels and Seville differed slightly in the labels: Seville's students saw ``Extremely helpful'' whereas Brussels students saw ``Very helpful.'' However, this issue has a minimal impact on the overall results, as results focus on the negative labels (``not at all helpful'' or ``not helpful'') and they remain the same even after controlling for location effects in a regression. Additionally, open discussions held with students after the experimental session confirmed that they found the Socratic AI less helpful. This feedback, combined with the observed differences in negative labels, reinforces that the coding discrepancy has a minimal impact on the overall findings.}
 
-In both treatment groups, many students found interacting with the AI tutor ``very helpful'' or ``helpful'', with 56\% of the non-Socratic and 44\% of the Socratic students, as shown in Figure \ref{fig:helpfulness}. However, the Socratic treatment group showed a bimodal distribution, with a substantial fraction of students (21\%) finding the interaction ``not at all helpful.'' The association between perceived helpfulness and treatment assignment was statistically significant (Fisher's exact test, p = 0.025), providing evidence that Socratic AI was less helpful to certain students. This association, however, was stronger for Task 1 and Taks 3 than Task 2, suggesting an association between the perceived AI's helpfulness and the type of task. Ordinal logistic regression accounting for individual student and task characteristics, including self-efficacy per task, revealed a statistically significant negative difference that corresponds to a drop of approximately 13 percentage points in perceived helpfulness associated with the Socratic AI, as illustrated in Figure \ref{fig:helpful-regression}. See Section \ref{sec:regress-confidence} for more details.
+In both treatment groups, many students found interacting with the AI agent ``very helpful'' or ``helpful'', with 56\% of the non-Socratic and 44\% of the Socratic students, as shown in Figure \ref{fig:helpfulness}. However, the Socratic treatment group showed a bimodal distribution, with a substantial fraction of students (21\%) finding the interaction ``not at all helpful.'' The association between perceived helpfulness and treatment assignment was statistically significant (Fisher's exact test, p = 0.025), providing evidence that Socratic AI was less helpful to certain students. This association, however, was stronger for Task 1 and Taks 3 than Task 2, suggesting an association between the perceived AI's helpfulness and the type of task. Ordinal logistic regression accounting for individual student and task characteristics, including self-efficacy per task, revealed a statistically significant negative difference that corresponds to a drop of approximately 13 percentage points in perceived helpfulness associated with the Socratic AI, as illustrated in Figure \ref{fig:helpful-regression}. See Section \ref{sec:regress-confidence} for more details.
 
 \begin{figure}
 \centering
 \pandocbounded{\includegraphics[keepaspectratio]{output/main_report_files/output/main_report_files/figure-latex/helpfulness-1.pdf}}
-\caption{\label{fig:helpfulness}This figure shows the impact of Socratic AI on students' perceived helpfulness of the AI tutor across three different tasks.}
+\caption{\label{fig:helpfulness}This figure shows the impact of Socratic AI on students' perceived helpfulness of the AI agent across three different tasks.}
 \end{figure}
 
 \begin{figure}
@@ -554,7 +592,7 @@ In both treatment groups, many students found interacting with the AI tutor ``ve
 
 \subsubsection{Learning Outcomes and Knowledge Retention}\label{learning-outcomes-and-knowledge-retention}
 
-To evaluate the impact of learning (RQ3), we compared the correctness of responses to Task 3, which focused on sound propagation, and assessed knowledge retention using a follow-up question on the same topic without AI assistance. As shown in Figure \ref{fig:learning}, the use of AI significantly enhanced students' response accuracy. Before interacting with the AI tutor, only 32\% of students correctly answered that sound travels faster in water than air due to water's higher density. After AI interaction, this percentage nearly doubled increasing to 68\%. However, there was no significant difference in learning outcomes between the Socratic and non-Socratic AI approaches, as illustrated in the figure. Moreover, when presented with a follow-up question (asking in which medium sound travels fastest among gold, rubber, warm air, cold air, and water), only 18\% of students responded correctly by selecting the denser material (i.e., gold), again with no significant difference across treatments. This result suggests two implications. Firstly, we found no evidence of Socratic AI improving learning. Secondly, our results seems to suggest a problem of limited retention of the insights obtained with AI assistance or difficulty in applying such learning to novel scenarios.\footnote{While it is true that gold is significantly denser than water or air, it is possible that some students did not fully understand this fact or were unsure how to compare the densities of the materials. If that were the case, even if the AI effectively conveyed that sound travels faster in denser media, students lacking this knowledge may still have been unable to select the correct answer. However, this explanation seems unlikely, as the relative densities of air, water, and metals, like gold, are commonly taught and conceptually straightforward, suggesting that other factors have contributed to students' outcomes.}
+To evaluate the impact of learning (RQ3), we compared the correctness of responses to Task 3, which focused on sound propagation, and assessed knowledge retention using a follow-up question on the same topic without AI assistance. As shown in Figure \ref{fig:learning}, the use of AI significantly enhanced students' response accuracy. Before interacting with the AI agent, only 32\% of students correctly answered that sound travels faster in water than air due to water's higher density. After AI interaction, this percentage nearly doubled increasing to 68\%. However, there was no significant difference in learning outcomes between the Socratic and non-Socratic AI approaches, as illustrated in the figure. Moreover, when presented with a follow-up question (asking in which medium sound travels fastest among gold, rubber, warm air, cold air, and water), only 18\% of students responded correctly by selecting the denser material (i.e., gold), again with no significant difference across treatments. This result suggests two implications. Firstly, we found no evidence of Socratic AI improving learning. Secondly, our results seems to suggest a problem of limited retention of the insights obtained with AI assistance or difficulty in applying such learning to novel scenarios.\footnote{While it is true that gold is significantly denser than water or air, it is possible that some students did not fully understand this fact or were unsure how to compare the densities of the materials. If that were the case, even if the AI effectively conveyed that sound travels faster in denser media, students lacking this knowledge may still have been unable to select the correct answer. However, this explanation seems unlikely, as the relative densities of air, water, and metals, like gold, are commonly taught and conceptually straightforward, suggesting that other factors have contributed to students' outcomes.}
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.5698}}
@@ -596,30 +634,32 @@ Water is slower because lower density & 6.6 & 5.1 & 8.1 \\
 \begin{figure}
 \centering
 \pandocbounded{\includegraphics[keepaspectratio]{output/main_report_files/output/main_report_files/figure-latex/learning-1.pdf}}
-\caption{\label{fig:learning}Effects on learning: \textbf{A} shows the \% of correct responses about the physics of sound propagation, illustrating the positive effect of interacting with the AI tutor, while no differences are associated with the Socratic AI. \textbf{B} shows the results of the verification question asking students to identify the fastest material for sound propagation (speed as meter per second reported) without AI assistance. Only 18\% responded accurately, indicating limited learning.}
+\caption{\label{fig:learning}Effects on learning: \textbf{A} shows the \% of correct responses about the physics of sound propagation, illustrating the positive effect of interacting with the AI agent, while no differences are associated with the Socratic AI. \textbf{B} shows the results of the verification question asking students to identify the fastest material for sound propagation (speed as meter per second reported) without AI assistance. Only 18\% responded accurately, indicating limited learning.}
 \end{figure}
 
 \begin{figure}
 \centering
 \pandocbounded{\includegraphics[keepaspectratio]{output/main_report_files/output/main_report_files/figure-latex/interactions-1.pdf}}
-\caption{\label{fig:interactions}Regression coefficients and 95\% confidence intervals from a linear regression using as dependent variable the (\textbf{A}) students' self-reported confidence level and (\textbf{B}) perceived helpfulness of the AI tutor. The controls include student's gender, grades, location, and ChatGPT experience. Treatment dummies are interacted with all the controls and the task type. All models also include individual student random effects, and the student's rated confidence in their skills before performing each task.}
+\caption{\label{fig:interactions}Regression coefficients and 95\% confidence intervals from a linear regression using as dependent variable the (\textbf{A}) students' self-reported confidence level and (\textbf{B}) perceived helpfulness of the AI agent. The controls include student's gender, grades, location, and ChatGPT experience. Treatment dummies are interacted with all the controls and the task type. All models also include individual student random effects, and the student's rated confidence in their skills before performing each task.}
 \end{figure}
 
 \section{Discussion}\label{discussion}
 
-While educators and students increasingly use AI chatbots for education, many current designs may not yet promote effective learning. Multiple AI chatbots offer solutions and instructions for problem-solving, with significant potential as educational tools. A growing body of empirical research is exploring how students can transform these interactions into knowledge (\citeproc{ref-wu2024critical}{Y. Wu 2024}; e.g., \citeproc{ref-yan2024promises}{Yan, Greiff et al. 2024}). In this study, we argue that this issue ties into a longstanding question in educational research: how to determine the optimal amount and type of instructional guidance in student-tutor interactions (e.g., \citeproc{ref-lee2013student}{H. S. Lee and Anderson 2013}).
+While educators and students increasingly use AI chatbots for education, many current designs may not yet promote effective learning. Multiple AI chatbots offer solutions and instructions for problem-solving, with significant potential as educational tools. A growing body of empirical research is exploring how students can transform these interactions into knowledge (\citeproc{ref-wu2024critical}{Y. Wu 2024}; e.g., \citeproc{ref-yan2024promises}{Yan, Greiff et al. 2024}). In this study, we argue that this issue ties into a longstanding question in educational research: how to determine the optimal amount and type of instructional guidance in student-agent interactions (e.g., \citeproc{ref-lee2013student}{H. S. Lee and Anderson 2013}).
 
-Although a comprehensive analysis of the ideal design for student-AI tutor interactions is beyond the scope of this study, our work contributes to the literature by examining two key aspects of these interactions. First, we isolate the effect of receiving step-by-step explanations provided by AI, disentangling it from the effect of merely receiving AI solutions. Second, we evaluate the impact of interacting with different AI agents (Socratic vs.~non-Socratic) on student performance, self-confidence, engagement, and perceived helpfulness.
+Although a comprehensive analysis of the ideal design for student-AI agents interactions is beyond the scope of this study, our work contributes to the literature by examining two key aspects of these interactions. First, we isolate the effect of receiving step-by-step explanations provided by AI, disentangling it from the effect of merely receiving AI solutions. Second, we evaluate the impact of interacting with different AI agents (Socratic vs.~non-Socratic) on student performance, self-confidence, engagement, and perceived helpfulness.
 
 \subsection{Step-by-step reasoning}\label{step-by-step-reasoning}
 
 In our first experiment, we found that students significantly benefit from receiving AI step-by-step reasoning (RQ1). This finding aligns with prior research showing that LLMs can enhance student performance (e.g., \citeproc{ref-xing2025development}{Xing et al. 2025}). At the same time, it extends existing work by identifying a key underlying mechanism: providing step-by-step reasoning, rather than merely the solution.
 
-This result also aligns with existing literature on instructional guidance in classical pedagogical research (e.g., \citeproc{ref-lee2013student}{H. S. Lee and Anderson 2013}), extending it to the context of student-AI interactions. Multiple studies have shown that providing learners with clear, step-by-step guidance usually leads to better learning outcomes (\citeproc{ref-wittwer2010effective}{Wittwer and Renkl 2010}). Yet, instructions may not always work (\citeproc{ref-wittwer2008instructional}{Wittwer and Renkl 2008}), and some research documents a ``generation effect,'' in which learners who had to self-generate answers, rather than read problem solutions, achieved better performance (e.g., \citeproc{ref-fiorella2016eight}{Fiorella and Mayer 2016}). Our results suggest that the benefits of AI-provided guidance outweigh those of self-generation, at least within the scope of our estimation task.
+This result is consistent with established findings in instructional science showing that structured, step-by-step guidance can improve learning outcomes in classical pedagogical settings (e.g., \citeproc{ref-lee2013student}{H. S. Lee and Anderson 2013}). Multiple studies have shown that providing learners with clear, step-by-step guidance usually leads to better learning outcomes (\citeproc{ref-wittwer2010effective}{Wittwer and Renkl 2010}). At the same time, research also highlights boundary conditions, including cases in which direct instructions may be less effective (\citeproc{ref-wittwer2008instructional}{Wittwer and Renkl 2008}) or even counterproductive (\citeproc{ref-fiorella2016eight}{Fiorella and Mayer 2016}). Our results suggest that the benefits of AI-provided guidance outweigh those of self-generation, at least within the scope of our estimation task.
 
-This conclusion is especially remarkable in AI-mediated learning environments, where students cannot readily verify the accuracy of model-generated explanations, where explanations do not necessarily aim for pedagogical clarity, and where learners may be inclined to use solutions without fully engaging in the reasoning process. Despite these challenges, our findings indicate that providing direct, structured instruction can still effectively boost student performance.
+Our findings suggest that, in the present task context, AI-provided step-by-step reasoning can be more beneficial than self-generation-based learning. Importantly, we do not interpret this as evidence of a fundamentally new learning mechanism, but rather as an effect emerging under a specific instructional configuration in which learners receive immediate, structured solutions generated by an automated system.
 
-Another key finding is that providing step-by-step reasoning also enhances students' ability to evaluate predictions critically (RQ2). Although we did not observe an overall effect on trust in AI, the students who received step-by-step explanations rated human-generated predictions as more accurate than those provided by the AI, suggesting that transparent reasoning encourages critical assessment rather than blind acceptance. These findings support prior work showing that AI can foster analytical skills when its processes are made transparent rather than presented as a ``black box'' (\citeproc{ref-bearman2023learning}{Bearman and Ajjawi 2023}). However, the interplay between trust in AI and trust in human guidance remains complex and warrants further investigation beyond the scope of this study.
+This result is particularly relevant in AI-mediated learning environments, which are characterized by (i) immediate access to complete solutions and explanations, and (ii) the absence of human instructional accountability or supervision over the generated content. In such settings, explanations are not necessarily constrained by pedagogical intent or reliability guarantees typical of human instruction. Despite these constraints, our findings indicate that structured reasoning can still support performance, suggesting that learners are able to benefit from AI-generated explanations even under conditions where epistemic verification is limited.
+
+Another key finding is that providing step-by-step reasoning also enhances students' ability to evaluate predictions critically (RQ2). Although we did not observe an overall effect on trust in AI, the students who received step-by-step explanations rated human-generated predictions as more accurate than those provided by the AI, suggesting that transparent reasoning encourages critical assessment rather than blind acceptance. These findings are consistent with prior work showing that AI can foster analytical skills when its processes are made transparent rather than presented as a ``black box'' (\citeproc{ref-bearman2023learning}{Bearman and Ajjawi 2023}). However, the interplay between trust in AI and trust in human guidance remains complex and warrants further investigation beyond the scope of this study.
 
 \subsection{Socratic vs Non-Socratic AI agents}\label{socratic-vs-non-socratic-ai-agents}
 
@@ -639,13 +679,13 @@ Finally, our results also suggest that interacting with AI chatbots may not prom
 
 Our results bear several important implications.
 
-First, although our study does not provide a comprehensive comparative analysis of a tutor optimised for learning, it offers empirical insights into the trade-offs between instructional guidance and generative, or discovery, learning. Specifically, our results align with and support the positive effect of instructional guidance. At the same time, they are less supportive of the role of generative or discovery learning, as they do not show significant differences in instructional styles that seek to provide guided discovery of solutions, such as the Socratic AI.
+First, although our study does not provide a comprehensive comparative analysis of an AI agent optimised for learning, it offers empirical insights into the trade-offs between instructional guidance and generative, or discovery, learning. Specifically, our results align with and support the positive effect of instructional guidance. At the same time, they are less supportive of the role of generative or discovery learning, as they do not show significant differences in instructional guidance that seek to provide guided discovery of solutions, such as the Socratic AI.
 
 Second, in the context of AI-student interactions, where exchanges are on-screen and interactions are often very fast, our results underscore a possible trade-off between engagement and the clarity or depth of insights provided by the AI, which could undermine discovery approaches, such as the Socratic approach. This result underscores the need for further research with human participants to evaluate existing pedagogical paradigms or develop new ones to integrate LLM tools into pedagogical practices effectively.
 
-Third, students with prior experience with AI tools may not readily adopt AI tutors that embed validated pedagogical approaches, especially if there is a learning curve or if students perceive these tools as less effective than commercially available alternatives.
+Third, students with prior experience with AI tools may not readily adopt AI chatbots that embed validated pedagogical approaches, especially if there is a learning curve or if students perceive these tools as less effective than commercially available alternatives.
 
-Finally, our study shows that simple, pedagogically informed instructions with LLMs can produce AI agents that generate student interactions that mirror effective student-tutor dialogue in several key areas. While optimising AI tutors may require specialised model training beyond the reach of most educators, this prompt-based approach offers educators a practical way to experiment with instructional techniques and evaluate AI-student interactions using established rubrics.
+Finally, our study shows that simple, pedagogically informed instructions with LLMs can produce AI agents that generate student interactions that mirror effective student-agent dialogue in several key areas. While optimising AI chatbots may require specialised model training beyond the reach of most educators, this prompt-based approach offers educators a practical way to experiment with instructional techniques and evaluate AI-student interactions using established rubrics.
 
 \subsection{Limitations of the study and future work}\label{limitations-of-the-study-and-future-work}
 
@@ -659,7 +699,7 @@ Our future work includes a large-scale study with a representative sample in a E
 
 \subsection{Concluding remarks}\label{concluding-remarks}
 
-While our study focused on comparing a fairly general pedagogical approach---Socratic AI, future research should explore this pedagogical method in a more nuanced way and consider alternative pedagogical approaches to facilitate the scalability of AI tools across diverse tasks and educational contexts. Yet, our findings have important implications for designing AI tutors, highlighting the need to provide transparent AI-generated step-by-step reasoning and the challenges of fostering learning through guided AI-student interactions. Therefore, AI systems must engage students interactively and provide learning opportunities that maximise students' critical thinking and problem-solving skills. Future developments should focus on refining the integration of AI-generated reasoning and ensuring that AI tools are adaptable to various learning tasks and students' needs.
+While our study focused on comparing a fairly general pedagogical approach---Socratic AI, future research should explore this pedagogical method in a more nuanced way and consider alternative pedagogical approaches to facilitate the scalability of AI tools across diverse tasks and educational contexts. Yet, our findings have important implications for designing AI agents, highlighting the need to provide transparent AI-generated step-by-step reasoning and the challenges of fostering learning through guided AI-student interactions. Therefore, AI systems must engage students interactively and provide learning opportunities that maximise students' critical thinking and problem-solving skills. Future developments should focus on refining the integration of AI-generated reasoning and ensuring that AI tools are adaptable to various learning tasks and students' needs.
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
@@ -737,6 +777,9 @@ Kaplan-Rakowski R, Grotewold K, Hartwick P et al. (2023) Generative AI and teach
 
 \bibitem[\citeproctext]{ref-kasneci2023chatgpt}
 Kasneci E, Seßler K, Küchemann S et al. (2023) ChatGPT for good? On opportunities and challenges of large language models for education. Learning and individual differences. 103:102274
+
+\bibitem[\citeproctext]{ref-kirschner2006unguided}
+Kirschner P, Sweller J, Clark RE (2006) Why unguided learning does not work: An analysis of the failure of discovery learning, problem-based learning, experiential learning and inquiry-based learning. Educational psychologist. 41(2):75--86
 
 \bibitem[\citeproctext]{ref-kojima2022large}
 Kojima T, Gu SS, Reid M et al. (2022) Large language models are zero-shot reasoners. Advances in neural information processing systems. 35:22199--22213
@@ -1358,16 +1401,126 @@ During the preparation of this work the author(s) used Grammarly, ChatGPT in ord
   \end{itemize}
 \item
   What is your average grade at school?
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Below 5 (F),
+\item
+  Between 5 and 6 (E),
+\item
+  Between 6 and 7 (D),
+\item
+  Between 7 and 8 (C),
+\item
+  Between 8 and 9 (B)
+\item
+  Above 9 (A)
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{26}
+\tightlist
 \item
   How many hours per day do you spend completing homework assignments?
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Less than 1 hour
+\item
+  1-2 hours
+\item
+  2-3 hours
+\item
+  3-4 hours
+\item
+  More than 4 hours
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{27}
+\tightlist
 \item
   How often do you complete your homework assignment on time?
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Never
+\item
+  Rarely
+\item
+  Sometimes
+\item
+  Usually
+\item
+  Always
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{28}
+\tightlist
 \item
   What single factor contributes the most to your ability to complete homework assignments on time?
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Lack of distractions
+\item
+  Understanding the material
+\item
+  Clear instructions from teachers
+\item
+  Support from family or peers
+\item
+  Effective time management
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{29}
+\tightlist
 \item
   Have you ever used ChatGPT before today?
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  No
+\item
+  Yes
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{30}
+\tightlist
 \item
   In your opinion, how many of your classmates are using ChatGPT for homework?
 \end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  I don't know
+\item
+  None
+\item
+  Some
+\item
+  Most
+\item
+  All
+\end{itemize}
 
 \end{document}
