@@ -2,15 +2,13 @@
 
 - An experiment was conducted where K-12 students (N=122) used AI chatbots to solve school-related problems. 
 
-- Two interventions were tested: (1) comparing AI-generated step-by-step explanations to predictions alone, and (2) contrasting AI chatbot support inspired by the Socratic method (guided questioning) versus  non-Socratic (direct answers) support.
-
-<!-- - Results showed that AI-generated explanations improved students' performance over solutions without them, highlighting the value of AI-generated guidance. -->
+- Two interventions were tested: (1) comparing AI-generated step-by-step explanations to predictions alone, and (2) contrasting AI chatbot support inspired by the Socratic method (guided questioning) versus  non-Socratic support.
  
 - Participants performed better under step-by-step explanations. They also engaged more frequently with the Socratic AI, though this approach did not result in improved performance and retain of knowledge compared to the non-Socratic AI. 
 
-- While students found interactions with the AI useful, they perceived the Socratic AI as less helpful than non-Socratic overall.
+- While students found interactions with the AI agent useful, they perceived the Socratic AI as less helpful than non-Socratic overall.
 
-- The findings highlight challenges in designing AI tutors that effectively foster critical thinking while maintaining student satisfaction, raising concerns about their adoption in educational settings. 
+- The findings highlight challenges in designing AI agents that effectively foster critical thinking while maintaining student satisfaction, raising concerns about their adoption in educational settings. 
 
 # Abstract {-}
 

@@ -1015,7 +1015,7 @@ panel_a <- tutorgpt %>%
         .by = name
     ) %>%
     mutate(
-        name = case_match(
+        name = replace_values(
             name,
             "q25_sound_speed_correct" ~ "Before AI",
             "q26_sound_speed_with_ai_correct" ~ "After AI"

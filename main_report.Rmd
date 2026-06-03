@@ -17,8 +17,8 @@ author:
       email: "`r ifelse(!params$anonymous, 'vcharisi@cyber.harvard.edu', 'Email') `"
 
 institute:
-  - jrc: "`r ifelse(!params$anonymous, 'European Commission, Joint Research Centre, Brussels, Belgium', 'Anonymous Institute') `"
-  - harvard: "`r ifelse(!params$anonymous, 'Harvard University, Berkman Klein Center, Cambridge, MA, USA', 'Anonymous Institute')`"
+  - jrc: "`r ifelse(!params$anonymous, 'European Commission, Joint Research Centre, Brussels, Belgium', 'Anonymous Institute 1') `"
+  - harvard: "`r ifelse(!params$anonymous, 'Harvard University, Berkman Klein Center, Cambridge, MA, USA', 'Anonymous Institute 2')`"
 
 date: |
   `r format(Sys.Date(), 'This version: %B %d, %Y')`
