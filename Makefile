@@ -3,10 +3,16 @@ CONFIG := _output.yml
 BIB_FILE := refs.bib
 RMD_FILES := $(wildcard *.Rmd)
 
-SUBMIT_DIR := docs
+REV ?= v5
+PREV_REV ?=v4
+
+SUBMIT_DIR := output
 PDF_REPORT := $(SUBMIT_DIR)/main_report.pdf
 PDF_ANONYM := $(SUBMIT_DIR)/main_report_anonym.pdf
 DOC_REPORT := $(PDF_REPORT:.pdf=.docx)
+
+OLD_TEX := $(SUBMIT_DIR)/main_report.tex
+CUR_TEX := $(PDF_REPORT:.pdf=.tex)
 
 # Targets  ------------------------
 
@@ -23,13 +29,14 @@ setup:
 reports: $(PDF_REPORT) $(PDF_ANONYM) $(DOC_REPORT)
 
 $(SUBMIT_DIR)/%.pdf : %.Rmd $(RMD_FILES) $(CONFIG) $(BIB_FILE)
-	Rscript -e 'rmarkdown::render("$<", output_file = "$@", output_format="bookdown::pdf_document2")'
+	@mkdir -p $(SUBMIT_DIR)
+	@Rscript -e 'rmarkdown::render("$<", output_file = "$@", output_format="bookdown::pdf_document2")'
+
+$(SUBMIT_DIR)/%_anonym.pdf : %.Rmd $(RMD_FILES) $(CONFIG)
+	Rscript -e 'rmarkdown::render("$<", output_file = "$@", output_format="bookdown::pdf_document2", params = list(anonymous = TRUE))'
 
 $(SUBMIT_DIR)/%.docx : %.Rmd $(RMD_FILES) $(CONFIG)
 	Rscript -e 'rmarkdown::render("$<", output_format = "bookdown::word_document2", output_file = "$@")'
-
-$(SUBMIT_DIR)/%_anonym.pdf : %.Rmd $(RMD_FILES) $(CONFIG)
-	Rscript -e 'rmarkdown::render("$<", output_file = "$@", params = list(anonymous = TRUE))'
 
 # --- Archive ---
 
@@ -41,16 +48,24 @@ archive.zip: $(PDF_ANONYM:.pdf=.tex) $(PDF_ANONYM:.pdf=_files) $(pictures)
 
 # --- Mardked up difference --- 
 
-diff: docs/main_report_diff.pdf
+#OLD := ./_output/v3/HSSC_Revised_Submission/main_report.tex 
 
-OLD := ./_output/v3/HSSC_Revised_Submission/main_report.tex 
+diff : $(SUBMIT_DIR)/main_report_diff.pdf
 
-diff.tex : $(OLD) $(PDF_REPORT:.pdf=.tex) 
-	@latexdiff $+ > $@
+PREV_TAG := rev4submitted-output
 
-$(SUBMIT_DIR)/main_report_diff.pdf : diff.tex
-	@pdflatex $< && cp diff.pdf $@
+old.tex: 
+	@git show $(PREV_TAG):$(SUBMIT_DIR)/main_report.tex > $@
 
+diff.tex: old.tex $(SUBMIT_DIR)/main_report.tex
+	@latexdiff \
+	--config="PICTUREENV=(?:picture|DIFnomarkup|align)[\w\d*@]*"  \
+	--append-safecmd="toprule,midrule,bottomrule" $+ > $@
+
+$(SUBMIT_DIR)/main_report_diff.pdf: diff.tex
+	pdflatex diff.tex
+	pdflatex diff.tex
+	mv diff.pdf $@
 
 # ---- Submission Materials ----
 
@@ -76,12 +91,15 @@ rebuttal: rebuttal.pdf
 rebuttal.pdf : peer_review/2025-11-fourth-round/rebuttal.md
 	@pandoc $< -C -o $@ --bibliography=References/refs.bib
 
-
 review: $(SUBMIT_DIR)/rebuttal.pdf
+	@open $<
 
-$(SUBMIT_DIR)/%.pdf : peer_review/2025-11-fourth-round/%.md
-	@pandoc --from markdown --to pdf -C $< -o $@
-	@open $@
+$(SUBMIT_DIR)/rebuttal.pdf: peer_review/2026-06-fifth-round/rebuttal.pdf
+	cp $< $@
+
+peer_review/2026-06-fifth-round/rebuttal.pdf: peer_review/2026-06-fifth-round/rebuttal.Rmd
+	@Rscript -e 'rmarkdown::render("$<", output_format = "pdf_document")'
+	@open -a Skim peer_review/2026-06-fifth-round/rebuttal.pdf
 
 # ----- 
 

@@ -9,4 +9,9 @@ assets/
 assets/pictures/*.jpg
 assets/lua-filters
 bibliography/*/
-*.log *.fff *.ttt
+
+*.log
+*.fff
+*.ttt
+
+diff.aux diff.fff diff.log diff.tex diff.ttt
