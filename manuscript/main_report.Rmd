@@ -33,43 +33,8 @@ mainfont: Helvetica
 geometry: margin=2cm
 always_allow_html: true
 
-bibliography: [refs.bib]
+bibliography: [../refs.bib]
 csl: [hssc.csl]
-
-header-includes: |
-  ```{=latex}
-  \usepackage[utf8]{inputenc}
-  
-  % Break sections into new page
-  \usepackage{titlesec}
-  \newcommand{\sectionbreak}{\clearpage}
-  \usepackage{soul} % \hl{} = highlights
-
-  % Table caption 
-  \usepackage{caption} 
-  \captionsetup[table]{skip=8pt}
-
-  % Table packages
-  \usepackage{longtable}
-  \usepackage{array}
-  \usepackage{multirow}
-  \usepackage{wrapfig}
-  \usepackage{float}
-  \usepackage{colortbl}
-  \usepackage{pdflscape}
-  \usepackage{tabu}
-  \usepackage{threeparttable}
-  \usepackage{threeparttablex}
-  \usepackage[normalem]{ulem}
-  \usepackage{makecell}
-  \usepackage{xcolor}
-
-  % Move all figures at the end
-  \usepackage[nolists, nomarkers]{endfloat}
-  \DeclareDelayedFloatFlavour*{longtable}{table}
-
-  %\graphicspath{}
-  ```
 ---
 
 <!-- # The Impact of Large Language Models on Students: A Randomised Study of Socratic vs. Non-Socratic AI and the Role of Step-by-Step Reasoning -->

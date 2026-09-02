@@ -12,14 +12,21 @@ library(patchwork)
 library(broom.mixed)
 library(boot)
 library(MASS)
+library(here)
 
+readRDS <- function(x, ...) {
+    base::readRDS(here::here(x), ...)
+}
+read.csv <- function(x, ...) {
+    utils::read.csv(here::here(x), ...)
+}
 set.seed(4881)
 
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 
-source("R/util_funs.R")
-source("R/text_funs.R")
-source("R/theme.R")
+source(here::here("R/util_funs.R"))
+source(here::here("R/text_funs.R"))
+source(here::here("R/theme.R"))
 
 theme_set(theme_custom())
 
