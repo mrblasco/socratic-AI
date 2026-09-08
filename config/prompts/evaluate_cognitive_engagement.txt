@@ -1,0 +1,99 @@
+You are an expert educational evaluator assessing the quality of a teacher-student dialogue. Rate the dialogue on the following dimensions using a 1–5 scale, where:
+
+1 = Very low
+2 = Low
+3 = Moderate
+4 = High
+5 = Very high
+
+Evaluate the dialogue based only on the content provided. Do not infer student abilities, intentions, or learning that are not supported by the dialogue.
+
+### Teacher/Dialogue Quality Dimensions
+
+1. **Accuracy of information**
+   The extent to which the information provided by the teacher/AI is factually correct, relevant, and free from substantive errors or misleading claims. A score of 5 indicates consistently accurate and reliable information; a score of 1 indicates substantial inaccuracies or misconceptions.
+
+2. **Depth of explanation**
+   The extent to which concepts are explained beyond a superficial answer, including mechanisms, reasoning, examples, connections, nuance, and appropriate detail. A score of 5 indicates thorough, conceptually rich explanation appropriate to the task; a score of 1 indicates little or no meaningful explanation.
+
+3. **Engagement**
+   The extent to which the dialogue keeps the learner cognitively and/or conversationally engaged. Consider whether the responses invite participation, sustain curiosity, encourage reflection, use relevant examples, or create opportunities for the student to think rather than passively receive information. A score of 5 indicates strong and sustained engagement; a score of 1 indicates a largely passive, monotonous, or disengaging interaction.
+
+4. **Clarity of explanation**
+   The extent to which ideas are communicated in an understandable, coherent, organized, and appropriately accessible way. Consider structure, terminology, logical flow, and whether explanations reduce rather than create confusion. A score of 5 indicates exceptionally clear communication; a score of 1 indicates substantial ambiguity, confusion, or disorganization.
+
+5. **Learning outcome potential**
+   The extent to which the dialogue is likely to support meaningful learning, such as conceptual understanding, transfer, critical thinking, problem-solving, retention, or the ability to independently apply the material. A score of 5 indicates strong potential for meaningful learning; a score of 1 indicates little evidence that the interaction would produce learning beyond receiving an answer.
+
+### Student Learning/Interaction Dimensions
+
+6. **Reasoning quality**
+   The extent to which the student explains their thinking, provides justification, considers alternatives, identifies assumptions, makes connections, or reasons through the problem rather than merely providing an answer.
+
+   * 1 = The student provides little or no reasoning and mainly gives unsupported answers or short responses.
+   * 2 = Minimal reasoning with limited justification.
+   * 3 = Some reasoning or justification, but it is incomplete or superficial.
+   * 4 = Clear and substantive reasoning with meaningful justification or consideration of alternatives.
+   * 5 = Sophisticated, well-supported reasoning that evaluates assumptions, alternatives, evidence, or competing interpretations.
+
+7. **Question-asking**
+   The extent to which the student asks clarifying, probing, substantive, or conceptually relevant questions that indicate active processing of the material. Consider the quality and relevance of the questions rather than simply counting them.
+
+   * 1 = No questions or only irrelevant/minimal questions.
+   * 2 = Occasional questions with limited substantive value.
+   * 3 = Some relevant questions that demonstrate moderate engagement with the material.
+   * 4 = Frequent or substantive questions that clarify, probe, or extend understanding.
+   * 5 = High-quality questions that reveal deep curiosity, identify gaps or ambiguities, challenge assumptions, or substantially advance the learning process.
+
+8. **Knowledge building**
+   The extent to which the student builds on the AI/teacher's previous response by integrating, applying, extending, evaluating, synthesizing, or challenging information. Look for evidence that the student is using prior information to construct new understanding rather than simply repeating or accepting it.
+
+   * 1 = The student does not build on prior information.
+   * 2 = Limited repetition or superficial reference to previous information.
+   * 3 = Some application, integration, or extension of previously provided information.
+   * 4 = Clear integration, application, evaluation, or extension of prior information.
+   * 5 = Sophisticated knowledge construction in which the student synthesizes ideas, applies them in new contexts, evaluates claims, makes novel connections, or constructively challenges previous information.
+
+9. **Effort/seriousness**
+   The extent to which the student provides a substantive, task-focused contribution that demonstrates sustained effort, attention, and seriousness toward the learning task. Consider the student's level of detail, persistence, specificity, responsiveness, and willingness to work through difficulty. Do not equate length alone with effort.
+
+   * 1 = Little or no substantive effort; off-task, dismissive, or extremely minimal contribution.
+   * 2 = Limited effort with a mostly superficial or incomplete contribution.
+   * 3 = Moderate effort and task focus, with some substantive contribution.
+   * 4 = Strong effort, sustained attention, and meaningful task-focused contribution.
+   * 5 = Exceptional effort and seriousness, demonstrated through sustained, thoughtful, detailed, and purposeful engagement with the task.
+
+### Evaluation Guidance
+
+* Evaluate each dimension independently. Do not let a high or low score on one dimension automatically determine scores on the others.
+* Base scores on observable evidence in the dialogue.
+* Distinguish **teacher/AI performance** from **student performance**. The first five dimensions primarily assess the quality and learning potential of the instructional interaction; the final four dimensions primarily assess the student's cognitive engagement and contribution.
+* Do not penalize a student for asking fewer questions if the dialogue does not require questioning; evaluate the substantive evidence that is actually present.
+* Do not reward verbosity by itself. A concise contribution can receive a high score if it demonstrates strong reasoning, knowledge building, or effort.
+* Consider the context and apparent difficulty of the task when evaluating depth, reasoning, and effort.
+* If there is insufficient evidence to evaluate a dimension confidently, assign a score based on the available evidence and briefly note the limitation in the comments.
+* Do not assume that the student learned something merely because the teacher/AI explained it. Learning outcome potential should reflect how strongly the dialogue supports actual understanding and independent learning.
+* Identify substantive errors in the teacher/AI's information when evaluating accuracy.
+* Treat engagement as cognitive engagement as well as conversational engagement: a dialogue can be engaging even if it is not entertaining, provided it meaningfully stimulates student thinking.
+* Scores should reflect the overall dialogue, not isolated individual statements.
+
+Dialogue:
+{dialogue_text}
+
+Respond in pure JSON only, without any Markdown code block or additional text.
+
+Use exactly this format:
+{{
+"accuracy": <score>,
+"depth": <score>,
+"engagement": <score>,
+"clarity": <score>,
+"learning_outcome": <score>,
+"reasoning_quality": <score>,
+"question_asking": <score>,
+"knowledge_building": <score>,
+"effort_seriousness": <score>,
+"comments": "<short explanation of the scores, referencing the most important evidence from the dialogue>"
+}}
+
+All scores must be integers from 1 to 5. The comments field must contain a concise explanation and must not introduce information that is not supported by the dialogue.
