@@ -1,0 +1,99 @@
+---
+title: |
+  AI Chatbots in K-12 Education: An Experimental Study of Socratic vs. Non-Socratic Approaches and the Role of Step-by-Step Reasoning
+subtitle: |
+    Point-by-Point Rebuttal to Reviewer Comments
+date: |
+  `r Sys.Date()`
+toc: false
+geometry: "margin=1in"
+linestretch: 1.5
+fontsize: 12pt
+mainfont: Arial
+...
+
+Dear Editor and Reviewer #4,
+
+We thank you and Reviewer #4 for the comments and constructive feedback. Also, we thank you for recommending this manuscript for publication with major revisions. Below, we provide a detailed point-by-point response. Reviewer #4 comments are presented in bold, followed by our responses in regular text. Where applicable, we indicate changes made to the manuscript by referencing specific sections or page numbers.
+
+----
+
+Reviewer 4
+
+**I appreciate the authors’ thorough consideration of my previous comments and their efforts to revise the manuscript However, I unfortunately still do not feel that the current revisions have satisfactorily addressed my concerns regarding the clarity of the manuscript and its methodological quality. In light of those concerns I still feel unable to recommend acceptance of this manuscript.**
+
+**Below, I outline my major remaining concerns:**
+
+**1. Due to several limitations, the study’s theoretical framework does not seem strong enough to me.** 
+
+**1.1 Firstly, I am not fully convinced that the theoretical framework of instructional guidance is the most appropriate fit for the phenomenon the study seeks to address. The authors describe the experimental condition in which learners engage in Socratic dialogues with an AI as a “discovery-based approach,” which seems reasonable. However, they also describe the condition in which the AI directly provides learners with complete solutions as “direct instruction.” They write: „In the first condition, the AI chatbot acts as a didactic teacher (“non-Socratic AI”), providing direct solutions and explanations, as is typical in many popular AI chatbots, such as ChatGPT, and similar to the AI assistance in the first experiment.” In response to my previous review, the authors also write: „Furthermore, our setting differs fundamentally from the classical teacher-led instruction: generative AI provides an immediate, complete solution and, depending on the experimental condition, an associated explanation” However, if AI merely provides learners with a task solution (potentially after learners’ very first request, as could be the case in a condition without Socratic dialogues), then I am uncertain whether this setting can be best characterized as learning with instruction.**
+
+We agree that our AI conditions do not map perfectly onto classical teacher-led instruction. Our intention was not to equate AI with human instruction. Rather, we use the instructional guidance framework because our central experimental manipulation concerns the amount and form of guidance provided during problem solving. Specifically, we compare a condition in which learners receive solution-oriented support and explanations from the AI with a condition in which the AI primarily supports learners through Socratic questioning and guided reasoning. Thus, the instructional guidance literature provides a useful framework for theorizing differences in how varying forms of guidance influence learning. 
+
+We also wish to clarify the nature of the learning activities. Some of the tasks were deliberately designed as open-ended questions and complex problems (including Fermi-type problems) that often did not have a single correct answer. Consequently, even in the non-Socratic condition, AI outputs frequently consisted of procedures, solution strategies, assumptions, heuristics, or example approaches rather than definitive answers. Learners therefore remained responsible for evaluating the quality and applicability of the AI-generated guidance and for constructing their own responses.
+
+We agree that the term "direct instruction" can be misleading if interpreted as referring to traditional classroom instruction delivered by a teacher. Our use of the term is instead grounded in the instructional-guidance literature, where highly guided approaches, including the provision of worked examples, solution procedures, and explanatory support, are commonly contrasted with approaches that require learners to generate solutions with less direct guidance. From this perspective, the non-Socratic AI condition is best understood as a high-guidance, solution-providing form of instructional support, whereas the Socratic AI condition represents a more discovery-oriented and scaffolded form of support.
+
+We therefore do not claim that either condition constitutes direct instruction in the traditional sense of teacher-led classroom teaching. Rather, we conceptualize both conditions as alternative forms of AI-mediated instructional support that differ in the degree to which learners are provided with solutions versus prompted to generate their own reasoning. Because this distinction aligns closely with the central dimension examined in instructional-guidance research, we believe this framework remains the most appropriate theoretical lens for interpreting our findings.
+
+To make this distinction clearer, we have substantially revised the literature section, including the following paragraphs: 
+
+> "Within this continuum, instructional guidance can differ in form. Some approaches provide learners with solutions, procedures, worked examples, or explanatory information, whereas others guide learning by prompting learners to articulate assumptions, justify reasoning, and construct their own explanations. Both approaches provide instructional guidance, but they differ in the extent to which learners are required to generate and evaluate their own reasoning during problem solving. [...] Emerging AI systems offer a means of delivering instructional support at scale. Importantly, in this study, AI is not conceptualised as an imitation of a human instructor but as a mechanism for providing different forms of instructional guidance. We compare a high-guidance, solution-providing mode of AI support with a scaffolded, Socratic mode that prompts learners to generate and evaluate their own reasoning. This framework allows us to examine how different forms of AI-mediated guidance influence learning processes and outcomes in a controlled K–12 learning environment."
+
+
+**1.2 Secondly, the authors’ decision to use the term “AI agents” instead of “AI tutors” seems, in my view, to be a more appropriate choice. However, I was left with the impression that the manuscript was not revised thoroughly enough to fully reflect this shift conceptually. For instance, the term “tutor” still appears 50 times throughout the text. This gives the impression that the change in wording may have remained largely terminological, rather than being consistently integrated into the manuscript’s broader conceptual and theoretical framing.**
+
+We conducted a full review of the manuscript to ensure consistency in terminology following the shift toward “AI agents.” The remaining instances of the term “AI tutor” primarily appear in the questionnaire items, which reflect the exact wording shown to participants and were therefore intentionally retained to preserve measurement validity.
+
+**1.3 Thirdly, the authors mix different concepts and terms that may be hard for readers to sort out. These include instructional guidance, instructional style, tutoring styles, interaction styles, and critical thinking. A clearer differentiation between these terms would strengthen the clarity and consistency of the theoretical background, research questions, examined variables, and reported results.**
+
+We agree with this point. We have now replaced the term “style” with “guidance,” as we are referring to the same concept throughout the manuscript. We have also clarified the definition of critical thinking in a footnote (1, p. 9): 
+
+> "In this paper, critical thinking refers to the ability to purposefully analyse, evaluate, and interpret information in order to form reasoned judgments based on evidence."
+
+**1. The manuscript has considerable limitations in terms of its methodology and the analyses conducted.**
+
+**2.1 Firstly, the authors do not formulate any hypotheses. However, given the theoretical background, formulating hypotheses seems reasonable to me.**
+
+In the revised manuscript, we have included a new sub-section "Testing hypotheses" (p. 13) within the Methods section listing the core hypotheses. 
+
+**2.2 Secondly, the Methods section would benefit from a clearer explanation of how the study was conducted. For example, greater consistency in referring to the study as either “the experiment” or “two independent experiments” would help clarify the overall research design. Although the authors emphasize at one point that the study consisted of two independent experiments, they later describe and refer to only one experimental design. Besides that, the authors neither explain how participants were assigned to a treatment condition in the second experiment nor discuss how the first experiment may have influenced learners' behavior in the second experiment.**
+
+We have searched for all "experimental design" sentences and replaced the terms to accurately reflect the fact that the study consists of two experiments. We describe the random assignment in the Methods section (p. 9): 
+
+> "It is important to note that these were conducted as independent experiments, with different dependent and independent variables, rather than a factorial 2x2 design. Consequently, students were randomly assigned to conditions separately for each experiment. In the analysis, given the independent assignment, we consider the effect of the first experiment as a random noise." 
+
+We further clarify the potential influence in a footnote (2, p. 9): 
+
+> "Given the independence of the randomisation procedures, the treatment assignment in one experiment is assumed not to systematically influence the treatment effects estimated in the other. Consequently, in the analysis, the effects of the other experiment are treated as random variation that does not bias the estimated treatment effects, although they may contribute to increased standard errors and greater uncertainty in the estimates."
+
+**2.3 Thirdly, the description of the instruments would benefit from greater detail. For example:„3.6.2 AI Academic Habits and Skills: Academic skills or habits may moderate the effect of AI interactions on problem-solving activities. Accordingly, to account for participants’ heterogeneity in academic skills, we asked students to report their average school grades within five categories. We also asked students about their academic habits or the challenges they face at school, such as how often they complete their homework assignments on time and what factors affect their ability to do so.” This description should provide more specific information about the number of items and scales. At the very least the authors should point to the appendix where more information can be found.**
+
+We have clarified the scale in the text (p. 12) and pointed the reader to the Appendix for the full questionnaire.
+
+**2.4 Finally, I also have some concerns about the appropriateness of certain statistical methods used by the authors. For example: “To examine the impact of AI explanations on students’ perceived credibility of AI predictions (RQ2), we analysed students’ five-point ratings of the perceived accuracy of the AI estimated value of coins. We noticed that 53% of students who did not receive step-by-step reasoning considered the AI estimate as either “good” (39%) or “very good” (14%) compared to 43% of students exposed to the AI reasoning (19% and 24%, respectively). This gap of ten percentage points suggests that students viewed the AI as more accurate when the AI-generated guess was presented as a “black box.” However, we didn’t have enough observations to reach a statistically significant association (Fisher’s test, p = .27)…” Relying heavily on percentages to report the findings is not optimal here. Given that perceived accuracy was measured using a 5-point Likert scale, an appropriate statistical analysis would be to compare the mean scores between the two experimental conditions using a t-test or Mann–Whitney U test. Fisher’s test is typically used to examine the relationship between two categorical variables when the sample size is small. Here, however, this was not the case.**
+
+We have now included the results from a Mann-Whitney U tests, replacing the Fisher's test. For the credibility of AI results, we included the following (p. 15): 
+
+> "However, a non-parametric Mann-Whitney U test found no significant difference between the conditions ($W = 1754.5$, $p = .59$), and even regression analysis controlling for individual characteristics showed no significant differences." 
+
+However, the effect on the credibility of human guesses becomes statistically significant at 10% level, thus slightly improving the evidence on this effect. We included (p. 15): 
+
+> "Statistically, a Mann-Whitney U test indicates a significant difference between the two conditions at the 10% level ($W = 2179$, $p = .087$)"
+
+
+**1. Finally, I am still not convinced by the authors’ reasoning about the novelty of their study’s insights. In response to my previous review, the authors make the following argument for the novelty of their study’s insights:“our setting differs fundamentally from the classical teacher-led instruction: generative AI provides an immediate, complete solution and, depending on the experimental condition, an associated explanation. In this context, learners may rely exclusively on the final answer or, alternatively, overtrust the AI simply because an explanation is present, without engaging in critical evaluation. These dynamics are not present in the same way in traditional classroom environments.” In my view, the main novel aspect of this line of reasoning lies in AI’s ability to provide immediate solutions, whereas many of the other elements could similarly apply to more traditional forms of teacher-led instruction: „learners may rely exclusively on the final answer or, alternatively, overtrust the AI simply because an explanation is present, without engaging in critical evaluation”  The same applies to teacher-led or, for example, peer explanations.**
+
+**To illustrate my point, I would like to give an example of a potential research gap related to the effects of AI explanations on learning. Unlike human teachers, AI can provide explanations immediately. However, these explanations, even for simple tasks, can be incorrect (e.g., in the simplest math tasks), which is uncommon for human teachers providing explanations to simple tasks. This presents two important new factors: (1) immediate explanations and (2) potentially incorrect solutions for simple tasks. Thus, an experimental study could examine how different combinations of these factors affect learning and compare the results with those of traditional, teacher-led explanations. While the manuscript addresses a relevant topic, I am not yet persuaded that the study design, research questions, or main findings are sufficiently novel to provide a significant contribution to the research community.**
+
+We thank the reviewer for this careful comment. We agree that the original wording (“fundamentally differs from classical teacher-led instruction”) in our rebuttal may have overstated the distinction. We have revised the manuscript accordingly to avoid implying that the underlying learning mechanisms are unique to AI contexts.
+
+In the discussion we explicitly mention that (p. 19): 
+
+> "Importantly, we do not interpret this as evidence of a fundamentally new learning mechanism, but rather as an effect emerging under a specific instructional configuration in which learners receive immediate, structured solutions generated by an automated system."
+
+We further clarify that the more specific contribution of our study lies in the instructional guidance conditions under which these well-established mechanisms are triggered and potentially amplified. In particular, we focus on a setting characterized by two jointly occurring properties: (i) immediate, on-demand solution generation, and (ii) absence of human instructional accountability or supervision in the generation of explanations. Specifically, we now include (p. 19): 
+
+> "This result is particularly relevant in AI-mediated learning environments, which are characterized by (i) immediate access to complete solutions and explanations, and (ii) the absence of human instructional accountability or supervision over the generated content. In such settings, explanations are not necessarily constrained by pedagogical intent or reliability guarantees typical of human instruction. Despite these constraints, our findings indicate that structured reasoning can still support performance, suggesting that learners are able to benefit from AI-generated explanations even under conditions where epistemic verification is limited."
+
+We have further revised the manuscript to reflect this more careful positioning and to ensure that claims of novelty are restricted to the instructional setting and interaction structure rather than the underlying cognitive processes.
