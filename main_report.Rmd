@@ -3,7 +3,7 @@ params:
   anonymous: false
 
 title: |
-  AI Chatbots in K-12 Education: An Experimental Study of Socratic vs. Non-Socratic Approaches and the Role of Step-by-Step Reasoning
+  AI Chatbots in K-12 Education: An Experimental Study of Socratic vs. Non-Socratic Approaches
 
 author:
   - "`r ifelse(!params$anonymous, 'Andrea Blasco', 'Anonymous') `":
@@ -23,6 +23,10 @@ institute:
 date: |
   `r format(Sys.Date(), 'This version: %B %d, %Y')`
 
+abstract: |
+  How does integrating large language models (LLMs) into classroom activities influence students' learning? To investigate this question, we conducted a randomized experiment with students aged 14-16 (N=122), testing two interventions: (i) comparing AI-generated solutions with step-by-step explanations versus solutions alone and (ii) Socratic AI chatbots promoting critical thinking through incremental guidance versus non-Socratic AI offering direct solutions. Students completed school-related tasks under these conditions. We collected students' performance and interaction logs data, as well as their attitudes through self-reported surveys. Results indicated that AI-generated explanations significantly improved students' performance over solutions alone, highlighting the benefits of step-by-step guidance. The Socratic AI approach fostered significantly greater engagement and interaction. However, it did not achieve significant improvements in learning, and a higher fraction of students perceived it as less helpful. Furthermore, despite overall positive perceptions of AI assistance, students exhibited limited retention, failing to apply learned concepts to new situations without the aid of AI. These findings underscore both the potential and limitations of LLM-based chatbots in K-12 education, especially in balancing the development of critical thinking with user satisfaction.
+
+
 toc: false
 fontsize: 12pt # 11
 linestretch: 1.5 # 1.25
@@ -30,8 +34,8 @@ colorlinks: true
 link-citations: true
 graphics: true
 tables: true
-mainfont: Helvetica
-geometry: margin=2cm
+mainfont: Times New Roman
+geometry: margin=1in
 bibliography: [References/refs.bib]
 always_allow_html: true
 
@@ -73,6 +77,7 @@ header-includes: |
 
 <!-- # The Impact of Large Language Models on Students: A Randomised Study of Socratic vs. Non-Socratic AI and the Role of Step-by-Step Reasoning -->
 
+\clearpage
 
 ```{r setup, include = FALSE}
 library(patchwork)
