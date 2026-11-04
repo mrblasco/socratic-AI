@@ -1,0 +1,48 @@
+{
+  "chat_id": 176,
+  "rep": 2,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:40:41.869198+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "The student's message 'there is 200 students, one student use 1L of water every day, there are 300 days' gives inputs as a full sentence but no justification, and the 300 figure is a year count the student never reconciles with the AI's correction. The student mostly echoes the AI's requested values ('200', '1L', 'yes'). No questions were asked, and 'no please do it' hands the calculation back to the AI."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2307,
+    "output_tokens": 707,
+    "output_tokens_details": {
+      "thinking_tokens": 525
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

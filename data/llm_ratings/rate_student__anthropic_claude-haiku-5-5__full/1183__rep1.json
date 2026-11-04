@@ -1,0 +1,48 @@
+{
+  "chat_id": 1183,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:01:53.883176+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "Student messages give mostly bare answers, such as \"25\" and \"the weather\", with little stated reasoning, though \"the students go to school 5 days per week and they consume 5 litres per day\" restates the given facts. Knowledge building is 3 because \"25\" applies the earlier 5 litres and 5 days to the calculation. No question about the content was asked, so question_asking is 0. Effort is 4 because the student made several task-focused calculation attempts (\"20 00 fois 5\", \"100 000\", \"25\") and kept trying after repeated prompts, though two replies were just \"no\"."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2841,
+    "output_tokens": 706,
+    "output_tokens_details": {
+      "thinking_tokens": 454
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

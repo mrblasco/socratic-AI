@@ -1,0 +1,53 @@
+{
+  "chat_id": 1074,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:10:30.401347+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 2,
+    "next_step_guidance": 2,
+    "conversational_flow": 4,
+    "encouraging_tone": 3,
+    "comments": "The student makes no wrong answer or misconception, so the mistake dimensions are null. The AI's early questions guided the student, but after 'i don't know that' it supplied the 0.5 litre estimate and then did the full calculation when asked 'do the mahts', so supportive guidance is 2. The closing message gives a result but no next step, and the 'Great, we're getting closer' and 'That's okay' lines are generic encouragement."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2283,
+    "output_tokens": 522,
+    "output_tokens_details": {
+      "thinking_tokens": 303
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

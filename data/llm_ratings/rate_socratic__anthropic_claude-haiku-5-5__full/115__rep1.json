@@ -1,0 +1,53 @@
+{
+  "chat_id": 115,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:08:05.080799+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 2,
+    "next_step_guidance": 3,
+    "conversational_flow": 1,
+    "encouraging_tone": 2,
+    "comments": "The student makes no clear wrong answer or misconception; 'just give me the number' is a request, not an error, so both mistake dimensions are null. The early Socratic questions were reasonable, but the final turn gives the answer (343 m/s, 1,125 ft/s) with only a brief cue on temperature and humidity. The same tutor message is repeated verbatim three times, ignoring the student's question about water versus air, so conversational flow is poor. Tone is mostly neutral, with generic 'Great!' openers and no specific acknowledgement of the student's frustration."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2440,
+    "output_tokens": 714,
+    "output_tokens_details": {
+      "thinking_tokens": 451
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

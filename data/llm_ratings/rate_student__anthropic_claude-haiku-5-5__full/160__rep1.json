@@ -1,0 +1,48 @@
+{
+  "chat_id": 160,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:00:05.517150+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "The student's messages are 'hello' (off-task greeting), 'how much in litres do a students consume at our school each week' (the task statement, ignored), and 'they are 700 student and they drink 1 litr'. The last message gives the student's own figures, applying the earlier 500-student/2-litre example and the 7-day week to their school, which is a single step with no stated justification (reasoning 2). It uses earlier information by substituting their own numbers (knowledge building 3). No question is asked, and one complete task-focused attempt is visible (effort 3). The conversation is very short, so these scores rest on one substantive message."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2142,
+    "output_tokens": 250,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

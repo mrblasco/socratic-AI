@@ -1,0 +1,45 @@
+{
+  "chat_id": 111,
+  "rep": 2,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "efb45bcafc51",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:32:00.137430+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 1,
+    "effort_seriousness": 1,
+    "comments": "The student wrote only one message, 'holi', which is a bare word with no reasoning, no reference to earlier content, no question, and no visible task engagement. The AI's reply asked what the student knows about Holi, and the student did not respond, so there is no evidence for any dimension. The conversation is too short to judge learning, and all scores reflect the absence of observable student contribution."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1695,
+    "output_tokens": 171,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

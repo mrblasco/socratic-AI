@@ -1,0 +1,53 @@
+{
+  "chat_id": 13,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:07:11.945071+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": 2,
+    "acknowledging_mistake": 2,
+    "supportive_guidance": 2,
+    "next_step_guidance": 3,
+    "conversational_flow": 2,
+    "encouraging_tone": 3,
+    "comments": "The AI called 437,5 'a small mistake' without saying what was wrong, and it said 'Great' to the student's 0,50 Cl figure without catching that error. It then gave the full working step by step, which handed over most of the answer. The identical repeated replies to '1750 liters per week' and '1750' make the flow repetitive, though the closing 'Well done!' is warm."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3082,
+    "output_tokens": 950,
+    "output_tokens_details": {
+      "thinking_tokens": 747
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

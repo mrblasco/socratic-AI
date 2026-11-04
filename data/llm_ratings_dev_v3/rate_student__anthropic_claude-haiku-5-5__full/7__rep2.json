@@ -1,0 +1,48 @@
+{
+  "chat_id": 7,
+  "rep": 2,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:40:31.278251+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 0,
+    "effort_seriousness": 1,
+    "comments": "The student's only own message is 'v', which is off-task text and was treated as a typo by the AI. The later French message is the pasted task question, so it was ignored, which means there is no student-authored reasoning, building on earlier content, or question about the content. The conversation is too short to judge beyond this, and the AI's worked example was not credited to the student."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2267,
+    "output_tokens": 369,
+    "output_tokens_details": {
+      "thinking_tokens": 209
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

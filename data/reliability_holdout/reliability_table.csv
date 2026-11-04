@@ -1,0 +1,15 @@
+prompt,mode,dimension,alpha_repeats[anthropic_claude-haiku-5-5],alpha_repeats[openai_gpt-4o],alpha_between_models,mean_abs_diff,mean_diff(first-second),models,n_chats,spearman,share_na,alpha_repeats[openai_gpt-4o-mini],pct_agree,ac1,prevalence
+rate_socratic,full,acknowledging_mistake,,,0.520635840115806,1.4411764705882353,-1.0294117647058822,anthropic_claude-haiku-5-5 vs openai_gpt-4o,66,0.7110902249524675,0.8407643312101911,,,,
+rate_socratic,full,conversational_flow,,,0.3055482686447971,0.7866242038216561,-0.7738853503184714,anthropic_claude-haiku-5-5 vs openai_gpt-4o,314,0.591486252537162,0.0,,,,
+rate_socratic,full,encouraging_tone,,,-0.20107272451464264,1.2229299363057324,-1.2229299363057324,anthropic_claude-haiku-5-5 vs openai_gpt-4o,314,0.5466090561134106,0.0,,,,
+rate_socratic,full,identifying_mistake,,,0.5380402663409637,1.2941176470588236,-0.9411764705882353,anthropic_claude-haiku-5-5 vs openai_gpt-4o,66,0.7506956843686423,0.8407643312101911,,,,
+rate_socratic,full,next_step_guidance,,,0.5641204072178031,0.89171974522293,-0.7197452229299363,anthropic_claude-haiku-5-5 vs openai_gpt-4o,314,0.7034902498541539,0.0,,,,
+rate_socratic,full,supportive_guidance,,,0.42663299667239807,1.105095541401274,-1.085987261146497,anthropic_claude-haiku-5-5 vs openai_gpt-4o,314,0.6596499628022457,0.0,,,,
+rate_student,full,effort_seriousness,,,0.6694792313825573,0.5,-0.3343949044585987,anthropic_claude-haiku-5-5 vs openai_gpt-4o-mini,314,0.7118268724709099,0.0,,,,
+rate_student,full,knowledge_building,,,0.8073963978024125,0.2515923566878981,0.009554140127388535,anthropic_claude-haiku-5-5 vs openai_gpt-4o-mini,314,0.8096629930867376,0.0,,,,
+rate_student,full,question_asking,,,0.15169445938676707,0.2643312101910828,-0.12420382165605096,anthropic_claude-haiku-5-5 vs openai_gpt-4o-mini,314,0.18555806466036653,0.0,,73.56687898089172,0.616297986675991,0.13/0.25
+rate_student,full,reasoning_quality,,,0.7035574334295368,0.2802547770700637,-0.1337579617834395,anthropic_claude-haiku-5-5 vs openai_gpt-4o-mini,314,0.717007488993506,0.0,,,,
+rate_student,student,effort_seriousness,,,0.45248741203603393,0.6815286624203821,-0.5605095541401274,anthropic_claude-haiku-5-5 vs openai_gpt-4o-mini,314,0.6015167463203326,0.0,,,,
+rate_student,student,knowledge_building,,,0.6496287390173576,0.2515923566878981,-0.03503184713375796,anthropic_claude-haiku-5-5 vs openai_gpt-4o-mini,314,0.6495550476905191,0.0,,,,
+rate_student,student,question_asking,,,-0.004465468306527942,0.40445859872611467,-0.32802547770700635,anthropic_claude-haiku-5-5 vs openai_gpt-4o-mini,314,0.16227948789502597,0.0,,59.554140127388536,0.32362594028002745,0.11/0.44
+rate_student,student,reasoning_quality,,,0.6797822650736064,0.2898089171974522,-0.03503184713375796,anthropic_claude-haiku-5-5 vs openai_gpt-4o-mini,314,0.6824245742635809,0.0,,,,

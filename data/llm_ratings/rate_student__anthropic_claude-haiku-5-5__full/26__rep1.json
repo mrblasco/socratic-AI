@@ -1,0 +1,48 @@
+{
+  "chat_id": 26,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:59:06.028652+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 1,
+    "effort_seriousness": 2,
+    "comments": "The first user message is the pasted task statement and is ignored. The only student-authored message is 'what are the effect of social media on student's well being?', which is a question about the content but gives no reason or step, so reasoning_quality is 1. It repeats the task question rather than building on the AI's prior message, so knowledge_building is 1. It asks about the content of the topic, so question_asking is 1. It is a single fragmentary, question-form attempt with no complete answer and no follow-through, so effort_seriousness is 2. The conversation is very short, so these scores reflect only that one message."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1977,
+    "output_tokens": 236,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

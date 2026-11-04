@@ -1,0 +1,45 @@
+{
+  "chat_id": 1248,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "1894a9d1b86b",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:34:29.151441+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 1,
+    "effort_seriousness": 2,
+    "comments": "The first message is the pasted task question and is ignored. The only student-authored reply is \"je referes sur tout\", a fragment that answers the AI's scope question without any reason or step. It asks no questions and adds nothing to the earlier content. Effort is scored 2 because there is one fragmentary reply and no complete attempt at the task."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2185,
+    "output_tokens": 458,
+    "output_tokens_details": {
+      "thinking_tokens": 298
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

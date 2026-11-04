@@ -1,0 +1,48 @@
+{
+  "chat_id": 766,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:05:41.415457+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 4,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "The first message is the pasted task statement and was ignored. The student's second message weighs both sides with reasons ('it helps them coltivating intrests... but it could also make them lose time'). The third extends the point with a concrete example ('if i'm for example intrested in going to the gym I can reasearch on social media'). The fourth ('it can create dependency or can make lose time') only repeats earlier points, and no student question appears."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1931,
+    "output_tokens": 686,
+    "output_tokens_details": {
+      "thinking_tokens": 501
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

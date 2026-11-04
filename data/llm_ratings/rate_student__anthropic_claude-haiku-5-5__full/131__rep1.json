@@ -1,0 +1,48 @@
+{
+  "chat_id": 131,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:59:52.687680+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 4,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The student's reasoning is mostly bare answers, but 'ils ont deux chiffres et il y a 89 nombres' and 'il faut 89 fois 2 c'est a dire 178' give a brief basis for a calculation. After the tutor's correction that there are 90 numbers, the student revised to '180' without explaining the change, which shows knowledge building. The student made several task-focused attempts ('il faut 9 touches', '178', '180') and kept going after the hint, but asked no questions of their own."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2518,
+    "output_tokens": 789,
+    "output_tokens_details": {
+      "thinking_tokens": 572
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

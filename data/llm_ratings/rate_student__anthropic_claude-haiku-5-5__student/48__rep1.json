@@ -1,0 +1,48 @@
+{
+  "chat_id": 48,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:03:10.726442+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 2,
+    "comments": "The student's only contributions are bare numbers ('8', '9', '10', '123456789', '1') with no stated reasoning, plus 'i dont know' and 'yes'. The pasted question is ignored. The numbers are unexplained guesses, so reasoning is scored 2, and '123456789' at most loosely echoes the range in the question. 'give me the reponse' is a request for the answer, so question_asking is 0, and effort is 2 because every reply is fragmentary with no complete attempt."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1947,
+    "output_tokens": 709,
+    "output_tokens_details": {
+      "thinking_tokens": 495
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

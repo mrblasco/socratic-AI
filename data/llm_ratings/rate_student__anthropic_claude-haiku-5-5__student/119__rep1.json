@@ -1,0 +1,48 @@
+{
+  "chat_id": 119,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:03:53.981179+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 4,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The student's first own message gives a reasoned step: \"there is nine numbers so you need nine keystrokes\". They then build a multi-step count (\"89\", \"180\", \"900\", \"2700\", \"4\") and a summed chain (\"2700 + 4+900+180\"). The total moves from \"3600\" to \"2893\", and the final value is correct, though the chain as written does not sum to 2893. The student asks no questions and ends with \"yes\", which is a bare acknowledgement."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1905,
+    "output_tokens": 922,
+    "output_tokens_details": {
+      "thinking_tokens": 705
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

@@ -1,0 +1,48 @@
+{
+  "chat_id": 89,
+  "rep": 1,
+  "provider": "openai",
+  "model": "gpt-4o",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": 0.0,
+  "timestamp": "2026-11-03T12:45:40.270523+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 2,
+    "next_step_guidance": 3,
+    "conversational_flow": 4,
+    "encouraging_tone": 3,
+    "comments": "The AI provides a balanced view of social media's impact but gives a thin explanation without specific guidance for the student to explore further, hence a 2 for supportive guidance. The next step guidance is relevant but not concrete, earning a 3. The conversational flow is mostly natural and coherent, scoring a 4. The tone is polite but lacks specific encouragement, resulting in a 3."
+  },
+  "usage": {
+    "input_tokens": 1134,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 130,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1264
+  },
+  "model_returned": "gpt-4o-2024-08-06"
+}

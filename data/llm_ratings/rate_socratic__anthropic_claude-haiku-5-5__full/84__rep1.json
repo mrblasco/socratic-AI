@@ -1,0 +1,53 @@
+{
+  "chat_id": 84,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:07:50.235038+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": 1,
+    "acknowledging_mistake": 1,
+    "supportive_guidance": 4,
+    "next_step_guidance": 4,
+    "conversational_flow": 4,
+    "encouraging_tone": 3,
+    "comments": "The student wrote 'every day they consume 10L' but then described 10L per shower with 4 showers a week, which is an inconsistent statement. The AI silently reinterpreted it as 10L per shower without flagging the discrepancy, so identifying and acknowledging are scored 1. The next question ('how much water does each student consume in a week for showers?') is specific and leaves the multiplication to the student. The 'Great, we have the information we need' opener is generic praise, and the flow is coherent."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2060,
+    "output_tokens": 942,
+    "output_tokens_details": {
+      "thinking_tokens": 702
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

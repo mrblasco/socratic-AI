@@ -1,0 +1,45 @@
+{
+  "chat_id": 111,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "efb45bcafc51",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:31:33.583363+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 1,
+    "effort_seriousness": 1,
+    "comments": "The student wrote only one word, 'holi', with no reasons, steps, questions, or engagement with the AI's prompt about what they know. The conversation is too short to judge beyond this, so all dimensions score at the no-evidence floor of 1."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1695,
+    "output_tokens": 131,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

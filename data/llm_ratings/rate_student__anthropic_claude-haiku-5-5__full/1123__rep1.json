@@ -1,0 +1,48 @@
+{
+  "chat_id": 1123,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:01:46.964110+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 1,
+    "effort_seriousness": 3,
+    "comments": "The student's own contributions are the second message, a question about hand-washing water use, and two calculation lines: \"0.253 liters/wash x 3 washes/day\" and \"0.253 liters/wash x 3 washes/day x 7\". These give single computational steps with no stated reason, so reasoning is 2. They reuse the 0.253 L figure and change 5 washes to 3, applying earlier information, so knowledge building is 3. The hand-washing question asks about content and counts as a question, though it could be read as a restatement of the task. Effort is 3: there are several task-focused steps but little follow-through beyond the calculation."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2486,
+    "output_tokens": 763,
+    "output_tokens_details": {
+      "thinking_tokens": 507
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

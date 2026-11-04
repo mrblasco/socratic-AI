@@ -1,0 +1,48 @@
+{
+  "chat_id": 234,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:00:53.938675+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 2,
+    "question_asking": 1,
+    "effort_seriousness": 3,
+    "comments": "The student gave single-step answers with no justification, such as \"1. There are around 1000 students.\" and \"2. 1l.\", and later a bare \"9\". They asked a content question of their own: \"¿Cuántas pulsaciones de teclas se necesitan para escribir números del 1 al 1000?\". The pasted opinion question was ignored, and the water-task answers only supply values the tutor requested, so knowledge building stays at echo level. Effort is rated 3 because the complete sentence attempts are task-focused but show little follow-through."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2742,
+    "output_tokens": 631,
+    "output_tokens_details": {
+      "thinking_tokens": 400
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

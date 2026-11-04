@@ -1,0 +1,48 @@
+{
+  "chat_id": 1292,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:06:25.142080+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "The student's opinion 'i don't think that the most bigger part of the teenagers are using the social medias for learning because the most part we speek about is bowling' gives a brief reason, which supports reasoning 3. Knowledge building is 2 because the later messages ('some photos like on instagram...', 'i don't have so many different negatives impact...') mostly add examples or admissions without clearly extending or testing earlier content. The request 'can you give me some examples of positives impacts...' is a request for the answer, so question_asking is 0. Effort is 3: there are several task-focused attempts, but they show little follow-through, and the 'hello?' messages are off-task."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1942,
+    "output_tokens": 835,
+    "output_tokens_details": {
+      "thinking_tokens": 572
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

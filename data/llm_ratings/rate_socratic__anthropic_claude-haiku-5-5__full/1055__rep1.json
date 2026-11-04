@@ -1,0 +1,53 @@
+{
+  "chat_id": 1055,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:10:31.315232+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": 2,
+    "acknowledging_mistake": 2,
+    "supportive_guidance": 2,
+    "next_step_guidance": 2,
+    "conversational_flow": 2,
+    "encouraging_tone": 3,
+    "comments": "The student's unit error (centiliters for 250 mL cups) was flagged in the second AI turn, but the final AI turn called the calculation 'correctly calculated' and accepted the unexplained '+60 makes 70' step and the soft-drinks inclusion without questioning them. The earlier turns gave useful cues (asking how many days are in a week), but the final turns simply stated the result. The last AI message is repeated verbatim and ends with a vague 'Do you have any other questions?', so flow and next-step guidance are weak. The praise is generic 'Great job' phrasing."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2705,
+    "output_tokens": 969,
+    "output_tokens_details": {
+      "thinking_tokens": 699
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

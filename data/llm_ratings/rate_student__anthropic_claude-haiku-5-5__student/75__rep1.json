@@ -1,0 +1,48 @@
+{
+  "chat_id": 75,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:03:26.014888+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 0,
+    "effort_seriousness": 2,
+    "comments": "The student's own content is limited to two instructions: \"traduit moi cela en francais\" and \"repond a cette question en anglais\", each with the task question pasted in. Both are requests for translation or an answer, with no reasons, steps or attempt at the problem. The student repeats the pasted question and asks no question about the content. Effort scores 2 because there is a trace of task-focused engagement but no complete attempt."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1843,
+    "output_tokens": 531,
+    "output_tokens_details": {
+      "thinking_tokens": 346
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

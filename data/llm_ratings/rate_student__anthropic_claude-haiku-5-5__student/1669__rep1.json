@@ -1,0 +1,48 @@
+{
+  "chat_id": 1669,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:06:41.014293+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The first message is the pasted task and was excluded. The student's later messages are search-style queries that reword the same problem (e.g. 'how many students are there in eeb2', then 'how many students are there on average in the european schools'), which paraphrase earlier content without adding to it. The final messages '2x5x2000' and '2 times 5 times 2000' give a single calculation step with no justification for the numbers used. 'what is the average number of litres students drink every day' asks for the figure itself, so it is scored as a request for the answer rather than a content question."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1889,
+    "output_tokens": 881,
+    "output_tokens_details": {
+      "thinking_tokens": 656
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

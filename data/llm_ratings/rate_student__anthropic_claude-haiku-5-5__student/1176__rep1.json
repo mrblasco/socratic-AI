@@ -1,0 +1,48 @@
+{
+  "chat_id": 1176,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:06:08.903453+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 1,
+    "effort_seriousness": 2,
+    "comments": "The only student message is 'are you positive that social media has an inpact on teenagers and if so positive or negativly'. I treated it as the student's own question rather than pasted task text, since it is phrased as a query to the AI with typos. It asks about content (whether and how social media affects teenagers), so question_asking is 1. It gives no reason, step or earlier content to build on, so reasoning and knowledge building are 1, and it is a single fragmentary attempt, so effort is 2."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1813,
+    "output_tokens": 829,
+    "output_tokens_details": {
+      "thinking_tokens": 624
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

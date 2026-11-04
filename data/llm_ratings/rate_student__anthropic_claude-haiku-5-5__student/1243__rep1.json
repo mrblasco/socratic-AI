@@ -1,0 +1,48 @@
+{
+  "chat_id": 1243,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:06:20.225251+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 4,
+    "knowledge_building": 4,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The student gives reasons and conditions, e.g. 'Meeting with strangers. Because they can be harmful and do bad stuff' and 'Teenagers sould use it at thier risks, but if they are getting in trouble, its their responsibility.' The 'Yes, but no' reply qualifies the AI's conclusion and adds its own points about IP tracking and cyber-bullying. Several task-focused attempts are made, and the student pushes back to return to 'the is it harmful part?' after the AI bugged. The only question ('can we please come back to th is it harmful part?') is procedural, so question_asking is 0."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2919,
+    "output_tokens": 989,
+    "output_tokens_details": {
+      "thinking_tokens": 736
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

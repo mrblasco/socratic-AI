@@ -1,0 +1,53 @@
+{
+  "chat_id": 200,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:09:08.349241+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": 1,
+    "acknowledging_mistake": 1,
+    "supportive_guidance": 1,
+    "next_step_guidance": 1,
+    "conversational_flow": 2,
+    "encouraging_tone": 2,
+    "comments": "The student claimed 'did u know that 1 plus 1 is 3', but the AI replied only 'I'm sorry to hear that' and never corrected it, so both mistake dimensions score 1. When asked for the keystroke count, the AI first gave repeated boilerplate about being an AI, then gave the full working and then the bare answer 2893 with no guiding questions, so guidance scores 1. The replies are polite but impersonal and repetitive, so flow and tone score 2."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2855,
+    "output_tokens": 611,
+    "output_tokens_details": {
+      "thinking_tokens": 374
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

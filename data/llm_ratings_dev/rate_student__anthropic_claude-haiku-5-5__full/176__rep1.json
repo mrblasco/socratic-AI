@@ -1,0 +1,45 @@
+{
+  "chat_id": 176,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "efb45bcafc51",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:31:38.731078+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 1,
+    "effort_seriousness": 2,
+    "comments": "The student gave the values 200 students, 1L per day and 300 days, with a 'yes' to the five-day week, but offered no reasons for them. Their '300 days' was an annual figure that they did not correct when the AI pointed out the weekly requirement, though they applied the earlier numbers to the problem. They asked no questions and gave up on the multiplication with 'no please do it'."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2154,
+    "output_tokens": 175,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

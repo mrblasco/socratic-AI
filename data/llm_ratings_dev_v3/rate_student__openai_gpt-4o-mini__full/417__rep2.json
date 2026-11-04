@@ -1,0 +1,43 @@
+{
+  "chat_id": 417,
+  "rep": 2,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": 0.0,
+  "timestamp": "2026-11-03T12:38:58.956345+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 1,
+    "effort_seriousness": 1,
+    "comments": "The student only asked questions or made off-task comments, such as \"why\" and \"what is social media\". There are no indications of reasoning or knowledge building in their contributions. The responses do not demonstrate any effort towards the task at hand, as they do not engage with the content meaningfully."
+  },
+  "usage": {
+    "input_tokens": 1366,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 92,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1458
+  },
+  "model_returned": "gpt-4o-mini-2024-07-18"
+}

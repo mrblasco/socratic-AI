@@ -1,0 +1,48 @@
+{
+  "chat_id": 84,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:59:28.620193+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "The first student message is the pasted task question and was ignored. The second student message, \"they are 350 student in the school, every day they consume 10L of water to get the shower and they get a shower 4 times in a week\", supplies the numbers the AI asked for, with no calculation or justification. It paraphrases the AI's requested inputs without extending them, and the student does not ask any question. It is one complete, task-focused message, but there is no follow-through on the calculation."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2012,
+    "output_tokens": 692,
+    "output_tokens_details": {
+      "thinking_tokens": 496
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

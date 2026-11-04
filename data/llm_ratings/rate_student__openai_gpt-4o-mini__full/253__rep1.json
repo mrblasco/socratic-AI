@@ -1,0 +1,43 @@
+{
+  "chat_id": 253,
+  "rep": 1,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": 0.0,
+  "timestamp": "2026-11-03T12:54:30.244389+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 0,
+    "effort_seriousness": 1,
+    "comments": "The student only asked a question, \"the social media impact on the teenagers is positive or negative?\", which does not provide any reasoning or steps. There are no additional contributions or attempts to engage with the content beyond this initial question. Therefore, the scores reflect a lack of observable reasoning, knowledge building, and effort."
+  },
+  "usage": {
+    "input_tokens": 1326,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 95,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1421
+  },
+  "model_returned": "gpt-4o-mini-2024-07-18"
+}

@@ -1,0 +1,53 @@
+{
+  "chat_id": 77,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:07:43.629682+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 2,
+    "next_step_guidance": 3,
+    "conversational_flow": 2,
+    "encouraging_tone": 3,
+    "comments": "The student's numerical answers (300 litres per day, then 1500 litres) are correct, so no mistake is scored. The AI's first breakdown largely hands over the calculation steps, which earns a 2 for supportive guidance. The repeated question after the 'yes' reply and the final system message that re-asks an already answered question make the flow repetitive. The 'Well done!' and 'Great!' praise is generic, so the tone scores 3."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2390,
+    "output_tokens": 819,
+    "output_tokens_details": {
+      "thinking_tokens": 598
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

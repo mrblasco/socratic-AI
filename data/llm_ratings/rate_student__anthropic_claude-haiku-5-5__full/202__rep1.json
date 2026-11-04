@@ -1,0 +1,48 @@
+{
+  "chat_id": 202,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:00:33.078379+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 1,
+    "effort_seriousness": 3,
+    "comments": "Reasoning is limited to single steps with no justification, e.g. '1l', '5 jours', '300 par 5', and the wrong '10l' with no explanation. Knowledge building applies earlier values (300 students, 1 litre per day, 5 days) to the calculation, but the student does not revise or extend them. The student asked 'what is the average amount of students in a school', a content question about a term needed for the task. Effort includes several task-focused replies to the tutor's prompts, but mostly short confirmations like 'oui cest ca' with little follow-through."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3097,
+    "output_tokens": 962,
+    "output_tokens_details": {
+      "thinking_tokens": 730
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

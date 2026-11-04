@@ -1,0 +1,48 @@
+{
+  "chat_id": 77,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:59:23.045967+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "Student messages: '300 students / 1 liter per person per day / 5 days a week' (supplied inputs, a partial attempt), 'average of 300 liter per day' (applies the earlier 1 L x 300 students step, so knowledge building 3), 'so i yhink that / 1500 liter' (a bare result with no stated reasoning, so reasoning 2). No student questions were asked, and the student's replies were brief but include a complete calculation step, giving effort 3; 'yes' was an unhelpful reply."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2342,
+    "output_tokens": 221,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

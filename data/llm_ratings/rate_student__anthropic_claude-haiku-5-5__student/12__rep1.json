@@ -1,0 +1,48 @@
+{
+  "chat_id": 12,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:02:54.302054+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 2,
+    "comments": "The first message restates the task and was ignored. The only student-authored content is 'tout les jours de la semaine' ('every day of the week'), a fragment that implies a daily-consumption assumption without any justification. It echoes the 'chaque semaine' wording of the task rather than extending it. It asks no question and makes no complete attempt, so the conversation is too short to judge beyond these observations."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1850,
+    "output_tokens": 511,
+    "output_tokens_details": {
+      "thinking_tokens": 334
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

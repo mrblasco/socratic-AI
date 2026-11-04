@@ -1,0 +1,48 @@
+{
+  "chat_id": 128,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:59:50.110475+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 1,
+    "effort_seriousness": 3,
+    "comments": "The first message is the pasted task statement and was ignored. The student's second message, 'le son se propage plus vite quand la densité est plus élevée', states a principle linking speed to density but gives no justification, so reasoning is 2. The third message, 'l'eau a-t-elle une densité plus élevée que l'air', applies the student's own density idea to the water case and asks whether it holds, so knowledge building is 3 and it counts as a content question. Effort is 3: there are two task-focused attempts and a question, but little follow-through beyond the AI's prompts."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2053,
+    "output_tokens": 805,
+    "output_tokens_details": {
+      "thinking_tokens": 572
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

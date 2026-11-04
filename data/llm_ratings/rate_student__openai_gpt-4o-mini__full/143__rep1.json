@@ -1,0 +1,43 @@
+{
+  "chat_id": 143,
+  "rep": 1,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": 0.0,
+  "timestamp": "2026-11-03T12:53:46.046239+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 1,
+    "effort_seriousness": 2,
+    "comments": "The student asked, \"Le son se propage-t-il plus vite dans l’eau que dans l’air ? Et si oui, pourquoi ?\" which indicates an inquiry but does not provide reasoning or knowledge building in their own words. There is no evidence of the student extending or applying knowledge, as they only posed a question without further elaboration."
+  },
+  "usage": {
+    "input_tokens": 1228,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 100,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1328
+  },
+  "model_returned": "gpt-4o-mini-2024-07-18"
+}

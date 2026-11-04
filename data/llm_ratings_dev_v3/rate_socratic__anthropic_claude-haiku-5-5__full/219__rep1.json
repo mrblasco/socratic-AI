@@ -1,0 +1,53 @@
+{
+  "chat_id": 219,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:41:20.412479+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": 1,
+    "acknowledging_mistake": 1,
+    "supportive_guidance": 1,
+    "next_step_guidance": 2,
+    "conversational_flow": 1,
+    "encouraging_tone": 2,
+    "comments": "The student made errors (\"bas 89\" for the 10-99 range, and \"200000\" as the final sum), but the tutor never flags them. After \"bas 89\" it restates 180 without noting the error, and after \"200000\" it repeats the identical message, so the mistakes are ignored. The tutor gives the full worked solution in every turn, leaving nothing for the student to reason out. Its only next step is to repeat \"combien obtenons-nous?\" and its tone is neutral, apart from \"vous avez raison\" for the first answer."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3092,
+    "output_tokens": 949,
+    "output_tokens_details": {
+      "thinking_tokens": 689
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

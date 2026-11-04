@@ -1,0 +1,45 @@
+{
+  "chat_id": 1237,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "efb45bcafc51",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:28:23.558835+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 1,
+    "effort_seriousness": 2,
+    "comments": "The student's opening question \"is social media good or bad\" asks for a verdict, not a probing question. Replies \"trends\" and \"filter\" are single-word answers with no reason or step. \"filter\" does gesture at a downside (likely filters on social media) but is not explained, and the student did not respond to the AI's clarification request. Minimal but on-topic effort, so effort is 2."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1899,
+    "output_tokens": 174,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-sonnet-5-5"
+}

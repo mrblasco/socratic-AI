@@ -1,0 +1,23 @@
+{
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "git_commit": "eaf34c8",
+  "input": "analysis/data/dialogues.json",
+  "n_dialogues": 314,
+  "reps": 1,
+  "started": "2026-11-03T12:55:48.526107+00:00"
+}

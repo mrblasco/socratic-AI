@@ -1,0 +1,48 @@
+{
+  "chat_id": 228,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:00:49.372887+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 0,
+    "effort_seriousness": 2,
+    "comments": "The student's only own contribution is 'hi', which is off-task. The other messages ('what is your opinion on the impact of social media on teenagers', 'How many keystrokes are needed to type numbers from 1 to 1000?') are task statements and were ignored. 'do you think that social media has a good impact on students?' is a fragmentary request for the AI's opinion, not a content question, so it scores 0 for question asking and gives the only trace of effort (2). No reasoning or building on earlier content is shown."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2340,
+    "output_tokens": 738,
+    "output_tokens_details": {
+      "thinking_tokens": 524
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

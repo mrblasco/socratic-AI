@@ -1,0 +1,48 @@
+{
+  "chat_id": 82,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:03:33.518336+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The student's first message is the task question, so it was ignored. Their contributions were 'the recommended daily intake of water for adolescents is 1.6 litters a day' and 'multiply the amount by 7', which give a stated multi-step chain with little justification. They applied these to the problem (11,2 and then 'could you multiply 11.2 by 300' giving 3360), and corrected the setup with 'it was meant to be 300 peapole'. Questions are procedural requests, so question_asking is 0; the conversation is short, so the ratings reflect only what is observable."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1893,
+    "output_tokens": 814,
+    "output_tokens_details": {
+      "thinking_tokens": 584
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

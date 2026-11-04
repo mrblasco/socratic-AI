@@ -1,0 +1,53 @@
+{
+  "chat_id": 1761,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:11:27.618263+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 3,
+    "next_step_guidance": 3,
+    "conversational_flow": 2,
+    "encouraging_tone": 3,
+    "comments": "The student makes no content mistake; the 'does social media can' message is a grammar slip, so the mistake dimensions are null. Supportive guidance is 3 because the dopamine explanations give much of the content before a question. Next-step guidance is 3 because the closing question is relevant but generic. Conversational flow is 2 because the final system turn nearly repeats the earlier question and does not address TikTok specifically. Tone is 3 because only the earlier 'great point' gives generic encouragement."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2871,
+    "output_tokens": 693,
+    "output_tokens_details": {
+      "thinking_tokens": 455
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

@@ -1,0 +1,53 @@
+{
+  "chat_id": 1367,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:11:01.314830+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": 1,
+    "acknowledging_mistake": 1,
+    "supportive_guidance": 2,
+    "next_step_guidance": 3,
+    "conversational_flow": 4,
+    "encouraging_tone": 3,
+    "comments": "The student's claim that water has a higher density is a misconception, since density alone would slow sound, but the AI replied \"That's correct! Density is a key factor here,\" so it confirmed the error. It then gave a thin, partly inaccurate explanation about particles being closer together, which leaves little for the student to work out. The closing question about speed in water versus air gives a usable next step, and the turns flow coherently, though the praise is generic."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2017,
+    "output_tokens": 618,
+    "output_tokens_details": {
+      "thinking_tokens": 399
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

@@ -1,0 +1,48 @@
+{
+  "chat_id": 1145,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:01:47.429286+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 2,
+    "comments": "The student's own messages are 'lol', then bare numbers '3000', '2' and '7' given in answer to the AI's requests, with no reasons or steps stated. The first message about water consumption is the task statement and was ignored. The numbers answer the AI's prompts, so they only loosely build on earlier content. No student question about the content appears, and the replies are fragmentary with no complete attempt."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2218,
+    "output_tokens": 622,
+    "output_tokens_details": {
+      "thinking_tokens": 444
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

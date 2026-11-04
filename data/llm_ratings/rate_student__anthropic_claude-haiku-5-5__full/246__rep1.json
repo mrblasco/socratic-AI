@@ -1,0 +1,48 @@
+{
+  "chat_id": 246,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:00:55.412036+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 3,
+    "question_asking": 1,
+    "effort_seriousness": 4,
+    "comments": "The student gave a hedged guess ('they make more friends maybe or sumting') and a list of harms, with some brief reasons such as 'which can impact their eye health and posture'. Their strategy reply linked actions to outcomes ('which can prevent sleep deprivation') and applied the earlier points on sleep and self-esteem. The student asked a content question about how many 5-to-10-year-olds have social media phones. They gave several complete, task-focused attempts across the conversation, though there was no clear persistence after difficulty."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2700,
+    "output_tokens": 875,
+    "output_tokens_details": {
+      "thinking_tokens": 654
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

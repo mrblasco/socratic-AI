@@ -1,0 +1,53 @@
+{
+  "chat_id": 1465,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:11:10.759561+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 4,
+    "next_step_guidance": 4,
+    "conversational_flow": 3,
+    "encouraging_tone": 3,
+    "comments": "The student's first message is a grammatically imperfect but factually correct question, so no mistake is made and the mistake dimensions are null. The AI confirms the fact and asks 'why do you think that might be the case?', a Socratic prompt that leaves the reasoning to the student, which supports a 4 on guidance and next step. The reply to 'bonjour' answers in French and then asks how it can help, dropping the pending question without returning to it, which lowers flow to 3. The tone is polite but has little specific encouragement, so it scores 3."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1915,
+    "output_tokens": 702,
+    "output_tokens_details": {
+      "thinking_tokens": 450
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

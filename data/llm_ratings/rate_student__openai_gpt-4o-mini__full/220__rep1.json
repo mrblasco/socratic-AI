@@ -1,0 +1,43 @@
+{
+  "chat_id": 220,
+  "rep": 1,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": 0.0,
+  "timestamp": "2026-11-03T12:54:19.580447+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The student asks a question about keystrokes needed to type numbers from 1 to 1000, showing engagement with the topic. They provide a complete task-focused attempt by breaking down the problem into parts and calculating the total, which demonstrates reasoning. They apply the information given by the AI to their own question, indicating knowledge building. Overall, the student shows serious effort in working through the task."
+  },
+  "usage": {
+    "input_tokens": 1366,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 111,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1477
+  },
+  "model_returned": "gpt-4o-mini-2024-07-18"
+}

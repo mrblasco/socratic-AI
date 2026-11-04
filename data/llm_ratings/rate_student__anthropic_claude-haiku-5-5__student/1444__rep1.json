@@ -1,0 +1,48 @@
+{
+  "chat_id": 1444,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:06:35.131930+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 1,
+    "question_asking": 1,
+    "effort_seriousness": 3,
+    "comments": "The first message, 'Does sond travels slouver in water?', reads as the pasted task question and was ignored. The second message, 'Due to its higher density?', gives one tentative reason (brief justification), which is the only student-authored attempt. It does not use or extend any earlier student content, so knowledge building is low. The rising question form seeks confirmation of the student's idea, which counts as a question about content, though this is a borderline case. The conversation is very short, so these ratings rest on two messages."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1810,
+    "output_tokens": 913,
+    "output_tokens_details": {
+      "thinking_tokens": 705
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

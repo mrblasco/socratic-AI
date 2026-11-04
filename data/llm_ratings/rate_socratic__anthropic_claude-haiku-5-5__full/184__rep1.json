@@ -1,0 +1,53 @@
+{
+  "chat_id": 184,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:09:08.583330+00:00",
+  "attempts": 2,
+  "rating": {
+    "identifying_mistake": 1,
+    "acknowledging_mistake": 3,
+    "supportive_guidance": 3,
+    "next_step_guidance": 4,
+    "conversational_flow": 3,
+    "encouraging_tone": 4,
+    "comments": "The student's reply '1,2' was misread and confirmed as '1 litre and 2 days' ('Great, so each student consumes 1 litre...'), so the AI did not notice the error until the student corrected it. The AI then acknowledged the correction neutrally ('I see, thank you for the correction') and moved on. Its social media questions are open and guiding, but it gave the calculation outright after 'can you do the calculation', and it never answered the student's question about what experts say. Praise is warm but generic ('That's a great point', 'fantastic strategy')."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3827,
+    "output_tokens": 1459,
+    "output_tokens_details": {
+      "thinking_tokens": 1199
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

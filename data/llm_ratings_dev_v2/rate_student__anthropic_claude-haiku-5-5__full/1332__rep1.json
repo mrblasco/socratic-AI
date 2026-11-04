@@ -1,0 +1,45 @@
+{
+  "chat_id": 1332,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "1894a9d1b86b",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:34:32.304823+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 2,
+    "question_asking": 3,
+    "effort_seriousness": 3,
+    "comments": "The student gave bare answers with no reasons: \"2\" and then \"1\" for the oxygen count, a single guess each. The student's \"is sound slower in under water than in air?\" is a relevant content question, and it is the only complete, task-focused sentence. The \"1\" revision and the \"yes\" replies add little beyond the AI's own statements, and \"thanks\" ends the exchange without further work."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2210,
+    "output_tokens": 850,
+    "output_tokens_details": {
+      "thinking_tokens": 665
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

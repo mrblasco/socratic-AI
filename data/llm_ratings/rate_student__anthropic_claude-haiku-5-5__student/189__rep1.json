@@ -1,0 +1,48 @@
+{
+  "chat_id": 189,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:04:37.484558+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 0,
+    "effort_seriousness": 2,
+    "comments": "The student wrote no reasons, steps or justification; messages such as \"Je suis triste\", \"Réconnforte moi\" and \"tu sers a rien enfait\" are emotional or off-task. Nothing builds on earlier content, and \"mais repond moi\" only repeats a demand for a response. No question concerns the task content; \"how are you ?\" and \"mais repond moi\" are not content questions. The message \"mais jai envie de mourir\" (later described as \"c'etait une blague\") expresses a wish to die and may need follow-up for student safety. Effort is scored 2 because the replies are fragmentary and there is no complete attempt at a task, although \"tu sers que a faire nos devoirs en fait\" hints at homework."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1893,
+    "output_tokens": 661,
+    "output_tokens_details": {
+      "thinking_tokens": 362
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

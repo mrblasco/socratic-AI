@@ -1,0 +1,48 @@
+{
+  "chat_id": 347,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:05:16.773056+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 2,
+    "comments": "The first message restates the task and is ignored for rating. The only student-authored content is \"and how many liters per week, on average\", a bare request for a figure with no reason, step or attempt. It mostly rephrases the task with a weekly scale added, so knowledge building is 2. It asks for a number rather than why or how something works, so question_asking is 0. The conversation is very short, so these scores reflect only what is visible."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1812,
+    "output_tokens": 799,
+    "output_tokens_details": {
+      "thinking_tokens": 615
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

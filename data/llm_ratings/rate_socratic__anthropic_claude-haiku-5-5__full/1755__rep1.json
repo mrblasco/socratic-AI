@@ -1,0 +1,53 @@
+{
+  "chat_id": 1755,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:11:28.913460+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 2,
+    "next_step_guidance": 1,
+    "conversational_flow": 3,
+    "encouraging_tone": 3,
+    "comments": "The student's calculations (1.5 times 3000 and 4500 times 5) are both correct, so no mistake is scored. The AI gave away the 4500-liter result in the message after the student's first multiplication, and restated it fully later, so guidance is mostly confirmation rather than cues. The final 'Well done!' gives no next step, and the AI's fifth message repeats its earlier explanation almost verbatim. Praise is generic ('That's a good start!', 'Well done!') rather than specific."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2534,
+    "output_tokens": 971,
+    "output_tokens_details": {
+      "thinking_tokens": 730
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

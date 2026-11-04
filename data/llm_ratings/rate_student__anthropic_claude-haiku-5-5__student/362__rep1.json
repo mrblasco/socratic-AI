@@ -1,0 +1,48 @@
+{
+  "chat_id": 362,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:05:17.338997+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "The first message is the pasted task question and was ignored. The second message, \"il y a 3000 élevé sans Ecole on y est 5 jour sur 7 donc 5/7\", gives a calculation step (5/7) with a brief reason (school days per week), so reasoning is 3. It adds no earlier content beyond the task, so knowledge building is 2. The student asks no question, and the single attempt with little follow-through gives effort 3. The conversation is very short, so the judgement is limited."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1861,
+    "output_tokens": 609,
+    "output_tokens_details": {
+      "thinking_tokens": 397
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

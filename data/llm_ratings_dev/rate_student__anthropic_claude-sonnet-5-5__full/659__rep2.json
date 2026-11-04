@@ -1,0 +1,45 @@
+{
+  "chat_id": 659,
+  "rep": 2,
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "efb45bcafc51",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:28:46.187416+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 3,
+    "question_asking": 3,
+    "effort_seriousness": 2,
+    "comments": "The student asks \"how much water in liters do students consume at our school each week?\" and then \"and for 3000 students?\". The second message applies the AI's example to a new number, so knowledge_building is 3 and question_asking is 3 as a relevant content question. The student gives no reasons or steps of their own, so reasoning is 1. Only two brief messages and no further engagement, so effort is low (2)."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2028,
+    "output_tokens": 177,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-sonnet-5-5"
+}

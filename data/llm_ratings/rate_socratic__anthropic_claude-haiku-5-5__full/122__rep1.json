@@ -1,0 +1,53 @@
+{
+  "chat_id": 122,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:08:09.499847+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 1,
+    "next_step_guidance": 1,
+    "conversational_flow": 4,
+    "encouraging_tone": 2,
+    "comments": "The student's only error is a grammatical slip ('sound travels faster'), not a wrong answer or misconception, so the mistake dimensions are null. The system's first message gives the answer and a full explanation directly, with no questions or hints for the student to work through, so supportive guidance is 1. It ends with no suggested next step, so next step guidance is 1. The three paragraphs are coherent and on topic, but the tone is impersonal, with no recognition of the student."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2117,
+    "output_tokens": 608,
+    "output_tokens_details": {
+      "thinking_tokens": 381
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

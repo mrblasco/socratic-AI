@@ -1,0 +1,48 @@
+{
+  "chat_id": 1055,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:01:36.986547+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The first student message is the task request and is ignored. The second message gives a multi-part chain (8 cups, adjusted to 10 cups for obesity and conditions, then 'add 60 it makes 70'), with a partial justification for the adjustments, so reasoning reaches 3. The third message applies the earlier conversion (250 ml per cup, 7 days) to reach 17.5 litres, and corrects the unit error ('Sorry for the mistake'), with a brief reason for including soft drinks, so knowledge_building is 3. It asks 'Why soft drinks?', which is a question but is not about the task content in the sense of how or why something works, so question_asking is 0. Effort shows repeated complete attempts across turns, and the final 'No thanks' is a disengaged close, so effort is 4."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2657,
+    "output_tokens": 308,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

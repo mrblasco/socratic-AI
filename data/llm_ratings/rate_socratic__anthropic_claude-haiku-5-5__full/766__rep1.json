@@ -1,0 +1,53 @@
+{
+  "chat_id": 766,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:10:17.087867+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 4,
+    "next_step_guidance": 4,
+    "conversational_flow": 4,
+    "encouraging_tone": 4,
+    "comments": "The student makes no substantive wrong answers or misconceptions; the errors are spelling and grammar only, so the mistake dimensions are null. The AI's cues, such as 'how might social media help teenagers to connect with others, learn new things, or express themselves?', leave the key reasoning to the student, though the turn beginning 'Absolutely, excessive use...' restates and expands the student's answer. The closing question about using social media responsibly gives a clear next step. Praise such as 'That's a great example!' is warm and tied to the student's gym example."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2223,
+    "output_tokens": 818,
+    "output_tokens_details": {
+      "thinking_tokens": 563
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

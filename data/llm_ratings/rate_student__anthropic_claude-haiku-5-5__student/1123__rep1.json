@@ -1,0 +1,48 @@
+{
+  "chat_id": 1123,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:06:03.337121+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 4,
+    "knowledge_building": 3,
+    "question_asking": 1,
+    "effort_seriousness": 4,
+    "comments": "The first message is the pasted task statement and was ignored. The second message, 'how much water does a person consume for washing there hands', is a content question about a sub-quantity. The third and fourth messages, '0.253 liters/wash x 3 washes/day' and 'x 7', form a multi-step chain that applies the hand-washing focus from the second message, though the figures are not justified. The student made several task-focused attempts that build toward a weekly total, but there were no hints to persist through."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1861,
+    "output_tokens": 1133,
+    "output_tokens_details": {
+      "thinking_tokens": 929
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

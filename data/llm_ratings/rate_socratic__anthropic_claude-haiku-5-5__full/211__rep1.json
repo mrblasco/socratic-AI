@@ -1,0 +1,53 @@
+{
+  "chat_id": 211,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:09:17.480917+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 1,
+    "next_step_guidance": 1,
+    "conversational_flow": 3,
+    "encouraging_tone": 2,
+    "comments": "The student makes no factual mistake: the sound question is correct apart from a grammar slip, so both mistake dimensions are null. Every system reply gives the answer directly (e.g., the sound-speed reply states 343 m/s and 1,500 m/s), with no hints or questions that leave a step to the student, so supportive guidance is 1. No reply suggests a next step, so next-step guidance is 1. The replies are coherent turn by turn but do not build on each other, and the tone is neutral apart from the closing 'Isn't that interesting?'."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2399,
+    "output_tokens": 558,
+    "output_tokens_details": {
+      "thinking_tokens": 301
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

@@ -1,0 +1,48 @@
+{
+  "chat_id": 172,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:00:12.226230+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "Student messages that count: 'Students are at school 5 days a week' (a given fact), 'There are around 400 students', 'I think it could be 1 litre' (a guess with no reason), '400' and 'Yes' (answers to the AI's prompts), and '2000 litres per week' and '2000'. Reasoning is limited to single stated values with no justification, so 2. Applying the given 1 litre and 400 students in the calculation fits knowledge building at 3. No student question about content; 'Now die' and 'No, i'm fine' are off-task or closing. Effort is 3: the student made several complete task-focused attempts but showed little follow-through beyond the AI's prompts."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3203,
+    "output_tokens": 273,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

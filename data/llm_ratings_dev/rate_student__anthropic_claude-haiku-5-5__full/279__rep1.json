@@ -1,0 +1,45 @@
+{
+  "chat_id": 279,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "efb45bcafc51",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:31:40.575922+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 3,
+    "question_asking": 1,
+    "effort_seriousness": 4,
+    "comments": "The student gave two distinct points (chatting with friends; public posts visible to people with bad intentions) and later a time-limit suggestion, with brief reasons such as 'if your account is public, then everyone can see it', which supports a 3 for reasoning. Knowledge building is 3: the student combined earlier points into a summary and applied them to a revised answer ('it has some positive aspects but we need to make sure social media does not interfere with other more important activities'), with the added teenage time-use point. No question was asked by the student, and the effort was sustained across the full exchange, with the student adding unprompted points."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2341,
+    "output_tokens": 243,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

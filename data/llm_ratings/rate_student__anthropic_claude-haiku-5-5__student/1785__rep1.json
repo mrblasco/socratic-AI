@@ -1,0 +1,48 @@
+{
+  "chat_id": 1785,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:06:55.093476+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 4,
+    "question_asking": 1,
+    "effort_seriousness": 3,
+    "comments": "The first message is the pasted task question and was ignored. The second message pastes the answer options and asks whether one is right, with no reasoning of the student's own. The third asks 'is it because of the higher or lower density?', a content question about why, so question_asking is 1. The fourth, 'In the beginning you said the opposite', checks and challenges the AI's earlier statement, which is knowledge building at 4, but the student gives no justification of their own, so reasoning is 2."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1955,
+    "output_tokens": 721,
+    "output_tokens_details": {
+      "thinking_tokens": 520
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

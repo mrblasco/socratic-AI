@@ -1,0 +1,48 @@
+{
+  "chat_id": 1243,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:02:04.849220+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 4,
+    "knowledge_building": 4,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The student's strongest message, \"Yes, but no, people can track IP adresses... so it is not only how they use it\", gives several reasons and pushes back on the AI's 'depends on how it's used' conclusion, supporting reasoning 4 and knowledge building 4. Earlier, \"Meeting with strangers. Because they can be harmful and do bad stuff.\" gives a reason, and the list of safe behaviours with \"because posters migth get angry\" shows some justification. \"Depression and then failing grades\" is a bare answer that echoes the AI's examples, and the student made several task-focused attempts and returned to the topic after the bug. No student question about content was asked; \"can we please come back to th is it harmful part?\" is procedural."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4042,
+    "output_tokens": 1035,
+    "output_tokens_details": {
+      "thinking_tokens": 740
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

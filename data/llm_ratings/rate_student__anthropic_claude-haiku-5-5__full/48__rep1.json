@@ -1,0 +1,48 @@
+{
+  "chat_id": 48,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:59:13.251304+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 2,
+    "comments": "The student's messages after the pasted task are bare guesses such as \"8\", \"9\" and \"10\" with no justification, so reasoning is 2. \"123456789\" loosely echoes the digit idea the tutor had already stated, without adding to it, so knowledge building is 2. No question about the content was asked; \"give me the reponse\" is a request for the answer, so question asking is 0. Effort is 2 because the replies are one-word or fragmentary, \"i dont know\" appears, and the student ends by asking for the answer."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2538,
+    "output_tokens": 732,
+    "output_tokens_details": {
+      "thinking_tokens": 506
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

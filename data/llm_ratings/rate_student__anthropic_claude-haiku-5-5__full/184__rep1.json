@@ -1,0 +1,48 @@
+{
+  "chat_id": 184,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:00:20.453801+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 4,
+    "knowledge_building": 4,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The student corrected the AI's earlier assumptions ('no there are 5 days a week and students consume 1.2 litres on average per day') and revised the calculation accordingly. In the social media discussion they gave personal reasons and considered a condition, e.g. 'I don't like to upload photos... not because of an absence of self-esteem... just because I don't like to'. They built on the AI's suggestion with their own examples, such as 'I stopped following profiles wich didn't benefit me'. They asked no genuine content question; 'can you do the calculation' and 'can you do the calculation now' are requests for the answer."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3779,
+    "output_tokens": 890,
+    "output_tokens_details": {
+      "thinking_tokens": 642
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

@@ -1,0 +1,48 @@
+{
+  "chat_id": 192,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:00:27.034351+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The student gave the school data ('450 students and each student drink 1 litres per day') and then answered the AI's prompts with calculation steps such as '450x5' and '450x5=2250', but gave no justification for the multiplication. Those steps apply the earlier figures (450 students, 5 days) to the problem, though the 1-litre figure is never used. The student's only other message that reads like a question is 'I have a question', which is a meta-statement rather than a content question. Several task-focused attempts persist across repeated AI prompts, but the replies are short and fragmentary."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2922,
+    "output_tokens": 898,
+    "output_tokens_details": {
+      "thinking_tokens": 665
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

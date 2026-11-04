@@ -1,0 +1,48 @@
+{
+  "chat_id": 212,
+  "rep": 2,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:40:43.069426+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "Most student messages are bare numbers ('9', '89', '180', '900'), which give no reasoning. '90 times 2' is a single stated step, and it applies the 90 two-digit numbers and 2 keystrokes stated earlier by the AI. The student asked no questions. The student made several task attempts and gave a complete sentence in 'Each of these would require 900 keystrokes', but the attempts were mostly guesses with little follow-through."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2359,
+    "output_tokens": 579,
+    "output_tokens_details": {
+      "thinking_tokens": 383
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

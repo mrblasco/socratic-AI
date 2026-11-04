@@ -1,0 +1,53 @@
+{
+  "chat_id": 131,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:08:18.806396+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": 3,
+    "acknowledging_mistake": 3,
+    "supportive_guidance": 2,
+    "next_step_guidance": 4,
+    "conversational_flow": 3,
+    "encouraging_tone": 3,
+    "comments": "The student miscounted the numbers from 10 to 99 as 89 and then got 178. The AI points to the wrong count ('C'est presque correct... 90 nombres, pas 89') but does not explain the off-by-one cause. It states the correct count outright, which gives the answer rather than letting the student find it. The AI then asks a clear follow-up question about total keystrokes, but the early repeated question after 'je sais pas' and the language switching make the flow somewhat awkward. Tone is polite ('C'est exact', 'Pas de souci') but generic."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2566,
+    "output_tokens": 709,
+    "output_tokens_details": {
+      "thinking_tokens": 446
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

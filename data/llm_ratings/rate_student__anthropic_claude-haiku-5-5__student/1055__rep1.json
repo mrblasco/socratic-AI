@@ -1,0 +1,48 @@
+{
+  "chat_id": 1055,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:05:53.602352+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 4,
+    "knowledge_building": 4,
+    "question_asking": 1,
+    "effort_seriousness": 4,
+    "comments": "The first message is the pasted task request and was ignored. The second message chains steps (8 cups, 10% obese, 30% with a condition, averaging to 10 cups), and the third gives a reason for including soft drinks ('most people do not think about their health') and computes 2.5 L x 7 = 17.5 L. The student corrects an earlier unit error ('Sorry for the mistake') and revises the daily total to 2.5 L. 'Why soft drinks?' is a rhetorical question the student answers in the same message, which is scored as a content question, and 'No thanks' is the final message."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2062,
+    "output_tokens": 858,
+    "output_tokens_details": {
+      "thinking_tokens": 616
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

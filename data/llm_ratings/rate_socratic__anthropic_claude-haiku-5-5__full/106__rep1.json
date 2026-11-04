@@ -1,0 +1,53 @@
+{
+  "chat_id": 106,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:08:00.886568+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 2,
+    "next_step_guidance": 1,
+    "conversational_flow": 1,
+    "encouraging_tone": 2,
+    "comments": "The student makes no clear mistake, so the two mistake dimensions are null. The AI's last three replies repeat the same positive-impacts list and never address the requests for negative impacts (\"and can u propose negative impacts\", \"are there any negativwe impacts\"). This makes the flow repetitive and contradictory, gives no next step on the student's actual question, and offers only generic, impersonal encouragement. The Socratic questions in the first list are reasonable cues, but they are not relevant to what the student asked."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2449,
+    "output_tokens": 642,
+    "output_tokens_details": {
+      "thinking_tokens": 398
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

@@ -1,0 +1,48 @@
+{
+  "chat_id": 132,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:59:54.825751+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 2,
+    "question_asking": 1,
+    "effort_seriousness": 2,
+    "comments": "The first message is the pasted task statement, so it was ignored. The student's 'short' is a meta remark with no content. 'because of higher density?' gives one brief reason, but it mostly echoes the AI's explanation, so knowledge building is 2. It is phrased as a tentative question checking whether their idea is right, so question_asking is 1. Effort is 2 because the student's only contribution is a fragmentary reply with no elaboration."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2236,
+    "output_tokens": 760,
+    "output_tokens_details": {
+      "thinking_tokens": 567
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

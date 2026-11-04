@@ -1,0 +1,48 @@
+{
+  "chat_id": 1332,
+  "rep": 2,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:40:55.680147+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 2,
+    "question_asking": 1,
+    "effort_seriousness": 3,
+    "comments": "The student's contributions are mostly bare answers: '2' and then '1' for the oxygen-atom count, with no reason given. The student asks 'is sound slower in under water than in air?', a content question about whether their idea is right, which earns question_asking = 1. Their later 'yes' and 'thanks' add nothing beyond accepting the tutor's offers, and the '1' that revises '2' shows no visible reason. The full-sentence question is one complete task-focused attempt with little follow-through."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2220,
+    "output_tokens": 867,
+    "output_tokens_details": {
+      "thinking_tokens": 655
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

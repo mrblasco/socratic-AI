@@ -1,0 +1,48 @@
+{
+  "chat_id": 1074,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:05:56.162637+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 1,
+    "question_asking": 0,
+    "effort_seriousness": 2,
+    "comments": "The first message is the task statement and was ignored. \"5 days a week and about 3000 students\" gives two inputs with no reasoning or calculation, so reasoning is a single stated step at 2. It does not use or extend earlier content, so knowledge building is 1. \"i don't know that\" and \"ok now do the mahts\" hand the work back and request the answer rather than asking a content question, so question asking is 0. Effort is 2 because the replies are fragmentary with no complete attempt. The conversation is very short, so these scores are based on limited evidence."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1837,
+    "output_tokens": 630,
+    "output_tokens_details": {
+      "thinking_tokens": 398
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

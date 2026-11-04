@@ -1,0 +1,48 @@
+{
+  "chat_id": 700,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:01:19.268702+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 1,
+    "effort_seriousness": 3,
+    "comments": "Student's first message ('how much watwer a single person is consu;ing in one day') is a genuine question about the content and counts as the student's own contribution. Second message ('if you wash your hands 3 times a day how much water do you consume') is a hypothetical question that applies the hand-washing scenario to the topic, with no stated step or reason of its own. Knowledge building is 3 because the student extends the topic to a new case (hand washing) built on the AI's earlier framing, but adds no calculation or correction. The conversation is short, so ratings reflect only these two messages."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2353,
+    "output_tokens": 233,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

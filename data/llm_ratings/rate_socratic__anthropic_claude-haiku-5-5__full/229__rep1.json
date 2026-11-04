@@ -1,0 +1,53 @@
+{
+  "chat_id": 229,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:09:34.613670+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 2,
+    "next_step_guidance": 3,
+    "conversational_flow": 3,
+    "encouraging_tone": 3,
+    "comments": "The student's calculation '(3000x200)x5' is correct in centilitres, and no other clear error appears, so the mistake dimensions are null. The tutor gave the full water calculation (30,000 litres) directly after the repeated message, which limits supportive guidance. The French question switches topic abruptly, and the tutor answers 'Oui' before asking a follow-up, which is only partly Socratic. Tone is polite ('That's correct!') but generic."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2811,
+    "output_tokens": 1077,
+    "output_tokens_details": {
+      "thinking_tokens": 850
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

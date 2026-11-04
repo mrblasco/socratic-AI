@@ -1,0 +1,45 @@
+{
+  "chat_id": 778,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "efb45bcafc51",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:31:48.258864+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 4,
+    "effort_seriousness": 3,
+    "comments": "Reasoning is mostly bare answers such as \"about 30 percent\" and \"12,5 perecnt\" with no stated steps, so 2. The student revised \"about 30 percent\" to \"about 37 percent\" after the AI's correction and applied the 3-out-of-24 figure to reach \"12,5 perecnt\", so knowledge building is 3. The question \"how many hours of social media is included in that perecntage\" targets a specific gap in scope, so question asking is 4. Replies are brief but the student attempted and reattempted the calculation after the hint, so effort is 3."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2312,
+    "output_tokens": 712,
+    "output_tokens_details": {
+      "thinking_tokens": 465
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

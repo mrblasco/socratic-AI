@@ -1,0 +1,48 @@
+{
+  "chat_id": 113,
+  "rep": 1,
+  "provider": "openai",
+  "model": "gpt-4o",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": 0.0,
+  "timestamp": "2026-11-03T13:12:30.099768+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 5,
+    "next_step_guidance": 5,
+    "conversational_flow": 5,
+    "encouraging_tone": 5,
+    "comments": "The AI provides targeted questions that guide the student to explore both positive and negative impacts of social media, allowing them to form their own opinion. It offers clear, actionable steps by asking specific questions about different aspects of social media's impact. The dialogue is natural and coherent, with each question logically building on the previous one. The tone is consistently supportive and motivating, encouraging the student to think critically."
+  },
+  "usage": {
+    "input_tokens": 1080,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 131,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1211
+  },
+  "model_returned": "gpt-4o-2024-08-06"
+}

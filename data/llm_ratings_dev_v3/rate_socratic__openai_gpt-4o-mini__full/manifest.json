@@ -1,0 +1,26 @@
+{
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "git_commit": "eaf34c8",
+  "input": "analysis/data/dialogues.json",
+  "n_dialogues": 40,
+  "reps": 2,
+  "started": "2026-11-03T12:39:08.919689+00:00"
+}

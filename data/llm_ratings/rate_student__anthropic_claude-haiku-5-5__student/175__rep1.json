@@ -1,0 +1,48 @@
+{
+  "chat_id": 175,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:04:30.095669+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 4,
+    "knowledge_building": 4,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The student built a multi-step chain: '1. There are around 200 people at our school', then '2 litres' and '4 days, but on Wednesdays we don't consume water at school', which adds a condition, and ending with '1600 litres in total'. They applied their own earlier figures to reach the total and revised the school-days count with the Wednesday exclusion. They asked no questions about the content, and the 'yes' and 'l' replies add nothing, so question_asking is 0. The first message and the retyped restatement were treated as the task statement and ignored."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1933,
+    "output_tokens": 717,
+    "output_tokens_details": {
+      "thinking_tokens": 495
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

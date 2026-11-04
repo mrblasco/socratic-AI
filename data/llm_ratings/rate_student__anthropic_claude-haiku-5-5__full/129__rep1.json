@@ -1,0 +1,48 @@
+{
+  "chat_id": 129,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:59:51.902081+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 2,
+    "question_asking": 1,
+    "effort_seriousness": 3,
+    "comments": "The first student message is the pasted task question and was ignored. The student's one substantive contribution is 'es gracias a su mayor densidad?', a guess with no justification of why density would matter (reasoning 2). It is their own idea, not echoed from the AI, but it does not extend anything earlier (knowledge building 2). It asks whether their idea is right, which counts as a content question (question asking 1). The student then repeated the identical message after the AI's follow-up prompts, with no further attempt, so effort is 3 for one complete attempt with little follow-through."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2157,
+    "output_tokens": 1041,
+    "output_tokens_details": {
+      "thinking_tokens": 811
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

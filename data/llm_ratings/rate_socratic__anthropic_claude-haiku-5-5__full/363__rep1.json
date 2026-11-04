@@ -1,0 +1,53 @@
+{
+  "chat_id": 363,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:09:49.337621+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": 4,
+    "acknowledging_mistake": 3,
+    "supportive_guidance": 1,
+    "next_step_guidance": 1,
+    "conversational_flow": 4,
+    "encouraging_tone": 2,
+    "comments": "The student's question contains a misconception that sound travels slower in water. The system's reply says 'Actually, sound travels faster in water than in air' and explains the cause with density and speed figures, so it names the error clearly. It corrects the claim neutrally and moves on without acknowledging the student's reasoning. It gives the answer directly with no guiding question or next step, and the single reply is coherent but impersonal."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1956,
+    "output_tokens": 781,
+    "output_tokens_details": {
+      "thinking_tokens": 570
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

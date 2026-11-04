@@ -1,0 +1,53 @@
+{
+  "chat_id": 1236,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_socratic.txt",
+  "prompt_hash": "742bf95d78b3",
+  "dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake",
+    "supportive_guidance",
+    "next_step_guidance",
+    "conversational_flow",
+    "encouraging_tone"
+  ],
+  "optional_dimensions": [
+    "identifying_mistake",
+    "acknowledging_mistake"
+  ],
+  "binary_dimensions": [],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:10:50.741901+00:00",
+  "attempts": 1,
+  "rating": {
+    "identifying_mistake": null,
+    "acknowledging_mistake": null,
+    "supportive_guidance": 2,
+    "next_step_guidance": 2,
+    "conversational_flow": 2,
+    "encouraging_tone": 2,
+    "comments": "The student asks questions and makes no wrong answer or misconception, so the mistake dimensions are null. The AI gives most of the calculations directly (e.g., the 0.9 L and 1.2 L estimates and the 18-20 L total), offering only a closing question as a cue. The final system turn repeats the earlier daily estimate and never answers the weekly question the student asked. Its tone is largely neutral, with generic praise only in the first turn."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2996,
+    "output_tokens": 711,
+    "output_tokens_details": {
+      "thinking_tokens": 488
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

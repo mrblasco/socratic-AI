@@ -1,0 +1,48 @@
+{
+  "chat_id": 14,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T12:59:02.775511+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 3,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "The student's useful contributions are the assumption \"imaginant que chaque élève aille trois fois au tolets par jour et que l'établissement ne possède pas de douche\" (a stated condition, not a reason) and the step \"18 multiplier par 5 puis multiplie le résultat par 319\", which reuses the earlier 18 L figure but has no justification. Most other messages are bare \"oui\" replies, \"oui cela me parait cohérent\" (an acceptance without reasons), or off-task remarks such as \"merci je debrouiller tout seul\". The student's only question, \"est-tu capable de comprendre et parler fiablement français\", is about the AI, not the task content, so question_asking is 0."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3462,
+    "output_tokens": 1179,
+    "output_tokens_details": {
+      "thinking_tokens": 890
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

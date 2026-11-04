@@ -1,0 +1,40 @@
+{
+  "chat_id": 357,
+  "rep": 1,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "1894a9d1b86b",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "ids_file": "data/dev_subset_ids.json",
+  "temperature": 0.0,
+  "timestamp": "2026-11-03T12:33:52.933736+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 1,
+    "question_asking": 1,
+    "effort_seriousness": 1,
+    "comments": "The student message is only a task statement: \"what does the internet do to students mind when used correctly\". There are no contributions that show reasoning, knowledge building, question asking, or effort towards the task."
+  },
+  "usage": {
+    "input_tokens": 1303,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 74,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1377
+  },
+  "model_returned": "gpt-4o-mini-2024-07-18"
+}

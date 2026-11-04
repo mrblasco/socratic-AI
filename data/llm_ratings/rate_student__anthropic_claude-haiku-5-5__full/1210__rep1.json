@@ -1,0 +1,48 @@
+{
+  "chat_id": 1210,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:01:58.780757+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 4,
+    "knowledge_building": 4,
+    "question_asking": 0,
+    "effort_seriousness": 4,
+    "comments": "The student gives reasons for some claims, e.g. time limits 'does not really work, as you can skip them quite easily', and offers a counterpoint: 'sometimes it helps people connect'. They challenge the AI's suggestions with 'the ideas are great, but sometimes people ignore their rules', which builds on earlier content. Several earlier replies are bare items ('no', 'dont use it', 'time wasting, depression, getting fat'). The student asks no questions about the content, and their multiple task-focused attempts show sustained engagement."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2668,
+    "output_tokens": 736,
+    "output_tokens_details": {
+      "thinking_tokens": 509
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

@@ -1,0 +1,48 @@
+{
+  "chat_id": 84,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:03:32.805816+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 1,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "The first message is the pasted task question and was excluded. The second message, \"they are 350 student in the school, every day they consume 10L of water to get the shower and they get a shower 4 times in a week\", gives assumed inputs but no calculation or justification linking them to a total, so reasoning is scored 2. It draws on no earlier content because the AI made no statements in this conversation, so knowledge building is 1. It contains no question, so question asking is 0. It is one complete, task-focused attempt with little follow-through, so effort is 3."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1845,
+    "output_tokens": 678,
+    "output_tokens_details": {
+      "thinking_tokens": 455
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

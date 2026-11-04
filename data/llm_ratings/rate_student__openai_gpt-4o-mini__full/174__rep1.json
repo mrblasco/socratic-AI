@@ -1,0 +1,43 @@
+{
+  "chat_id": 174,
+  "rep": 1,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": 0.0,
+  "timestamp": "2026-11-03T12:53:59.254906+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 2,
+    "knowledge_building": 1,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "The student provided a brief opinion on social media's impact, stating, \"Experts say that social media can have either a positive or a negative impact on students' well-being.\" However, there is no reasoning or justification for their opinion. The student engaged with the task by attempting to condense the answer into various word counts, showing some effort, but did not build on earlier content meaningfully."
+  },
+  "usage": {
+    "input_tokens": 1717,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 110,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1827
+  },
+  "model_returned": "gpt-4o-mini-2024-07-18"
+}

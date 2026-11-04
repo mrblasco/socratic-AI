@@ -1,0 +1,48 @@
+{
+  "chat_id": 224,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": true,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:04:59.426151+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 3,
+    "knowledge_building": 2,
+    "question_asking": 0,
+    "effort_seriousness": 3,
+    "comments": "The first message is the pasted task question and was ignored. The student's guess 'is it because it higher density' gives a stated reason, and 'More matter moves, and there are less gaps' gives a brief particle-level justification, so reasoning is at level 3. Knowledge building is 2 because the student restates density and gaps without using or testing any earlier content, and there are no AI messages to build on. The 'is it because...' line is a proposed answer rather than a clear content question, so question_asking is 0. The final bare 'yes' adds nothing, so effort is 3: two task-focused attempts with little follow-through."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1837,
+    "output_tokens": 725,
+    "output_tokens_details": {
+      "thinking_tokens": 479
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}

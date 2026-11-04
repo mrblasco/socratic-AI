@@ -1,0 +1,48 @@
+{
+  "chat_id": 347,
+  "rep": 1,
+  "provider": "anthropic",
+  "model": "claude-haiku-5-5",
+  "student_only": false,
+  "prompt_file": "config/prompts/rate_student.txt",
+  "prompt_hash": "e2fac51ff3f4",
+  "dimensions": [
+    "reasoning_quality",
+    "knowledge_building",
+    "question_asking",
+    "effort_seriousness"
+  ],
+  "optional_dimensions": [],
+  "binary_dimensions": [
+    "question_asking"
+  ],
+  "ids_file": "data/holdout_ids.json",
+  "temperature": null,
+  "timestamp": "2026-11-03T13:01:04.135390+00:00",
+  "attempts": 1,
+  "rating": {
+    "reasoning_quality": 1,
+    "knowledge_building": 2,
+    "question_asking": 1,
+    "effort_seriousness": 2,
+    "comments": "The first message is the task question and is ignored. The only student-authored content is 'and how many liters per week, on average', a follow-up that asks about a related case and is counted as a content question, but it gives no reasoning or step. It extends the earlier daily figure to a weekly one without adding anything of its own, and it is a single fragmentary request, so effort is low."
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 2027,
+    "output_tokens": 907,
+    "output_tokens_details": {
+      "thinking_tokens": 743
+    },
+    "server_tool_use": null,
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "model_returned": "claude-haiku-5-5"
+}
