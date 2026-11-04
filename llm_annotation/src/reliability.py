@@ -9,8 +9,8 @@ Reads the long CSV written by `eval_dialogue.py collect`. For each rubric
 and writes the chats with the largest disagreement for manual reading.
 
 Usage:
-  python scripts/evaluate_chats/reliability.py \\
-      --csv data/llm_ratings_dev_long.csv --out data/reliability_dev
+  uv run python src/reliability.py \\
+      --csv output/llm_ratings_holdout_long.csv --out output/reliability_holdout
 """
 
 from __future__ import annotations
@@ -68,8 +68,8 @@ def label(csv_rater: str) -> tuple[str, str, str]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--csv", type=Path, default=Path("data/llm_ratings_long.csv"))
-    ap.add_argument("--out", type=Path, default=Path("data/reliability"))
+    ap.add_argument("--csv", type=Path, default=Path("output/llm_ratings_holdout_long.csv"))
+    ap.add_argument("--out", type=Path, default=Path("output/reliability_holdout"))
     ap.add_argument("--top", type=int, default=20)
     args = ap.parse_args()
 

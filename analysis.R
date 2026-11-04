@@ -1258,9 +1258,10 @@ save_table_to(
 # RESULTS: LLM-rated student behaviour and Socratic conduct (rev/sixth)
 #
 # Follows docs/prespecification.md (written before the holdout chats were
-# rated). Inputs: data/llm_ratings_long.csv (holdout ratings),
-# data/reliability_holdout/reliability_table.csv, data/holdout_ids.json,
-# data/dev_subset_ids.json, data/llm_ratings_dev_v3_long.csv.
+# rated). Inputs, all produced by the separate pipeline in llm_annotation/:
+# output/llm_ratings_holdout_long.csv (holdout ratings),
+# output/reliability_holdout/reliability_table.csv, input/holdout_ids.json,
+# output/llm_ratings_dev_v3_long.csv.
 # Outputs: output/tables/tab_llm_*.{txt,csv}, output/figures/fig_llm_*.pdf
 # Note: dplyr:: is explicit for select() because MASS masks it.
 # =============================================================================
@@ -1268,7 +1269,8 @@ message("\n[Results] LLM-rated student behaviour and Socratic conduct")
 
 suppressPackageStartupMessages({ library(lme4); library(jsonlite); library(readr) })
 
-llm_holdout <- fromJSON(file.path(root, "data", "holdout_ids.json"))
+llm_dir <- file.path(root, "llm_annotation")
+llm_holdout <- fromJSON(file.path(llm_dir, "input", "holdout_ids.json"))
 
 # ---- Chat-level covariates ----------------------------------------------------
 llm_chat_info <- chats %>%
@@ -1291,7 +1293,7 @@ llm_chat_info <- chats %>%
     log_msgs = log(n_msgs), log_words = log1p(n_words)
   )
 
-llm_ratings <- read_csv(file.path(root, "data", "llm_ratings_long.csv"), show_col_types = FALSE) %>%
+llm_ratings <- read_csv(file.path(llm_dir, "output", "llm_ratings_holdout_long.csv"), show_col_types = FALSE) %>%
   dplyr::mutate(
     rubric = sub("^rate_", "", sub("__.*", "", rater)),
     mode   = ifelse(student_only, "student_only", "full")
@@ -1299,7 +1301,7 @@ llm_ratings <- read_csv(file.path(root, "data", "llm_ratings_long.csv"), show_co
 stopifnot(setequal(unique(llm_ratings$chat_id), llm_holdout))
 
 # ---- Reliability gate (pre-specified: alpha >= .67; binary: >= 80% & AC1 >= .60)
-llm_rel <- read_csv(file.path(root, "data", "reliability_holdout", "reliability_table.csv"),
+llm_rel <- read_csv(file.path(llm_dir, "output", "reliability_holdout", "reliability_table.csv"),
                     show_col_types = FALSE) %>%
   dplyr::transmute(
     rubric = sub("^rate_", "", prompt), mode = ifelse(mode == "student", "student_only", mode),
@@ -1409,7 +1411,7 @@ llm_s4 <- llm_adj(dplyr::filter(llm_outcome, chat_id %in% llm_holdout, n_msgs > 
 llm_s1 <- llm_run(dplyr::filter(llm_outcome, chat_id %in% llm_holdout, rubric == "student"),
                   "student_only", "student-only ratings", "adjusted")
 
-llm_dev <- read_csv(file.path(root, "data", "llm_ratings_dev_v3_long.csv"), show_col_types = FALSE) %>%
+llm_dev <- read_csv(file.path(llm_dir, "output", "llm_ratings_dev_v3_long.csv"), show_col_types = FALSE) %>%
   dplyr::filter(rep == 1, !student_only) %>%
   dplyr::mutate(rubric = sub("^rate_", "", sub("__.*", "", rater)), mode = "full") %>%
   dplyr::rename(item = dimension)

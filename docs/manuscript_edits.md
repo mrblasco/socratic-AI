@@ -152,7 +152,7 @@ Reviewer 4 questions the engagement conclusions, so the wording should change wh
 
 ## Rubrics
 
-The full prompts, including the score definitions, are given verbatim in the repository (`config/prompts/rate_student.txt` and `config/prompts/rate_socratic.txt`) [and reproduced below]. [PASTE the two prompts here, or add them as a supplementary file.] Table \@ref(tab:si-anchors) shows the anchors of the student items.
+The full prompts, including the score definitions, are given verbatim in the repository (`llm_annotation/prompts/rate_student.txt` and `llm_annotation/prompts/rate_socratic.txt`) [and reproduced below]. [PASTE the two prompts here, or add them as a supplementary file.] Table \@ref(tab:si-anchors) shows the anchors of the student items.
 
 Table SI-A (anchors, abbreviated):
 
@@ -174,7 +174,7 @@ Table SI-A (anchors, abbreviated):
 | AI-agent items | Claude Haiku 5.5 | claude-haiku-5-5 | provider default | 2026-11-03 |
 | AI-agent items | GPT-4o | gpt-4o-2024-08-06 | 0 | 2026-11-03 |
 
-Prompt hashes (SHA-256 prefix): student rubric `e2fac51ff3f4`, AI-agent rubric `742bf95d78b3`. All raw responses are archived in `data/llm_ratings/`. [Add repository/DOI.]
+Prompt hashes (SHA-256 prefix): student rubric `e2fac51ff3f4`, AI-agent rubric `742bf95d78b3`. All raw responses are archived in `llm_annotation/ratings/holdout/`. [Add repository/DOI.]
 
 ## Development phase
 

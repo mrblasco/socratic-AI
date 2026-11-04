@@ -20,19 +20,19 @@ theme_set(theme_classic())
 tutorgpt <- readRDS("analysis/data/processed/tutorgpt.rds")
 chats <- readRDS("analysis/data/processed/chats.rds")
 
-data_path <- "analysis/data/dialogues.csv"
+data_path <- "llm_annotation/legacy/data/dialogues.csv"
 ds <- read.csv(data_path, header = FALSE, col.names = c(
     "chat_id", "coherence", "accuracy", "depth", "engagement",
     "clarity", "learning_outcome", "comments"
 ))
 
-data_path <- "analysis/data/dialogues_socratic_eval.csv"
+data_path <- "llm_annotation/legacy/data/dialogues_socratic_eval.csv"
 ds_socratic <- read.csv(data_path, header = FALSE, col.names = c(
     "chat_id", "coherence_2", "identifying_mistake", "acknowledging_mistake", "supportive_guidance",
     "next_step_guidance", "conversational_flow", "encouraging_tone", "comments_socratic"
 ))
 
-ds_cognitive_path <- here::here("data/cognitive_engagement.csv")
+ds_cognitive_path <- here::here("llm_annotation/legacy/data/cognitive_engagement.csv")
 ds_cognitive <- readr::read_csv(ds_cognitive_path) %>%
     rename(chat_id = dialogue_id)
 

@@ -1,3 +1,6 @@
+# Export the chat logs (experiment data) to input/dialogues.json, the only
+# input of the rating pipeline. Run from llm_annotation/:
+#   Rscript scripts/export_dialogues.R
 # ---- setup, include=FALSE ----
 library(knitr)
 library(dplyr)
@@ -5,7 +8,7 @@ library(jsonlite)
 opts_chunk$set(error = TRUE)
 
 # ---- data
-data_path <- file.path("analysis", "data", "processed")
+data_path <- file.path("..", "analysis", "data", "processed")
 data_files <- list.files(data_path, pattern = "*.rds", full.names = TRUE)
 
 data_files
@@ -35,5 +38,5 @@ dialogues_json <- chats %>%
 
 json_output <- toJSON(dialogues_json, pretty = TRUE, auto_unbox = TRUE)
 
-out_path <- file.path("analysis", "data", "dialogues.json")
+out_path <- file.path("input", "dialogues.json")
 writeLines(json_output, out_path)

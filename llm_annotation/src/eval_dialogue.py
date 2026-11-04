@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Rate student-AI dialogues with one or more LLMs.
 
-Design goals (see docs/revision_plan.md, Part B):
+Design goals (see ../docs/revision_plan.md, Part B):
   * provider-agnostic (OpenAI, Anthropic) so a rater panel can be built;
   * schema-constrained output, so no free-text JSON parsing;
   * every raw response is saved, with model, prompt hash and settings;
@@ -9,11 +9,11 @@ Design goals (see docs/revision_plan.md, Part B):
   * `--student-only` rates the student's turns alone (blinding check);
   * `collect` merges all runs into one long CSV for reliability analysis.
 
-Usage:
-  python scripts/evaluate_chats/eval_dialogue.py rate \\
-      --input analysis/data/dialogues.json \\
-      --model openai:gpt-4o --reps 3
-  python scripts/evaluate_chats/eval_dialogue.py collect
+Usage (from llm_annotation/):
+  uv run python src/eval_dialogue.py rate \\
+      --prompt prompts/rate_student.txt --dimensions ... \\
+      --model openai:gpt-4o --reps 3 --out ratings/<run>
+  uv run python src/eval_dialogue.py collect --out ratings/<run> --csv output/<run>_long.csv
 """
 
 from __future__ import annotations
@@ -39,8 +39,9 @@ from tqdm import tqdm
 load_dotenv()
 logger = logging.getLogger(__name__)
 
-DEFAULT_PROMPT = Path("config/prompts/evaluate_cognitive_engagement.txt")
-DEFAULT_OUT = Path("data/llm_ratings")
+DEFAULT_PROMPT = Path("prompts/rate_student.txt")
+DEFAULT_INPUT = Path("input/dialogues.json")
+DEFAULT_OUT = Path("ratings/holdout")
 DEFAULT_DIMENSIONS = (
     "accuracy",
     "depth",
@@ -356,7 +357,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="command", required=True)
 
     r = sub.add_parser("rate", help="Rate dialogues with one model.")
-    r.add_argument("--input", "-i", type=Path, default=Path("analysis/data/dialogues.json"))
+    r.add_argument("--input", "-i", type=Path, default=DEFAULT_INPUT)
     r.add_argument("--model", required=True, help="provider:model-id, e.g. openai:gpt-4o")
     r.add_argument("--prompt", type=Path, default=DEFAULT_PROMPT)
     r.add_argument("--dimensions", default=",".join(DEFAULT_DIMENSIONS),
@@ -379,7 +380,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     c = sub.add_parser("collect", help="Merge all saved ratings into one long CSV.")
     c.add_argument("--out", type=Path, default=DEFAULT_OUT)
-    c.add_argument("--csv", type=Path, default=Path("data/llm_ratings_long.csv"))
+    c.add_argument("--csv", type=Path, default=Path("output/llm_ratings_holdout_long.csv"))
     c.set_defaults(func=cmd_collect)
     return p
 

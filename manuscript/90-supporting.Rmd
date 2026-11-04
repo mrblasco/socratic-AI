@@ -199,7 +199,7 @@ Table SI-A (anchors, abbreviated):
 | Tutor items | Claude Haiku 5.5 | claude-haiku-5-5 | provider default | 2026-11-03 |
 | Tutor items | GPT-4o | gpt-4o-2024-08-06 | 0 | 2026-11-03 |
 
-Prompt hashes (SHA-256 prefix): student rubric `e2fac51ff3f4`, tutor rubric `742bf95d78b3`. All raw responses are archived in `data/llm_ratings/`. [Add repository/DOI.]
+Prompt hashes (SHA-256 prefix): student rubric `e2fac51ff3f4`, tutor rubric `742bf95d78b3`. All raw responses are archived in `llm_annotation/ratings/holdout/`. [Add repository/DOI.]
 
 ## Development phase
 

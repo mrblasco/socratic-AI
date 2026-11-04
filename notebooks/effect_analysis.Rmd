@@ -25,15 +25,15 @@ set.seed(20261103)
 
 # What this notebook does
 
-It carries out the analysis fixed in `docs/prespecification.md`, on the 314 **holdout** chats, using the LLM ratings in `data/llm_ratings_long.csv`.
+It carries out the analysis fixed in `docs/prespecification.md`, on the 314 **holdout** chats, using the LLM ratings in `llm_annotation/output/llm_ratings_holdout_long.csv`.
 Deviations from the pre-specification are listed at the end (section 9).
 Results describe *observable reasoning and effort in chat transcripts, as rated by LLMs*. They are not measures of learning or of learner engagement, and LLM agreement shows consistency, not validity.
 
 # 1. Data
 
 ```{r data}
-holdout <- fromJSON("data/holdout_ids.json")
-dev     <- fromJSON("data/dev_subset_ids.json")
+holdout <- fromJSON("llm_annotation/input/holdout_ids.json")
+dev     <- fromJSON("llm_annotation/input/dev_subset_ids.json")
 
 chats <- readRDS("analysis/data/processed/chats.rds") %>% filter(user_id != 1)
 chat_info <- chats %>%
@@ -55,7 +55,7 @@ chat_info <- chats %>%
     log_msgs = log(n_msgs), log_words = log1p(n_words)
   )
 
-ratings <- read_csv("data/llm_ratings_long.csv", show_col_types = FALSE) %>%
+ratings <- read_csv("llm_annotation/output/llm_ratings_holdout_long.csv", show_col_types = FALSE) %>%
   mutate(
     rubric = sub("__.*", "", rater),
     mode   = ifelse(student_only, "student_only", "full")
@@ -69,7 +69,7 @@ chat_info %>% filter(chat_id %in% holdout) %>% count(arm) %>% kable(caption = "H
 # 2. Reliability gate (pre-specified, section 3)
 
 ```{r reliability}
-rel <- read_csv("data/reliability_holdout/reliability_table.csv", show_col_types = FALSE) %>%
+rel <- read_csv("llm_annotation/output/reliability_holdout/reliability_table.csv", show_col_types = FALSE) %>%
   transmute(
     rubric = sub("rate_", "", prompt), mode = ifelse(mode == "student", "student_only", mode),
     item = dimension, n = n_chats,
@@ -206,7 +206,7 @@ so <- run_all(outcome %>% filter(chat_id %in% holdout, rubric == "student"), "st
 
 ```{r sens5}
 # 5. all 354 chats: add dev-subset ratings made with the same frozen prompts and raters
-dev_long <- read_csv("data/llm_ratings_dev_v3_long.csv", show_col_types = FALSE) %>%
+dev_long <- read_csv("llm_annotation/output/llm_ratings_dev_v3_long.csv", show_col_types = FALSE) %>%
   filter(rep == 1, !student_only) %>%
   mutate(rubric = sub("^rate_", "", sub("__.*", "", rater)), mode = "full")
 hash_ok <- ratings %>% distinct(rubric, prompt_hash) %>% mutate(rubric = sub("rate_", "", rubric)) %>%
