@@ -1,0 +1,8 @@
+Ordinal logit (clm) treatment coefficients on confidence
+--------------------------------------------------------
+|name  |term                       | estimate| std.error| statistic| p.value| conf.low| conf.high|coef.type |
+|:-----|:--------------------------|--------:|---------:|---------:|-------:|--------:|---------:|:---------|
+|all   |treatment_tutor_idsocratic |   -0.091|     0.194|    -0.470|   0.638|   -0.472|     0.289|location  |
+|task1 |treatment_tutor_idsocratic |   -0.001|     0.332|    -0.004|   0.997|   -0.653|     0.651|location  |
+|task2 |treatment_tutor_idsocratic |    0.305|     0.349|     0.874|   0.382|   -0.377|     0.995|location  |
+|task3 |treatment_tutor_idsocratic |   -0.462|     0.353|    -1.310|   0.190|   -1.159|     0.226|location  |

@@ -1,0 +1,5 @@
+"","test","p_value","q_value_BH","q_value_bonferroni"
+"1","RQ1 accuracy (permutation, two-sided)",0.128,0.128,0.512
+"2","RQ1 accuracy (bootstrap, one-sided)",0.0525262631315658,0.0700350175087544,0.210105052526263
+"3","RQ2 perceived human accuracy (ordinal reg.)",0.0364411614337645,0.0700350175087544,0.145764645735058
+"4","RQ5 helpfulness (Fisher, pooled)",0.0270972902709729,0.0700350175087544,0.108389161083892

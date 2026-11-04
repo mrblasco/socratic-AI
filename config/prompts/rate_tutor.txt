@@ -1,0 +1,51 @@
+You are evaluating the quality of an AI tutor's side of a conversation with a student, for a research study comparing teaching styles. The study compares an AI that gives solutions with an AI that guides through questions; do not prefer either style. Judge each dimension on the evidence in the AI's messages alone.
+
+Rate each dimension from 1 to 5 using the anchors below.
+
+Rules:
+* Do not reward length or enthusiasm by themselves.
+* Rate each dimension independently.
+* Use the student's messages only as context for what the AI was responding to.
+* Judge the AI against the task the student was given (a numerical estimate, an opinion essay, or a physics question), including whether withholding a direct answer helped or left the student without needed information.
+
+### accuracy: is what the AI says correct and relevant?
+1 = Contains a substantial error or a misleading claim that is not corrected.
+2 = Contains a notable error or an unsupported claim presented as fact.
+3 = Mostly correct with minor imprecision or loosely supported claims.
+4 = Correct, with at most trivial imprecision.
+5 = Fully correct and appropriately qualified; no errors found.
+
+### depth: does the AI go beyond the surface?
+1 = No explanation (answer only, or content-free prompting).
+2 = A thin explanation or a single generic hint.
+3 = Explains the main idea or step, with limited reasons or examples.
+4 = Explains the mechanism or reasoning and uses an example or connection.
+5 = Rich, well-targeted explanation covering mechanism, nuance and application.
+
+### clarity: is it easy to follow?
+1 = Confusing, contradictory or disorganised.
+2 = Hard to follow in places; the point is sometimes lost.
+3 = Understandable but with redundancy or unclear moves.
+4 = Clear and well organised.
+5 = Exceptionally clear, well sequenced and pitched at the student's level.
+
+### learning_outcome: does the AI's side support the student learning, as opposed to just getting an answer?
+1 = Gives or accepts an answer with no support for understanding.
+2 = Little support; the student could finish without understanding.
+3 = Some scaffolding, but the student could still finish without understanding.
+4 = Scaffolds the student's own reasoning and checks understanding.
+5 = Consistently builds understanding and leaves the student able to do it alone.
+
+### tutor_engagement: how far does the AI invite the student to participate?
+1 = Does not invite any student response.
+2 = Invites a response in a formulaic way ("any questions?").
+3 = Invites responses that require some thought.
+4 = Repeatedly poses questions or tasks tied to the student's own reasoning.
+5 = Sustains the student's participation throughout through well-targeted prompts.
+
+This dimension measures the AI's behaviour. It is not a measure of how engaged the student was.
+
+Conversation:
+{dialogue_text}
+
+Respond with the ratings only. All scores must be integers from 1 to 5. In "comments", point to the specific AI messages that justify the scores, in at most four sentences, and add nothing that is not in the conversation.

@@ -1,0 +1,20 @@
+Item scores by arm (holdout, full dialogue; z units, question_asking in proportion units).
+------------------------------------------------------------------------------------------
+|rubric   |item                |arm          |  mean|   sd|   n|
+|:--------|:-------------------|:------------|-----:|----:|---:|
+|socratic |conversational_flow |non_socratic |  0.08| 0.75| 161|
+|socratic |conversational_flow |socratic     | -0.09| 1.07| 153|
+|socratic |encouraging_tone    |non_socratic | -0.55| 0.46| 161|
+|socratic |encouraging_tone    |socratic     |  0.58| 0.86| 153|
+|socratic |next_step_guidance  |non_socratic | -0.64| 0.65| 161|
+|socratic |next_step_guidance  |socratic     |  0.68| 0.61| 153|
+|socratic |supportive_guidance |non_socratic | -0.63| 0.54| 161|
+|socratic |supportive_guidance |socratic     |  0.67| 0.71| 153|
+|student  |effort_seriousness  |non_socratic | -0.43| 0.61| 161|
+|student  |effort_seriousness  |socratic     |  0.45| 1.01| 153|
+|student  |knowledge_building  |non_socratic | -0.38| 0.55| 161|
+|student  |knowledge_building  |socratic     |  0.40| 1.10| 153|
+|student  |question_asking     |non_socratic |  0.15| 0.25| 161|
+|student  |question_asking     |socratic     |  0.24| 0.34| 153|
+|student  |reasoning_quality   |non_socratic | -0.39| 0.53| 161|
+|student  |reasoning_quality   |socratic     |  0.41| 1.08| 153|

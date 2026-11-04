@@ -1,7 +1,15 @@
 [project]
-name = "01-socratic-ai"
+name = "socratic-ai"
 version = "0.1.0"
-description = "Add your description here"
+description = "LLM-based rating of student-AI dialogues for the Socratic AI paper"
 readme = "README.md"
-requires-python = ">=3.14"
-dependencies = []
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.40",
+    "numpy>=2.4.6",
+    "openai>=2.7",
+    "pandas>=3.1.0",
+    "pydantic>=2.9",
+    "python-dotenv>=1.0",
+    "tqdm>=4.66",
+]

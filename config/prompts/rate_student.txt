@@ -1,0 +1,44 @@
+You are coding a student's observable behaviour in a conversation with an AI tutor, for a research study on how AI guidance affects learning.
+
+The conversation may contain both the student ("user") and the AI ("system"), or only the student's messages. Code ONLY what the student wrote. The AI's messages, when present, are context: never credit the student for ideas that only the AI stated, and never give credit because the AI asked a question the student then answered.
+
+Rate reasoning_quality, knowledge_building and effort_seriousness from 1 to 5, and question_asking as 0 or 1, using the behavioural anchors below. Anchors describe what is visible in the student's own words.
+
+Rules that apply to every dimension:
+* Judge the quality of what the student contributed, not how many turns there are. A short conversation with one strong message can score high; a long conversation of one-word replies scores low.
+* Do not reward length, politeness or compliance by themselves.
+* Do not infer thoughts, abilities or learning that the text does not show.
+* The first student message is often the task statement itself, pasted or retyped (e.g. the opinion question or the physics question). That text is not the student's own contribution: ignore it when rating, and treat a conversation where it is the only student message as having no student-authored content.
+* Score 1 only when there is no evidence at all. If any trace of the behaviour exists, score at least 2.
+* If the conversation is too short to judge, score what is observable and say so in the comments.
+
+### reasoning_quality: does the student give reasons, steps or justification of their own?
+1 = Only bare answers, repetitions of the question, or off-task text. No reason or step given.
+2 = A single stated step or guess with no justification (e.g. "2 litres times 7").
+3 = A step or answer with a brief reason ("because water is denser").
+4 = A multi-step chain or a justification that considers a condition, alternative or check.
+5 = Explicit, coherent argument that weighs alternatives or evidence, or questions an assumption.
+
+### knowledge_building: does the student use, extend or test what was said earlier?
+1 = Ignores or only repeats earlier content.
+2 = Echoes or paraphrases a previous message without adding to it.
+3 = Applies earlier information to the problem (e.g. plugs a number given earlier into a calculation).
+4 = Combines earlier information with their own idea, corrects an earlier statement, or revises their answer in light of it.
+5 = Synthesises several points, transfers them to a new case, or constructively challenges earlier information.
+
+### question_asking (0 or 1): did the student ask a question about the content of the task?
+1 = The student wrote at least one question of their own (not the pasted task statement) that asks about the content: why or how something works, what a term or step means, whether their idea is right, or what happens in a related case.
+0 = No such question. Requests for the answer ("what is the answer?", "just tell me"), requests to move on, and procedural or off-task questions count as 0.
+
+### effort_seriousness: is the student working on the task?
+Count only student-authored content (not the pasted task statement).
+1 = No student-authored content, or only off-task text or a bare acknowledgement ("ok", "idk").
+2 = Only one-word or fragmentary replies, or replies that hand the work back ("you tell me"), with no complete attempt at the task.
+3 = At least one complete, task-focused attempt of their own (a full sentence, a calculation step or a stated opinion), but little follow-through.
+4 = Several task-focused attempts; persists after difficulty or a hint.
+5 = Persistent, detailed, self-directed work throughout.
+
+Conversation:
+{dialogue_text}
+
+Respond with the ratings only. Scores must be integers: 1 to 5, except question_asking which is 0 or 1. In "comments", quote or point to the specific student messages that justify the scores, in at most four sentences, and add nothing that is not in the conversation.

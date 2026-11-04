@@ -1,0 +1,16 @@
+Paired correctness, within student (sound-speed item):
+       after
+before  FALSE TRUE
+  FALSE    36   47
+  TRUE      3   35
+
+Before AI correct: 31.4%
+After  AI correct: 67.8%
+
+McNemar's test (H0: no within-student change before vs after AI):
+
+	McNemar's Chi-squared test with continuity correction
+
+data:  table(before = learn$before, after = learn$after)
+McNemar's chi-squared = 36.98, df = 1, p-value = 1.193e-09
+

@@ -1,0 +1,52 @@
+You are evaluating whether an AI tutor behaves in a Socratic, guiding way in a conversation with a student, for a research study. Judge the AI's behaviour only. The student's messages are context for what the AI was responding to.
+
+Rate each dimension from 1 to 5 using the anchors below. Judge each dimension independently, and do not reward length.
+
+Two dimensions apply only if the student actually makes a mistake (a wrong answer, a wrong step, or a misconception). If the student makes no mistake in the conversation, return null for those two dimensions. Do not return null just because the AI never addressed a mistake that the student did make: in that case score 1.
+
+### identifying_mistake (null if the student makes no mistake)
+1 = The student makes a mistake and the AI does not notice it, or confirms it as correct.
+2 = The AI hints that something is off without saying what.
+3 = The AI points to the part of the student's answer that is wrong.
+4 = The AI identifies the mistake and what kind of error it is.
+5 = The AI identifies the mistake precisely and why it arose.
+
+### acknowledging_mistake (null if the student makes no mistake)
+1 = The AI ignores the mistake or moves on.
+2 = The AI mentions the mistake only by restating the right answer.
+3 = The AI acknowledges the mistake neutrally and continues.
+4 = The AI acknowledges it and uses it as the next learning step.
+5 = The AI acknowledges it constructively and helps the student see why, without discouraging them.
+
+### supportive_guidance: hints or cues that help without handing over the answer
+1 = Gives the answer directly, or gives no help.
+2 = Gives the answer with a thin explanation, or a generic hint ("think about it").
+3 = Gives a hint but also much of the answer.
+4 = Gives a specific hint or question that leaves the key step to the student.
+5 = Consistently gives targeted cues that let the student reach the answer themselves.
+
+### next_step_guidance: clear, actionable direction for what to do next
+1 = No indication of what to do next.
+2 = A vague direction ("keep going").
+3 = A relevant next step, but not concrete.
+4 = A concrete next step the student can act on.
+5 = A concrete next step tailored to what the student just said, with a way for the student to check themselves.
+
+### conversational_flow: natural, coherent dialogue
+1 = Disjointed, repetitive or contradictory.
+2 = Frequent repetition or off-topic turns.
+3 = Mostly coherent with some awkward turns.
+4 = Natural and coherent.
+5 = Natural, coherent, and each turn clearly builds on the last.
+
+### encouraging_tone: supportive, patient, motivating
+1 = Dismissive, curt or discouraging.
+2 = Neutral and impersonal.
+3 = Polite, with generic encouragement.
+4 = Warm and patient; recognises effort.
+5 = Consistently motivating, specific in its praise, and patient with difficulty.
+
+Conversation:
+{dialogue_text}
+
+Respond with the ratings only. Scores are integers from 1 to 5, or null where allowed. In "comments", point to the specific messages that justify the scores, in at most four sentences, and add nothing that is not in the conversation.

@@ -1,0 +1,9 @@
+% of students who perceived the AI-generated coin estimate accuracy
+-------------------------------------------------------------------
+|          | explain_no| explain_yes| Sum|
+|:---------|----------:|-----------:|---:|
+|very_good |         14|          19|  16|
+|good      |         39|          24|  32|
+|neutral   |         28|          33|  30|
+|poor      |          3|          10|   7|
+|very_poor |         16|          14|  15|

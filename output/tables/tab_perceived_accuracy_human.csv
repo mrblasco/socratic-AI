@@ -1,0 +1,11 @@
+"","q11_guess_coins_human_accuracy","treatment_explain_id","Freq"
+"1","very_good","explain_no",1.5625
+"2","good","explain_no",14.0625
+"3","neutral","explain_no",20.3125
+"4","poor","explain_no",34.375
+"5","very_poor","explain_no",29.6875
+"6","very_good","explain_yes",5.17241379310345
+"7","good","explain_yes",12.0689655172414
+"8","neutral","explain_yes",37.9310344827586
+"9","poor","explain_yes",24.1379310344828
+"10","very_poor","explain_yes",20.6896551724138

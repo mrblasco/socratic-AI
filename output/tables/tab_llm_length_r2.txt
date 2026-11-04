@@ -1,0 +1,12 @@
+Marginal R2 of length covariates, and LRT for arm given length.
+---------------------------------------------------------------
+|rubric   |item                | R2_length_only| R2_length_plus_arm| LRT_p_arm_given_length|
+|:--------|:-------------------|--------------:|------------------:|----------------------:|
+|socratic |conversational_flow |          0.216|              0.236|                  0.001|
+|socratic |encouraging_tone    |          0.113|              0.427|                  0.000|
+|socratic |next_step_guidance  |          0.106|              0.567|                  0.000|
+|socratic |supportive_guidance |          0.083|              0.583|                  0.000|
+|student  |effort_seriousness  |          0.641|              0.658|                  0.001|
+|student  |knowledge_building  |          0.588|              0.596|                  0.035|
+|student  |question_asking     |          0.056|              0.067|                  0.061|
+|student  |reasoning_quality   |          0.507|              0.533|                  0.001|

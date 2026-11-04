@@ -1,0 +1,6 @@
+Ordinal logit coefficient of AI-reasoning on perceived accuracy
+---------------------------------------------------------------
+|depvar |term                            | estimate| std.error| statistic| conf.low| conf.high|coef.type   |
+|:------|:-------------------------------|--------:|---------:|---------:|--------:|---------:|:-----------|
+|Human  |treatment_explain_idexplain_yes |    0.703|     0.336|     2.092|    0.049|     1.368|coefficient |
+|AI     |treatment_explain_idexplain_yes |   -0.175|     0.333|    -0.527|   -0.830|     0.476|coefficient |

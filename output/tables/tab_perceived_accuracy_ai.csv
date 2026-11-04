@@ -1,0 +1,16 @@
+"","q10_guess_coins_ai_accuracy","treatment_explain_id","Freq"
+"1","very_good","explain_no",14.0625
+"2","good","explain_no",39.0625
+"3","neutral","explain_no",28.125
+"4","poor","explain_no",3.125
+"5","very_poor","explain_no",15.625
+"6","very_good","explain_yes",18.9655172413793
+"7","good","explain_yes",24.1379310344828
+"8","neutral","explain_yes",32.7586206896552
+"9","poor","explain_yes",10.3448275862069
+"10","very_poor","explain_yes",13.7931034482759
+"11","very_good","Sum",16.3934426229508
+"12","good","Sum",31.9672131147541
+"13","neutral","Sum",30.327868852459
+"14","poor","Sum",6.55737704918033
+"15","very_poor","Sum",14.7540983606557

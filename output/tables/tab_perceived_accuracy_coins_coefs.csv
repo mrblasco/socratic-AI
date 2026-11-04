@@ -1,0 +1,3 @@
+"","depvar","term","estimate","std.error","statistic","conf.low","conf.high","coef.type"
+"1","Human","treatment_explain_idexplain_yes",0.702718203779004,0.335912112093697,2.09197042464189,0.0487335873126822,1.36811751877338,"coefficient"
+"2","AI","treatment_explain_idexplain_yes",-0.175077635544762,0.332512703415803,-0.526529163386066,-0.82970427922591,0.476321006112547,"coefficient"

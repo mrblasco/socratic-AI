@@ -1,0 +1,8 @@
+Fixed effects (log-odds and odds ratios) from the pre/post x treatment mixed logistic model.
+--------------------------------------------------------------------------------------------
+|effect |term                                  | estimate| std.error| statistic| p.value| conf.low| conf.high| odds_ratio| OR_low| OR_high|
+|:------|:-------------------------------------|--------:|---------:|---------:|-------:|--------:|---------:|----------:|------:|-------:|
+|fixed  |(Intercept)                           |   -0.951|     0.438|    -2.172|   0.030|   -1.810|    -0.093|      0.386|  0.164|   0.911|
+|fixed  |phaseafter                            |    2.258|     0.605|     3.730|   0.000|    1.071|     3.444|      9.559|  2.919|  31.305|
+|fixed  |treatment_tutor_idsocratic            |   -0.591|     0.599|    -0.986|   0.324|   -1.764|     0.583|      0.554|  0.171|   1.792|
+|fixed  |phaseafter:treatment_tutor_idsocratic |    0.362|     0.712|     0.508|   0.611|   -1.033|     1.757|      1.436|  0.356|   5.795|

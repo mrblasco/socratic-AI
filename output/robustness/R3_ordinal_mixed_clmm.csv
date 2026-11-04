@@ -1,0 +1,3 @@
+"","model","term","estimate","std.error","odds_ratio","OR_low","OR_high","p_value"
+"1","confidence (clmm, +student RE)","treatment_tutor_idsocratic",0.106901704152068,0.236611861478648,1.11282486303954,0.699872191384163,1.76943617855395,0.651411653407166
+"2","helpfulness (clmm, +student RE)","treatment_tutor_idsocratic",-0.664893385114044,0.299182291314958,0.514328359843047,0.286135250502447,0.924505670917248,0.0262583931029943

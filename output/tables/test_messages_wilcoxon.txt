@@ -1,0 +1,17 @@
+Wilcoxon test: messages exchanged by Socratic vs non-Socratic
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  n by treatment_tutor_id
+W = 736, p-value = 1.26e-08
+alternative hypothesis: true location shift is not equal to 0
+
+
+Wilcoxon test: word counts by Socratic vs non-Socratic
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  words by treatment_tutor_id
+W = 496442, p-value < 2.2e-16
+alternative hypothesis: true location shift is not equal to 0
+

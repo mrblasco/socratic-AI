@@ -1,0 +1,80 @@
+=== clmm: confidence ===
+Cumulative Link Mixed Model fitted with the Laplace approximation
+
+formula: value ~ treatment_tutor_id + name + conf_value + (1 | student_id)
+data:    rb_wide_m
+
+ link  threshold nobs logLik  AIC    niter     max.grad cond.H 
+ logit flexible  364  -465.01 952.02 829(2489) 2.78e-04 7.9e+01
+
+Random effects:
+ Groups     Name        Variance Std.Dev.
+ student_id (Intercept) 0.5037   0.7097  
+Number of groups:  student_id 122 
+
+Coefficients:
+                                        Estimate Std. Error z value Pr(>|z|)
+treatment_tutor_idsocratic                0.1069     0.2366   0.452 0.651412
+nametask2_media                          -1.5784     0.2874  -5.491 3.99e-08
+nametask3_sound                          -2.4866     0.2857  -8.703  < 2e-16
+conf_valueCould do with a bit of effort   0.5656     0.2995   1.889 0.058955
+conf_valueI would struggle on my own      1.1622     0.3486   3.334 0.000857
+conf_valueI couldn't do this on my own    0.6774     0.4281   1.582 0.113559
+                                           
+treatment_tutor_idsocratic                 
+nametask2_media                         ***
+nametask3_sound                         ***
+conf_valueCould do with a bit of effort .  
+conf_valueI would struggle on my own    ***
+conf_valueI couldn't do this on my own     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Threshold coefficients:
+                                        Estimate Std. Error z value
+Very confident|Confident                 -2.2543     0.3896  -5.787
+Confident|Neutral                        -0.1815     0.3581  -0.507
+Neutral|Not very confident                1.5199     0.3596   4.227
+Not very confident|Not confident at all   3.7038     0.4674   7.925
+(2 observations deleted due to missingness)
+
+
+=== clmm: helpfulness ===
+Cumulative Link Mixed Model fitted with the Laplace approximation
+
+formula: helpful ~ treatment_tutor_id + name + conf_value + (1 | student_id)
+data:    rb_wide_m
+
+ link  threshold nobs logLik  AIC     niter     max.grad cond.H 
+ logit flexible  364  -527.23 1076.46 876(2631) 1.98e-04 1.5e+02
+
+Random effects:
+ Groups     Name        Variance Std.Dev.
+ student_id (Intercept) 1.422    1.193   
+Number of groups:  student_id 122 
+
+Coefficients:
+                                        Estimate Std. Error z value Pr(>|z|)
+treatment_tutor_idsocratic              -0.66489    0.29918  -2.222 0.026258
+nametask2_media                         -0.06552    0.26590  -0.246 0.805368
+nametask3_sound                          0.85337    0.25550   3.340 0.000838
+conf_valueCould do with a bit of effort -0.10487    0.31151  -0.337 0.736374
+conf_valueI would struggle on my own     0.52450    0.36192   1.449 0.147276
+conf_valueI couldn't do this on my own   1.11847    0.46335   2.414 0.015784
+                                           
+treatment_tutor_idsocratic              *  
+nametask2_media                            
+nametask3_sound                         ***
+conf_valueCould do with a bit of effort    
+conf_valueI would struggle on my own       
+conf_valueI couldn't do this on my own  *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Threshold coefficients:
+                               Estimate Std. Error z value
+Not at all helpful|Not helpful -1.92873    0.39969  -4.826
+Not helpful|Neutral            -1.27171    0.38631  -3.292
+Neutral|Helpful                 0.09194    0.37720   0.244
+Helpful|Very helpful            1.18384    0.38585   3.068
+(2 observations deleted due to missingness)

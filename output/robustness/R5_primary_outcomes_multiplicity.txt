@@ -1,0 +1,8 @@
+Headline outcome p-values with Benjamini-Hochberg (FDR) and Bonferroni adjustment. Shows how borderline findings (p ~ .025-.05) hold up under correction for the number of primary tests.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|test                                        | p_value| q_value_BH| q_value_bonferroni|
+|:-------------------------------------------|-------:|----------:|------------------:|
+|RQ1 accuracy (permutation, two-sided)       |   0.128|      0.128|              0.512|
+|RQ1 accuracy (bootstrap, one-sided)         |   0.053|      0.070|              0.210|
+|RQ2 perceived human accuracy (ordinal reg.) |   0.036|      0.070|              0.146|
+|RQ5 helpfulness (Fisher, pooled)            |   0.027|      0.070|              0.108|

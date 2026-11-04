@@ -1,0 +1,7 @@
+Direction of guess update by AI-explanation treatment
+-----------------------------------------------------
+|   | explain_no| explain_yes|
+|:--|----------:|-----------:|
+|-1 |         17|          15|
+|0  |          6|           6|
+|1  |         41|          37|

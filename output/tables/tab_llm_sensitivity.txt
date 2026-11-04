@@ -1,0 +1,32 @@
+Adjusted effect across pre-specified sensitivity analyses (1, 4, 5).
+--------------------------------------------------------------------
+|analysis                          |rubric   |item                |   est|     lo|    hi|     p|   n|
+|:---------------------------------|:--------|:-------------------|-----:|------:|-----:|-----:|---:|
+|primary (holdout)                 |student  |effort_seriousness  | 0.244|  0.101| 0.387| 0.001| 314|
+|primary (holdout)                 |student  |knowledge_building  | 0.172|  0.011| 0.333| 0.037| 314|
+|primary (holdout)                 |student  |question_asking     | 0.070| -0.004| 0.145| 0.064| 314|
+|primary (holdout)                 |student  |reasoning_quality   | 0.289|  0.120| 0.458| 0.001| 314|
+|primary (holdout)                 |socratic |conversational_flow | 0.360|  0.143| 0.577| 0.001| 314|
+|primary (holdout)                 |socratic |encouraging_tone    | 1.093|  0.915| 1.271| 0.000| 314|
+|primary (holdout)                 |socratic |next_step_guidance  | 1.408|  1.253| 1.564| 0.000| 314|
+|primary (holdout)                 |socratic |supportive_guidance | 1.455|  1.302| 1.608| 0.000| 314|
+|excl. 1-message chats             |socratic |conversational_flow | 0.087| -0.273| 0.447| 0.637| 164|
+|excl. 1-message chats             |socratic |encouraging_tone    | 1.024|  0.721| 1.327| 0.000| 164|
+|excl. 1-message chats             |socratic |next_step_guidance  | 1.095|  0.867| 1.323| 0.000| 164|
+|excl. 1-message chats             |socratic |supportive_guidance | 1.135|  0.901| 1.368| 0.000| 164|
+|excl. 1-message chats             |student  |effort_seriousness  | 0.375|  0.129| 0.621| 0.003| 164|
+|excl. 1-message chats             |student  |knowledge_building  | 0.311|  0.011| 0.611| 0.044| 164|
+|excl. 1-message chats             |student  |question_asking     | 0.054| -0.069| 0.178| 0.387| 164|
+|excl. 1-message chats             |student  |reasoning_quality   | 0.494|  0.192| 0.796| 0.002| 164|
+|student-only ratings              |student  |effort_seriousness  | 0.209|  0.042| 0.376| 0.015| 314|
+|student-only ratings              |student  |knowledge_building  | 0.191|  0.033| 0.350| 0.019| 314|
+|student-only ratings              |student  |question_asking     | 0.011| -0.067| 0.089| 0.786| 314|
+|student-only ratings              |student  |reasoning_quality   | 0.297|  0.120| 0.473| 0.001| 314|
+|all chats (holdout + development) |socratic |conversational_flow | 0.363|  0.160| 0.567| 0.001| 354|
+|all chats (holdout + development) |socratic |encouraging_tone    | 1.098|  0.930| 1.266| 0.000| 354|
+|all chats (holdout + development) |socratic |next_step_guidance  | 1.435|  1.291| 1.579| 0.000| 354|
+|all chats (holdout + development) |socratic |supportive_guidance | 1.471|  1.328| 1.614| 0.000| 354|
+|all chats (holdout + development) |student  |effort_seriousness  | 0.236|  0.096| 0.376| 0.001| 354|
+|all chats (holdout + development) |student  |knowledge_building  | 0.163|  0.008| 0.317| 0.040| 354|
+|all chats (holdout + development) |student  |question_asking     | 0.060| -0.011| 0.132| 0.097| 354|
+|all chats (holdout + development) |student  |reasoning_quality   | 0.279|  0.112| 0.445| 0.001| 354|

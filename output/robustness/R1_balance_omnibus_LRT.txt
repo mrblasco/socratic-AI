@@ -1,0 +1,6 @@
+Omnibus balance check: likelihood-ratio test of H0 that no covariate predicts treatment assignment (logistic regression of treatment on all covariates vs intercept-only). Non-significant p supports randomization.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|randomization        |   n| df| lr_chisq| p_value|
+|:--------------------|---:|--:|--------:|-------:|
+|treatment_tutor_id   | 120| 21|   19.585|   0.548|
+|treatment_explain_id | 120| 21|   24.672|   0.262|

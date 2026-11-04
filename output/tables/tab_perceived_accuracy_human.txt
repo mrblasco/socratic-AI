@@ -1,0 +1,9 @@
+% of students who perceived the human-generated average guess accuracy
+----------------------------------------------------------------------
+|          | explain_no| explain_yes|
+|:---------|----------:|-----------:|
+|very_good |          2|           5|
+|good      |         14|          12|
+|neutral   |         20|          38|
+|poor      |         34|          24|
+|very_poor |         30|          21|

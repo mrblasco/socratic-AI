@@ -1,0 +1,11 @@
+"","variable","p_socratic","p_explain","p_socratic_BH","p_explain_BH"
+"gender","gender",0.46906102757789,0.717301298490768,1,1
+"has_used_before","has_used_before",0.581982915665037,0.268591874747306,1,1
+"location","location",0.474191166201237,0.716858239937407,1,1
+"top_grades","top_grades",0.856327022210309,0.584786083237644,1,1
+"hours_per_week","hours_per_week",0.510848915108489,0.124087591240876,1,1
+"on_time_completion","on_time_completion",0.332966703329667,0.274472552744726,1,1
+"factors_contributing","factors_contributing",0.0454954504549545,0.519348065193481,0.90990900909909,1
+"q5_self_physics","q5_self_physics",0.358164183581642,0.657034296570343,1,1
+"q6_self_technology","q6_self_technology",0.72972702729727,0.456354364563544,1,1
+"q7_self_swimming_pool","q7_self_swimming_pool",0.595240475952405,0.17008299170083,1,1

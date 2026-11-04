@@ -1,0 +1,4 @@
+Bootstrap median absolute error difference (AI reasoning vs control)
+90% CI for difference: [-67.50, 0.00]
+two-sided p.value   = 0.0785
+one-sided p.value   = 0.0490

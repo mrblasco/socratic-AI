@@ -95,7 +95,7 @@ summary(fa_result)
 print(fa_result$loadings)
 
 # Create loadings
-loadings <- as.data.frame(unclass(fa_results$loadings))
+loadings <- as.data.frame(unclass(fa_result$loadings))
 factor_assignment <- apply(
     abs(loadings),
     1,

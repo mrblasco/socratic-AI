@@ -1,0 +1,304 @@
+---
+title: "Effect analysis: LLM-rated student behaviour and tutor conduct"
+subtitle: "Follows docs/prespecification.md (written 2026-11-03, before holdout ratings)"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    df_print: paged
+    self_contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4.5)
+suppressPackageStartupMessages({
+  library(dplyr); library(tidyr); library(readr); library(ggplot2)
+  library(lme4); library(lmerTest); library(broom.mixed); library(knitr)
+  library(jsonlite)
+})
+theme_set(theme_minimal(base_size = 12))
+set.seed(20261103)
+```
+
+# What this notebook does
+
+It carries out the analysis fixed in `docs/prespecification.md`, on the 314 **holdout** chats, using the LLM ratings in `data/llm_ratings_long.csv`.
+Deviations from the pre-specification are listed at the end (section 9).
+Results describe *observable reasoning and effort in chat transcripts, as rated by LLMs*. They are not measures of learning or of learner engagement, and LLM agreement shows consistency, not validity.
+
+# 1. Data
+
+```{r data}
+holdout <- fromJSON("data/holdout_ids.json")
+dev     <- fromJSON("data/dev_subset_ids.json")
+
+chats <- readRDS("analysis/data/processed/chats.rds") %>% filter(user_id != 1)
+chat_info <- chats %>%
+  group_by(chat_id) %>%
+  summarise(
+    student = first(user_id),
+    arm     = first(treatment_tutor_id),
+    school  = first(location),
+    start   = min(created_at),
+    n_msgs  = sum(role == "user"),
+    n_words = sum(words[role == "user"], na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  group_by(student) %>%
+  mutate(chat_order = rank(start, ties.method = "first")) %>%   # proxy for task (see 9)
+  ungroup() %>%
+  mutate(
+    arm = factor(arm, levels = c("non_socratic", "socratic")),
+    log_msgs = log(n_msgs), log_words = log1p(n_words)
+  )
+
+ratings <- read_csv("data/llm_ratings_long.csv", show_col_types = FALSE) %>%
+  mutate(
+    rubric = sub("__.*", "", rater),
+    mode   = ifelse(student_only, "student_only", "full")
+  )
+
+stopifnot(setequal(unique(ratings$chat_id), holdout))
+cat("Holdout chats:", length(holdout), "| students:", n_distinct(chat_info$student[chat_info$chat_id %in% holdout]), "\n")
+chat_info %>% filter(chat_id %in% holdout) %>% count(arm) %>% kable(caption = "Holdout chats by arm")
+```
+
+# 2. Reliability gate (pre-specified, section 3)
+
+```{r reliability}
+rel <- read_csv("data/reliability_holdout/reliability_table.csv", show_col_types = FALSE) %>%
+  transmute(
+    rubric = sub("rate_", "", prompt), mode = ifelse(mode == "student", "student_only", mode),
+    item = dimension, n = n_chats,
+    alpha = alpha_between_models, spearman, pct_agree, ac1
+  ) %>%
+  mutate(
+    binary = !is.na(pct_agree),
+    pass = ifelse(binary, pct_agree >= 80 & ac1 >= 0.60, alpha >= 0.67),
+    status = ifelse(pass, "primary", "exploratory")
+  )
+rel %>% mutate(across(where(is.numeric), ~ round(.x, 2))) %>% kable(caption = "Between-rater agreement on the holdout (pass = pre-specified threshold)")
+status_full <- rel %>% filter(mode == "full") %>% select(rubric, item, status)
+```
+
+Items that fail are shown below but labelled **exploratory** and are not used for headline claims.
+
+# 3. Outcome construction
+
+Each rater's scores are z-scored within rubric × mode × item over all rated chats; the item score is the mean of the two raters' z-scores.
+`question_asking` is the mean of the two binary ratings (0, 0.5, 1).
+
+```{r outcomes}
+primary_items <- c(
+  student = "reasoning_quality", student = "knowledge_building",
+  student = "effort_seriousness", student = "question_asking",
+  socratic = "supportive_guidance", socratic = "next_step_guidance",
+  socratic = "encouraging_tone", socratic = "conversational_flow"
+)
+items <- tibble(rubric = names(primary_items), item = unname(primary_items)) %>%
+  mutate(family = ifelse(rubric == "student", "A: student behaviour", "B: Socratic conduct"))
+
+```
+
+```{r outcomes2}
+long <- ratings %>%
+  mutate(rubric = sub("rate_", "", rubric)) %>%
+  rename(item = dimension) %>%
+  semi_join(items, by = c("rubric", "item")) %>%
+  group_by(rubric, mode, item, model) %>%
+  mutate(z = ifelse(item == "question_asking", score, as.numeric(scale(score)))) %>%
+  ungroup()
+
+outcome <- long %>%
+  group_by(chat_id, rubric, mode, item) %>%
+  summarise(y = mean(z, na.rm = TRUE), n_raters = sum(!is.na(z)), .groups = "drop") %>%
+  left_join(chat_info, by = "chat_id")
+
+outcome %>% filter(mode == "full") %>% count(rubric, item, n_raters) %>% kable(caption = "Raters per chat and item")
+```
+
+## Descriptives by arm
+
+```{r desc}
+desc <- outcome %>% filter(mode == "full") %>%
+  group_by(rubric, item, arm) %>% summarise(mean = mean(y), sd = sd(y), n = n(), .groups = "drop")
+ggplot(outcome %>% filter(mode == "full"), aes(arm, y, fill = arm)) +
+  geom_violin(alpha = .4, colour = NA) + stat_summary(fun = mean, geom = "point", size = 2.5) +
+  facet_wrap(~item, scales = "free_y", nrow = 2) + guides(fill = "none") +
+  labs(x = NULL, y = "Item score (z, mean of two raters)", title = "Ratings by arm (holdout, full dialogue)")
+messages <- chat_info %>% filter(chat_id %in% holdout) %>% group_by(arm) %>%
+  summarise(median_student_msgs = median(n_msgs), median_student_words = median(n_words), chats = n())
+kable(messages, caption = "Interaction volume by arm (the mechanical confound)")
+```
+
+# 4. Primary models
+
+`score ~ arm + school + chat_order [+ log(messages) + log(1+words)] + (1 | student)`, linear mixed model, Satterthwaite p-values.
+**Primary specification = adjusted for interaction volume**; the unadjusted model is shown for comparison.
+Benjamini–Hochberg correction within each family (4 tests each), applied to the adjusted model.
+
+```{r models}
+fit_item <- function(d, adjusted) {
+  f <- if (adjusted) y ~ arm + school + chat_order + log_msgs + log_words + (1 | student)
+       else y ~ arm + school + chat_order + (1 | student)
+  m <- lmer(f, d, REML = TRUE, control = lmerControl(optimizer = "bobyqa"))
+  cf <- summary(m)$coefficients["armsocratic", ]
+  ci <- suppressMessages(confint(m, "armsocratic", method = "Wald"))
+  tibble(est = cf["Estimate"], se = cf["Std. Error"], p = cf["Pr(>|t|)"],
+         lo = ci[1], hi = ci[2], n = nobs(m), students = n_groups(m))
+}
+n_groups <- function(m) lme4::ngrps(m)[["student"]]
+
+run_all <- function(data, mode_sel = "full", label = "primary") {
+  data %>% filter(mode == mode_sel) %>%
+    group_by(rubric, item) %>% group_modify(~ bind_rows(
+      mutate(fit_item(.x, FALSE), spec = "unadjusted"),
+      mutate(fit_item(.x, TRUE),  spec = "adjusted"))) %>%
+    ungroup() %>% mutate(analysis = label)
+}
+
+res <- run_all(outcome %>% filter(chat_id %in% holdout)) %>%
+  left_join(items, by = c("rubric", "item")) %>%
+  group_by(family, spec) %>% mutate(p_bh = p.adjust(p, "BH")) %>% ungroup() %>%
+  left_join(status_full, by = c("rubric", "item"))
+
+res %>% mutate(across(c(est, se, lo, hi), ~ round(.x, 2)), p = signif(p, 2), p_bh = signif(p_bh, 2)) %>%
+  arrange(family, item, spec) %>%
+  select(family, item, status, spec, est, lo, hi, p, p_bh, n) %>%
+  kable(caption = "Socratic vs non-Socratic (reference). Estimates in z units (question_asking: proportion units).")
+```
+
+```{r forest, fig.height=6}
+ggplot(res, aes(est, reorder(item, est), colour = spec, shape = status)) +
+  geom_vline(xintercept = 0, linetype = 2, colour = "grey50") +
+  geom_pointrange(aes(xmin = lo, xmax = hi), position = position_dodge(.5)) +
+  facet_grid(family ~ ., scales = "free_y", space = "free_y") +
+  labs(x = "Socratic − non-Socratic (z; 95% CI)", y = NULL, colour = NULL, shape = "Reliability",
+       title = "Unadjusted vs adjusted for message and word counts")
+```
+
+# 5. Robustness: each rater separately (sensitivity 2)
+
+```{r raters}
+per_rater <- long %>% filter(mode == "full") %>%
+  mutate(y = z) %>% left_join(chat_info, by = "chat_id") %>% filter(chat_id %in% holdout) %>%
+  group_by(rubric, item, model) %>% group_modify(~ fit_item(.x, TRUE)) %>% ungroup()
+per_rater %>% mutate(across(c(est, se, lo, hi), ~ round(.x, 2)), p = signif(p, 2)) %>%
+  select(item, model, est, lo, hi, p) %>% arrange(item, model) %>%
+  kable(caption = "Adjusted model, one rater at a time")
+```
+
+# 6. Sensitivity analyses
+
+```{r sens}
+adj <- function(d, label) run_all(d, "full", label) %>% filter(spec == "adjusted")
+
+# 4. exclude single-message chats
+s4 <- adj(outcome %>% filter(chat_id %in% holdout, n_msgs > 1), "excl. 1-message chats")
+
+# 1. student-only ratings (student rubric only; pre-specified sensitivity)
+so <- run_all(outcome %>% filter(chat_id %in% holdout, rubric == "student"), "student_only", "student-only ratings") %>%
+  filter(spec == "adjusted")
+```
+
+```{r sens5}
+# 5. all 354 chats: add dev-subset ratings made with the same frozen prompts and raters
+dev_long <- read_csv("data/llm_ratings_dev_v3_long.csv", show_col_types = FALSE) %>%
+  filter(rep == 1, !student_only) %>%
+  mutate(rubric = sub("^rate_", "", sub("__.*", "", rater)), mode = "full")
+hash_ok <- ratings %>% distinct(rubric, prompt_hash) %>% mutate(rubric = sub("rate_", "", rubric)) %>%
+  inner_join(dev_long %>% distinct(rubric, prompt_hash), by = c("rubric", "prompt_hash"))
+cat("Prompt hashes identical between dev and holdout runs for:", paste(unique(hash_ok$rubric), collapse = ", "), "\n")
+
+pair_ok <- bind_rows(
+  tibble(rubric = "student",  model = c("gpt-4o-mini", "claude-haiku-5-5")),
+  tibble(rubric = "socratic", model = c("claude-haiku-5-5", "gpt-4o")))
+dev_long <- dev_long %>% rename(item = dimension) %>%
+  semi_join(pair_ok, by = c("rubric", "model")) %>%
+  semi_join(hash_ok, by = c("rubric", "prompt_hash")) %>%
+  semi_join(items, by = c("rubric", "item"))
+
+all_long <- bind_rows(long %>% filter(mode == "full") %>% select(chat_id, rubric, mode, item, model, score),
+                      dev_long %>% select(chat_id, rubric, mode, item, model, score)) %>%
+  group_by(rubric, item, model) %>%
+  mutate(z = ifelse(item == "question_asking", score, as.numeric(scale(score)))) %>% ungroup()
+outcome_all <- all_long %>% group_by(chat_id, rubric, mode, item) %>%
+  summarise(y = mean(z, na.rm = TRUE), .groups = "drop") %>% left_join(chat_info, by = "chat_id")
+s5 <- adj(outcome_all, "all 354 chats")
+cat("Chats in the all-chats sample:", n_distinct(outcome_all$chat_id), "\n")
+```
+
+```{r sens-table}
+sens <- bind_rows(res %>% filter(spec == "adjusted") %>% mutate(analysis = "primary (holdout 314)"),
+                  s4, so, s5) %>%
+  select(analysis, rubric, item, est, lo, hi, p, n)
+sens %>% mutate(across(c(est, lo, hi), ~ round(.x, 2)), p = signif(p, 2)) %>%
+  arrange(item, analysis) %>% kable(caption = "Adjusted Socratic − non-Socratic effect across pre-specified sensitivity analyses")
+
+ggplot(sens, aes(est, analysis)) +
+  geom_vline(xintercept = 0, linetype = 2, colour = "grey50") +
+  geom_pointrange(aes(xmin = lo, xmax = hi)) + facet_wrap(~item, scales = "free_x", nrow = 2) +
+  labs(x = "Socratic − non-Socratic (95% CI)", y = NULL)
+```
+
+Sensitivity 3 (truncate every chat to its first 3 student messages) is **not run**: it needs the LLM to re-rate the truncated transcripts, which is a separate step.
+
+# 7. Does the rating carry information beyond interaction volume? (sensitivity 6)
+
+```{r length}
+r2_marginal <- function(m) {
+  vf <- var(as.vector(model.matrix(m) %*% fixef(m)))
+  vr <- sum(sapply(VarCorr(m), function(x) as.numeric(x)))
+  ve <- sigma(m)^2
+  vf / (vf + vr + ve)
+}
+len_tab <- outcome %>% filter(mode == "full", chat_id %in% holdout) %>%
+  group_by(rubric, item) %>% group_modify(~ {
+    d <- .x
+    m_len <- lmer(y ~ school + chat_order + log_msgs + log_words + (1 | student), d, REML = FALSE)
+    m_arm <- update(m_len, . ~ . + arm)
+    tibble(R2_length_only = r2_marginal(m_len), R2_length_plus_arm = r2_marginal(m_arm),
+           LRT_p_arm_given_length = anova(m_len, m_arm)[["Pr(>Chisq)"]][2])
+  }) %>% ungroup()
+len_tab %>% mutate(across(where(is.numeric), ~ signif(.x, 2))) %>%
+  kable(caption = "Marginal R² (fixed effects) and likelihood-ratio test for arm after accounting for length")
+```
+
+# 8. Interpretation
+
+```{r interp, results="asis"}
+f <- res %>% filter(spec == "adjusted") %>% mutate(sig = p_bh < .05)
+u <- res %>% filter(spec == "unadjusted") %>% select(item, est_u = est, p_u = p)
+fu <- left_join(f, u, by = "item")
+for (i in seq_len(nrow(fu))) {
+  r <- fu[i, ]
+  cat(sprintf("- **%s** (%s): adjusted effect %+.2f [%.2f, %.2f], BH-p = %.3g; unadjusted %+.2f (p = %.3g). %s\n",
+              r$item, r$status, r$est, r$lo, r$hi, r$p_bh, r$est_u, r$p_u,
+              ifelse(r$status == "exploratory", "*Exploratory (failed reliability criterion).*", "")))
+}
+```
+
+*Read with*: the unadjusted contrast is partly mechanical, because the Socratic prompt requires students to reply (median student messages by arm shown in section 3).
+The adjusted estimate removes the part explained by the number and length of student messages, and is the pre-specified headline.
+
+# 9. Deviations and caveats
+
+```{r dev, results="asis"}
+cat("- No task identifier is available in the chat data; **chat order within student** is used as the pre-specified proxy for task.\n")
+cat("- Sensitivity analysis 3 (first-3-message truncation) is not run here (needs re-rating).\n")
+cat("- The Socratic items failed the pre-specified reliability criterion and are exploratory.\n")
+cat("- `question_asking` failed the 80%-agreement criterion and is exploratory.\n")
+cat("- `effort_seriousness` has alpha = 0.6695, just below the pre-specified 0.67 threshold, and is therefore exploratory; the rule was applied to the unrounded value.\n")
+cat("- `knowledge_building` is significant only marginally after BH correction (p = 0.0496) and is not significant for the Claude rater alone (section 5).\n")
+cat("- Primary specification, family definitions, multiple-testing rule and reliability thresholds are unchanged from `docs/prespecification.md`.\n")
+```
+
+Session info:
+
+```{r session}
+sessionInfo()$R.version$version.string
+packageVersion("lme4")
+```

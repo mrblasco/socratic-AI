@@ -1,0 +1,18 @@
+Between-rater agreement on the holdout chats (pre-specified thresholds).
+------------------------------------------------------------------------
+|rubric   |mode         |item                  |   n| alpha| spearman| pct_agree|  ac1|pass  |status      |
+|:--------|:------------|:---------------------|---:|-----:|--------:|---------:|----:|:-----|:-----------|
+|socratic |full         |acknowledging_mistake |  66|  0.52|     0.71|        NA|   NA|FALSE |exploratory |
+|socratic |full         |conversational_flow   | 314|  0.31|     0.59|        NA|   NA|FALSE |exploratory |
+|socratic |full         |encouraging_tone      | 314| -0.20|     0.55|        NA|   NA|FALSE |exploratory |
+|socratic |full         |identifying_mistake   |  66|  0.54|     0.75|        NA|   NA|FALSE |exploratory |
+|socratic |full         |next_step_guidance    | 314|  0.56|     0.70|        NA|   NA|FALSE |exploratory |
+|socratic |full         |supportive_guidance   | 314|  0.43|     0.66|        NA|   NA|FALSE |exploratory |
+|student  |full         |effort_seriousness    | 314|  0.67|     0.71|        NA|   NA|FALSE |exploratory |
+|student  |full         |knowledge_building    | 314|  0.81|     0.81|        NA|   NA|TRUE  |primary     |
+|student  |full         |question_asking       | 314|  0.15|     0.19|     73.57| 0.62|FALSE |exploratory |
+|student  |full         |reasoning_quality     | 314|  0.70|     0.72|        NA|   NA|TRUE  |primary     |
+|student  |student_only |effort_seriousness    | 314|  0.45|     0.60|        NA|   NA|FALSE |exploratory |
+|student  |student_only |knowledge_building    | 314|  0.65|     0.65|        NA|   NA|FALSE |exploratory |
+|student  |student_only |question_asking       | 314|  0.00|     0.16|     59.55| 0.32|FALSE |exploratory |
+|student  |student_only |reasoning_quality     | 314|  0.68|     0.68|        NA|   NA|TRUE  |primary     |

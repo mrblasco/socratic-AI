@@ -1,0 +1,6 @@
+Cumulative-link MIXED models (ordinal::clmm) with a student random intercept and a consistent specification across tasks. Odds ratios for the Socratic treatment on confidence and perceived helpfulness. Note the higher factor level is the reference as stored in the data.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|model                           |term                       | estimate| std.error| odds_ratio| OR_low| OR_high| p_value|
+|:-------------------------------|:--------------------------|--------:|---------:|----------:|------:|-------:|-------:|
+|confidence (clmm, +student RE)  |treatment_tutor_idsocratic |    0.107|     0.237|      1.113|  0.700|   1.769|   0.651|
+|helpfulness (clmm, +student RE) |treatment_tutor_idsocratic |   -0.665|     0.299|      0.514|  0.286|   0.925|   0.026|

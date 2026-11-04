@@ -1,0 +1,35 @@
+Mixed logistic model: correct ~ phase * treatment + (1|student)
+Interaction phaseafter:treatment_tutor_idsocratic tests whether the AI-driven accuracy gain differs between Socratic and non-Socratic.
+
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: correct ~ phase * treatment_tutor_id + (1 | student_id)
+   Data: learn_long
+
+      AIC       BIC    logLik -2*log(L)  df.resid 
+    299.7     317.1    -144.8     289.7       237 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.8337 -0.5674 -0.2286  0.5504  2.0393 
+
+Random effects:
+ Groups     Name        Variance Std.Dev.
+ student_id (Intercept) 3.015    1.736   
+Number of obs: 242, groups:  student_id, 121
+
+Fixed effects:
+                                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                            -0.9513     0.4379  -2.172 0.029827 *  
+phaseafter                              2.2575     0.6053   3.730 0.000192 ***
+treatment_tutor_idsocratic             -0.5905     0.5990  -0.986 0.324151    
+phaseafter:treatment_tutor_idsocratic   0.3619     0.7118   0.508 0.611182    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) phsftr trtm__
+phaseafter  -0.641              
+trtmnt_ttr_ -0.602  0.244       
+phsftr:tr__  0.360 -0.530 -0.609

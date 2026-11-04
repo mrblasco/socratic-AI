@@ -1,0 +1,35 @@
+Sample Characteristics (percent within treatment; Fisher's exact p-values)
+--------------------------------------------------------------------------
+|name                  |value                            | percent_socratic| percent_non_socratic|pval | percent_explain_yes| percent_explain_no|pval_explain | totals|
+|:---------------------|:--------------------------------|----------------:|--------------------:|:----|-------------------:|------------------:|:------------|------:|
+|Gender                |Boy                              |               55|                   47|0.47 |                  49|                 53|0.72         |     62|
+|                      |Girl                             |               45|                   53|     |                  51|                 47|             |     59|
+|Grades                |Average or lower grades          |               47|                   45|0.86 |                  43|                 48|0.58         |     55|
+|                      |Top grades                       |               53|                   55|     |                  57|                 52|             |     65|
+|Has used ChatGPT      |No                               |               43|                   37|0.58 |                  34|                 45|0.27         |     49|
+|                      |Yes                              |               57|                   63|     |                  66|                 55|             |     73|
+|Homework difficulties |Clear instructions from teachers |               10|                   20|0.05 |                  14|                 16|0.53         |     18|
+|                      |Effective time management        |               29|                   12|     |                  25|                 17|             |     25|
+|                      |Lack of distractions             |               18|                   10|     |                   9|                 19|             |     17|
+|                      |Support from family or peers     |                8|                    7|     |                   9|                  6|             |      9|
+|                      |Understanding the material       |               35|                   51|     |                  44|                 42|             |     52|
+|Homework on time      |Always on time                   |               42|                   56|0.33 |                  56|                 42|0.27         |     59|
+|                      |Sometimes or rarely on time      |                8|                    7|     |                   5|                  9|             |      9|
+|                      |Usually on time                  |               50|                   37|     |                  39|                 48|             |     53|
+|Homework weekly study |0-1 hours                        |               47|                   41|0.52 |                  44|                 44|0.12         |     53|
+|                      |1-2 hours                        |               34|                   44|     |                  46|                 33|             |     47|
+|                      |2+ hours                         |               19|                   15|     |                  11|                 23|             |     21|
+|Location              |Brussels                         |               49|                   56|0.47 |                  50|                 55|0.72         |     64|
+|                      |Seville                          |               51|                   44|     |                  50|                 45|             |     58|
+|Self-efficacy (essay) |Could do easily                  |               38|                   32|0.73 |                  29|                 41|0.45         |     43|
+|                      |Could do with a bit of effort    |               52|                   53|     |                  55|                 50|             |     64|
+|                      |I couldn't do this on my own     |                3|                    3|     |                   5|                  2|             |      4|
+|                      |I would struggle on my own       |                6|                   12|     |                  10|                  8|             |     11|
+|Self-efficacy (guess) |Could do easily                  |               14|                   12|0.60 |                   9|                 17|0.17         |     16|
+|                      |Could do with a bit of effort    |               27|                   34|     |                  36|                 25|             |     37|
+|                      |I couldn't do this on my own     |               24|                   15|     |                  24|                 16|             |     24|
+|                      |I would struggle on my own       |               35|                   39|     |                  31|                 42|             |     45|
+|Self-efficacy (sound) |Could do easily                  |                6|                    7|0.35 |                   7|                  6|0.66         |      8|
+|                      |Could do with a bit of effort    |               46|                   31|     |                  33|                 44|             |     47|
+|                      |I couldn't do this on my own     |               14|                   17|     |                  17|                 14|             |     19|
+|                      |I would struggle on my own       |               33|                   46|     |                  43|                 36|             |     48|

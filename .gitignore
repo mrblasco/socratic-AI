@@ -14,4 +14,13 @@ bibliography/*/
 *.fff
 *.ttt
 
-diff.aux diff.fff diff.log diff.tex diff.ttt
+diff.aux
+diff.fff
+diff.log
+diff.tex
+diff.ttt
+_tmp.mk
+_tmp/
+notebooks/*.html
+__pycache__/
+*.pyc

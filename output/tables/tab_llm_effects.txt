@@ -1,0 +1,20 @@
+Socratic minus non-Socratic, linear mixed models (holdout). BH within family.
+-----------------------------------------------------------------------------
+|family               |item                |status      |spec       |    est|     lo|    hi|     p|  p_bh|   n| students|
+|:--------------------|:-------------------|:-----------|:----------|------:|------:|-----:|-----:|-----:|---:|--------:|
+|A: student behaviour |effort_seriousness  |exploratory |adjusted   |  0.244|  0.101| 0.387| 0.001| 0.002| 314|       85|
+|A: student behaviour |effort_seriousness  |exploratory |unadjusted |  0.820|  0.621| 1.020| 0.000| 0.000| 314|       85|
+|A: student behaviour |knowledge_building  |primary     |adjusted   |  0.172|  0.011| 0.333| 0.037| 0.050| 314|       85|
+|A: student behaviour |knowledge_building  |primary     |unadjusted |  0.737|  0.532| 0.942| 0.000| 0.000| 314|       85|
+|A: student behaviour |question_asking     |exploratory |adjusted   |  0.070| -0.004| 0.145| 0.064| 0.064| 314|       85|
+|A: student behaviour |question_asking     |exploratory |unadjusted |  0.104|  0.039| 0.169| 0.002| 0.002| 314|       85|
+|A: student behaviour |reasoning_quality   |primary     |adjusted   |  0.289|  0.120| 0.458| 0.001| 0.002| 314|       85|
+|A: student behaviour |reasoning_quality   |primary     |unadjusted |  0.757|  0.553| 0.961| 0.000| 0.000| 314|       85|
+|B: Socratic conduct  |conversational_flow |exploratory |adjusted   |  0.360|  0.143| 0.577| 0.001| 0.001| 314|       85|
+|B: Socratic conduct  |conversational_flow |exploratory |unadjusted | -0.114| -0.336| 0.107| 0.312| 0.312| 314|       85|
+|B: Socratic conduct  |encouraging_tone    |exploratory |adjusted   |  1.093|  0.915| 1.271| 0.000| 0.000| 314|       85|
+|B: Socratic conduct  |encouraging_tone    |exploratory |unadjusted |  1.118|  0.961| 1.276| 0.000| 0.000| 314|       85|
+|B: Socratic conduct  |next_step_guidance  |exploratory |adjusted   |  1.408|  1.253| 1.564| 0.000| 0.000| 314|       85|
+|B: Socratic conduct  |next_step_guidance  |exploratory |unadjusted |  1.293|  1.156| 1.430| 0.000| 0.000| 314|       85|
+|B: Socratic conduct  |supportive_guidance |exploratory |adjusted   |  1.455|  1.302| 1.608| 0.000| 0.000| 314|       85|
+|B: Socratic conduct  |supportive_guidance |exploratory |unadjusted |  1.274|  1.135| 1.414| 0.000| 0.000| 314|       85|

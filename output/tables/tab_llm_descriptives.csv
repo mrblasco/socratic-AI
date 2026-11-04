@@ -1,0 +1,17 @@
+"","rubric","item","arm","mean","sd","n"
+"1","socratic","conversational_flow","non_socratic",0.0849560316111475,0.748311969205039,161
+"2","socratic","conversational_flow","socratic",-0.0893981770548673,1.06740932979956,153
+"3","socratic","encouraging_tone","non_socratic",-0.547777873547115,0.460323093271528,161
+"4","socratic","encouraging_tone","socratic",0.576419853863304,0.855769254021441,153
+"5","socratic","next_step_guidance","non_socratic",-0.643293694362807,0.654315912917519,161
+"6","socratic","next_step_guidance","socratic",0.676929965963477,0.609264955678509,153
+"7","socratic","supportive_guidance","non_socratic",-0.632504406556911,0.536776305775472,161
+"8","socratic","supportive_guidance","socratic",0.665576532389952,0.714840189744669,153
+"9","student","effort_seriousness","non_socratic",-0.4284506901066,0.60633217541345,161
+"10","student","effort_seriousness","socratic",0.45085334056969,1.0134125195108,153
+"11","student","knowledge_building","non_socratic",-0.376277608462552,0.554483305853962,161
+"12","student","knowledge_building","socratic",0.395952254656672,1.10165205215537,153
+"13","student","question_asking","non_socratic",0.145962732919255,0.247738215870068,161
+"14","student","question_asking","socratic",0.241830065359477,0.339816974554525,153
+"15","student","reasoning_quality","non_socratic",-0.388744839046892,0.52719979147487,161
+"16","student","reasoning_quality","socratic",0.409071366578755,1.08439920026984,153

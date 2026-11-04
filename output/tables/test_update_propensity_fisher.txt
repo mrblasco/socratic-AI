@@ -1,0 +1,8 @@
+Fisher's exact test: update direction vs AI-explanation treatment
+
+	Fisher's Exact Test for Count Data
+
+data:  update_propensity_table
+p-value = 1
+alternative hypothesis: two.sided
+

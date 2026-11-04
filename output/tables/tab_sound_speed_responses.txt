@@ -1,0 +1,9 @@
+% of students by responses to 'Does sound travel faster in water than air?'
+---------------------------------------------------------------------------
+|                                                 | Full sample| Non-Socratic| Socratic AI|
+|:------------------------------------------------|-----------:|------------:|-----------:|
+|Same speed                                       |         9.1|          6.8|        11.3|
+|Water is faster because higher density (correct) |        31.4|         35.6|        27.4|
+|Water is faster because lower density            |        11.6|         10.2|        12.9|
+|Water is slower because higher density           |        41.3|         42.4|        40.3|
+|Water is slower because lower density            |         6.6|          5.1|         8.1|
