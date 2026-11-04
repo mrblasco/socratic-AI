@@ -1,42 +1,38 @@
-# Export the chat logs (experiment data) to input/dialogues.json, the only
-# input of the rating pipeline. Run from llm_annotation/:
+# Export the chat logs to input/dialogues.json, the only input of the rating
+# pipeline. Source: socraticaidata::chats (unique user_id / chat_id across
+# schools). Run from llm_annotation/:
 #   Rscript scripts/export_dialogues.R
-# ---- setup, include=FALSE ----
-library(knitr)
+#
+# The package IDs are random (anonymised) and must not be linked back to the
+# original IDs. The v1 export used analysis/data/processed/chats.rds, where
+# user_id and chat_id restart in each school; grouping by chat_id merged 12
+# Brussels and Seville chats (see README).
 library(dplyr)
 library(jsonlite)
-opts_chunk$set(error = TRUE)
 
-# ---- data
-data_path <- file.path("..", "analysis", "data", "processed")
-data_files <- list.files(data_path, pattern = "*.rds", full.names = TRUE)
+data("chats", package = "socraticaidata")
 
-data_files
-data <- lapply(data_files, readRDS)
-chats <- filter(data[[1]], user_id != 1)
+# Researcher test account (Seville; "What tutor are u?", "What is 2 + 2?").
+TEST_USER <- 120L
+test <- distinct(filter(chats, user_id == TEST_USER), chat_id, location)
+stopifnot(nrow(test) == 4, all(test$location == "Seville"))
 
-kable(head(chats), caption = "top rows")
-
-# --- conversion
-
-dialogues_json <- chats %>%
+dialogues <- chats %>%
+    filter(user_id != TEST_USER) %>%
+    arrange(chat_id, turn) %>%
     group_by(chat_id) %>%
-    arrange(created_at) %>%
     summarise(
-        context = list(
-            data.frame(
-                speaker = role,
-                utterance = message,
-                stringsAsFactors = FALSE
-            )
-        )
-    ) %>% 
-    rename(
-        dialogue_id = chat_id
+        context = list(data.frame(
+            speaker = role,
+            utterance = message,
+            stringsAsFactors = FALSE
+        )),
+        .groups = "drop"
     ) %>%
-    select(dialogue_id, context)
+    rename(dialogue_id = chat_id)
 
-json_output <- toJSON(dialogues_json, pretty = TRUE, auto_unbox = TRUE)
+stopifnot(nrow(dialogues) == 366)
 
 out_path <- file.path("input", "dialogues.json")
-writeLines(json_output, out_path)
+writeLines(toJSON(dialogues, pretty = TRUE, auto_unbox = TRUE), out_path)
+message("Wrote ", nrow(dialogues), " dialogues to ", out_path)

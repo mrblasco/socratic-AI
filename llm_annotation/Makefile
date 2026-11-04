@@ -7,7 +7,7 @@ PY := uv run python
 
 help:
 	@echo "setup          install the Python env (uv sync)"
-	@echo "export         chats.rds (../analysis) -> input/dialogues.json"
+	@echo "export         socraticaidata::chats -> input/dialogues.json"
 	@echo "check-prespec  verify prompts + prespecification match PRESPEC.sha256"
 	@echo "holdout        rate the 314 holdout chats (calls the APIs; resumable)"
 	@echo "outputs        rebuild holdout CSVs in output/ from ratings/ (no API calls)"
