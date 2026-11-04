@@ -1,3 +1,5 @@
+\clearpage 
+
 # Highlights {-}
 
 - An experiment was conducted where K-12 students (N=122) used AI chatbots to solve school-related problems. 
@@ -9,6 +11,9 @@
 - While students found interactions with the AI agent useful, they perceived the Socratic AI as less helpful than non-Socratic overall.
 
 - The findings highlight challenges in designing AI agents that effectively foster critical thinking while maintaining student satisfaction, raising concerns about their adoption in educational settings. 
+
+
+\clearpage
 
 # Abstract {-}
 

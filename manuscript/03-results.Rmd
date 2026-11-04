@@ -427,7 +427,11 @@ list("Human" = fit, "AI" = fit_ai) %>%
 
 ### Student-AI Interactions
 
-Figure \@ref(fig:messages) shows the students' message length and frequency in the Socratic AI and Non-Socratic AI groups, allowing us to compare the student-AI interactions across treatment groups. As shown in the figure, Socratic AI students exchanged a median of 20 messages, significantly more than the eight messages by non-Socratic AI students (Wilcoxon test, p < 0.01). In addition, the Socratic AI’s messages were significantly shorter, with a median of 42 words, compared to 123 for the non-Socratic tutor (Wilcoxon test, p < 0.01). Socratic students also used fewer words, with two peaks: one at ten and the other at one word. This evidence supports the hypothesis that the Socratic tutor encouraged more engagement and interaction, resembling a relatively more genuine student-tutor talk.
+Figure \@ref(fig:messages) shows the students' message length and frequency in the Socratic AI and Non-Socratic AI groups, allowing us to compare the student-AI interactions across treatment groups. 
+
+As shown in the figure, Socratic AI students exchanged a median of 20 messages, significantly more than the eight messages by non-Socratic AI students (Wilcoxon test, p < 0.01). In addition, the Socratic AI’s messages were significantly shorter, with a median of 42 words, compared to 123 for the non-Socratic tutor (Wilcoxon test, p < 0.01). Socratic students also used fewer words, with two peaks: one at ten and the other at one word. 
+
+Socratic students, therefore, interacted more with the agent. Because the Socratic agent was instructed to answer with questions, part of this difference follows from the condition itself, and message counts alone do not show that students were more engaged or thought harder. We examine the content of the conversations next.
 
 ```{r messages, fig.cap = "Comparison of message frequency and word count per message across Socratic and non-Socratic treatments. Top panel (**A**) shows differences in the frequency of messages exchanged, while the bottom panels (**B** ) depict the word counts per message for the AI agent (left) and the students (right).", fig.width = 7, fig.height = 7, echo = FALSE}
 palette <- c("#d95f02", "#7570b3")
@@ -581,13 +585,41 @@ p_combined + plot_annotation(tag_levels = "A")
 ```
 
 
-### Automatic evaluation of Socratic dimensions 
+<!-- ### Automatic evaluation of Socratic dimensions 
 
 We conducted a detailed textual analysis of all AI–student conversations to (1) test the pedagogical differences between the Socratic and Non-Socratic tutors as they emerged in our experiment, and (2) derive additional indicators of student engagement that extend beyond simple measures such as word counts or the number of exchanges. To address the first aim, we adapted a rubric from Pauzi et al. [@pauzi2025automating], originally designed for automating the pedagogical evaluation of LLM-based conversational agents. The rubric captures key dimensions of Socratic tutoring, including providing support without directly giving answers ("scaffolding"), offering stepwise guidance, maintaining an encouraging tone, and sustaining a conversational guidance.
 
 While the original rubric consisted of five binary items, we modified it in two ways. First, we replaced the binary response format with a 5-point scale to increase statistical power and improve granularity. Second, we expanded the set of items to capture additional pedagogically relevant dimensions of conversational agents, including clarity, engagement, and depth of response. Using this revised rubric, we evaluated all 362 conversations^[We collected chats from 122 participants in 3 tasks. So, the total chats were 366. After excluding four with no proper conversation, we ended up with 362 chats for analysis.] through an LLM-based coding procedure and subsequently conducted regression analyses that accounted for within-student correlation, included school fixed effects, and controlled for the number of conversational exchanges. (See the Rubric in the Appendix, Section \ref{sec:socratic-dimension}).
 
-Figure \@ref(fig:socratic-dimensions) presents the regression results. The Socratic AI scored significantly higher on the core Socratic dimensions, showing greater average supportive guidance or scaffolding (coef = 0.55, SE = 0.12), more next-step guidance (coef = 0.54, SE = 0.12), and a more encouraging tone (coef = 0.53, SE = 0.12). We found no significant differences between conditions on the remaining Socratic dimensions. For the additional indicators, the Socratic AI elicited higher student engagement (coef = 0.43, SE = 0.12), although its clarity and depth of response were significantly lower (coef = -0.38, SE = 0.11; coef = -0.55, SE = 0.11, respectively). Taken together, these findings indicate that the Socratic AI followed Socratic principles (encouraging tone and supportive guidance) and, even after controlling for the number of exchanges, was more engaging. However, this increased conversational and encouraging guidance appears to have come at a cost to overall clarity and response depth.
+Figure \@ref(fig:socratic-dimensions) presents the regression results. The Socratic AI scored significantly higher on the core Socratic dimensions, showing greater average supportive guidance or scaffolding (coef = 0.55, SE = 0.12), more next-step guidance (coef = 0.54, SE = 0.12), and a more encouraging tone (coef = 0.53, SE = 0.12). We found no significant differences between conditions on the remaining Socratic dimensions. For the additional indicators, the Socratic AI elicited higher student engagement (coef = 0.43, SE = 0.12), although its clarity and depth of response were significantly lower (coef = -0.38, SE = 0.11; coef = -0.55, SE = 0.11, respectively). Taken together, these findings indicate that the Socratic AI followed Socratic principles (encouraging tone and supportive guidance) and, even after controlling for the number of exchanges, was more engaging. However, this increased conversational and encouraging guidance appears to have come at a cost to overall clarity and response depth. -->
+
+
+### What the conversations show: AI agent conduct and observable student behaviour {#sec:llm-results}
+
+We coded the conversations as described in Section \@ref(sec:llm-coding). The 40 development conversations are excluded here; the results below are based on the 314 holdout conversations from 85 students (161 non-Socratic, 153 Socratic), and Appendix \@ref(sec:si-llm-protocol) reports the all-conversations results.
+
+*Agreement between raters.* Of the four student-behaviour items, reasoning quality (alpha = 0.70) and knowledge building (0.81) met the pre-specified reliability threshold and are our primary outcomes. Effort and task focus fell just short (alpha = 0.669; threshold 0.67), and the yes/no question item reached 74% agreement (threshold 80%), because the two raters disagreed on how often students asked questions (13% vs 25% of conversations). We report both as exploratory. None of the four tutor-conduct items reached the threshold (alpha between -0.20 and 0.56). The raters differed in leniency (the GPT model gave higher scores than the Claude model), but ranked conversations similarly (rank correlations 0.55-0.70), so we report the agent-Socratic-conduct results as exploratory.
+
+*Socratic conduct.* The Socratic agent was rated clearly higher on supportive guidance without giving the answer (+1.45 standardised units, 95% CI 1.30 to 1.61), next-step guidance (+1.41, 1.25 to 1.56) and encouraging tone (+1.09, 0.92 to 1.27), and the two raters agreed on the direction and approximate size of these differences (Appendix Table \@ref(tab:si-per-rater)). Conversational flow was rated higher after adjusting for message counts (+0.36, 0.14 to 0.58) but not before (-0.11, -0.34 to 0.11), so we do not interpret it. These results support that the Socratic agent behaved in a Socratic way. 
+
+<!-- [If you keep the single-rater result on clarity and depth from the earlier coding: "In an earlier single-rater coding, the Socratic agent was also rated less clear and less deep; we did not replicate this with two raters."] -->
+
+*Student behaviour.* Table \@ref(tab:llm-effects) summarises the comparison. Without adjustment, Socratic students scored substantially higher on reasoning quality (+0.76; 0.55 to 0.96), knowledge building (+0.74; 0.53 to 0.94) and effort (+0.82; 0.62 to 1.02). Most of this difference is mechanical: the number and length of student messages alone account for about half of the variation in these scores (marginal R-squared 0.51-0.64), and the Socratic condition prompts more and longer messages. 
+
+After adjusting for the number of student messages and words, the difference remained for reasoning quality (+0.29; 0.12 to 0.46; Benjamini-Hochberg-adjusted p = 0.002) and was smaller and borderline for knowledge building (+0.17; 0.01 to 0.33; adjusted p = 0.0496). Exploratory items were in the same direction: effort (+0.24; 0.10 to 0.39) and asking a content question (+0.07 on the 0-1 scale; 0.00 to 0.14, p = 0.064).
+
+The reasoning result was stable across the pre-specified checks: it was similar when the rater saw only the student's messages (+0.30; 0.12 to 0.47), when conversations with a single student message were excluded (+0.49; 0.19 to 0.80), when the development conversations were added (+0.28; 0.11 to 0.44), and for each rater analysed alone (+0.29 in both). The knowledge-building result was less robust: it was close to zero for the Claude rater alone (+0.09; -0.08 to 0.27) and positive for the GPT rater (+0.25; 0.06 to 0.44). We, therefore, regard the evidence for higher reasoning as moderate, and the evidence for knowledge building as weak.
+
+```{r llm-effects}
+tab <- readr::read_csv(
+    here::here(
+        "output/tables/tab_llm_effects.csv"
+    )
+)
+knitr::kable(head(tab), caption = "TBA")
+cap <- "Socratic minus non-Socratic differences in LLM-coded student behaviour (314 holdout conversations from 85 students). Estimates are from linear mixed models with a random intercept for student and fixed effects for school and conversation order; scores are standardised averages of two LLM raters (the yes/no item is a proportion). Brackets show 95% confidence intervals. BH = Benjamini-Hochberg adjusted within the four student items." # nolint
+```
+
 
 ```{r socratic-eval, include = FALSE}
 library(dplyr)

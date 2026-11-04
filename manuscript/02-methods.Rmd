@@ -113,9 +113,30 @@ To better understand students' general attitudes toward AI, we selected four que
 
 Academic skills or habits may moderate the effect of AI interactions on problem-solving activities. Accordingly, to account for participants' heterogeneity in academic skills, we asked students to report their average school grades (six-item scale from 5/F to 9/A). We also asked students about their academic habits or the challenges they face at school, such as how often they complete their homework assignments on time (five-item scale from Never to Always) and what factors affect their ability to do so, such as distraction, poor time management or lack of clear instructions from teachers (Appendix, Section \@ref(questionnaire)).
 
-### Student-AI Interaction Metrics
+<!-- ### Student-AI Interaction Metrics
 
-To quantify engagement, we analyzed students' interaction logs with the AI agent, recording the number of turns and the word counts as a proxy for interaction intensity. While this provides a basic behavioural metric, it does not capture the quality of cognitive engagement or helpfulness, limiting its direct relevance to RQ-1 and RQ-2. Therefore, we also asked students about how useful they found the AI interactions and how confident they were in their answers to selected tasks. These self-reported metrics are needed to assess whether explanations were helpful to students (for RQ-1) and whether Socratic dialogue promoted confidence (for RQ-2).
+To quantify engagement, we analyzed students' interaction logs with the AI agent, recording the number of turns and the word counts as a proxy for interaction intensity. While this provides a basic behavioural metric, it does not capture the quality of cognitive engagement or helpfulness, limiting its direct relevance to RQ-1 and RQ-2. Therefore, we also asked students about how useful they found the AI interactions and how confident they were in their answers to selected tasks. These self-reported metrics are needed to assess whether explanations were helpful to students (for RQ-1) and whether Socratic dialogue promoted confidence (for RQ-2). -->
+
+### Interaction volume
+
+For each AI-student conversation (one per task and student) we recorded the number of student messages and the number of words the student wrote. These counts describe how much a student interacted with the agent. They do not measure the quality of the interaction, and they are partly determined by the experimental condition: the Socratic agent was instructed to respond with questions, which invites more replies. We therefore do not interpret message counts as engagement, and we adjust for them when comparing the observable content of the conversations (next subsection).
+
+### Coding of the dialogues with large language models {#sec:llm-coding}
+
+To address what students and tutors did in the conversations, beyond how many messages they exchanged, we coded every conversation with LLMs used as raters [@zheng2023judging]. The dialogue was shown to the model with a written rubric, and the model returned an integer score for each item in a fixed format. We coded two sets of items: student behaviour and AI agent Socratic style.
+
+*Student behaviour.* Four items describe what the student wrote: reasoning quality (does the student give reasons or steps of their own), knowledge building (does the student use, extend or test what was said earlier), effort and task focus, and whether the student asked at least one question about the content of the task. The first three were scored 1-5 and the fourth 0/1. Each score level is defined by observable behaviour in the student's own messages (for example, a score of 2 on reasoning means one stated step with no justification). Raters were told to credit only student-authored content, not the pasted task statement, not ideas that only the tutor stated, and not the number of turns. The items are inspired by the ICAP view of learner activity [@chi2014icap], but they measure what is visible in the transcript, not cognition.
+
+*AI agent Socratic style.* Six items adapted from the rubric of Pauzi et al. [@pauzi2025automating] describe the agent's behaviour as Socratic: identifying the student's mistake, acknowledging it, supportive guidance without giving the answer, next-step guidance, conversational flow and encouraging tone, each on a 1-5 scale with behavioural anchors. The two mistake items apply only when the student made a mistake and were otherwise left empty. Four items (supportive guidance, next-step guidance, encouraging tone, conversational flow) are used as a check that the Socratic manipulation worked; the two mistake items are reported as exploratory.
+
+*Raters and procedure.* Each rubric was applied by two LLMs from different providers: GPT-4o-mini and Claude Haiku 5.5 for the student items, and Claude Haiku 5.5 and GPT-4o for the tutor items.^[Exact versions in Appendix \@ref(sec:si-llm-protocol).] Each model rated each conversation once. Student items were rated twice, once with the full dialogue and once with only the student's messages, so that the rater could not see the agent's style. 
+
+*Development and holdout.* We wrote and refined the rubrics on a random subset of 40 conversations (20 per condition). During this phase we examined agreement between raters and the difference between conditions, and tightened ambiguous score definitions. The rubrics were then frozen and applied to the remaining 314 conversations (the *holdout* sample). The rating protocol and analysis plan were written after data collection and before the holdout conversations were rated. Primary results use the holdout sample; the 40 development conversations are included only in a sensitivity analysis.
+
+*Reliability.* We pre-specified that an item is treated as a primary outcome only if the two raters agree sufficiently on the holdout sample: Krippendorff's alpha (ordinal) of at least 0.67 for 1-5 items [@krippendorff2011alpha], and percent agreement of at least 80% together with Gwet's AC1 of at least 0.60 for the yes/no item [@gwet2008]. Items below these thresholds are reported as exploratory. 
+<!-- Agreement among LLM raters shows that the coding is consistent; it does not show that it is valid.  -->
+We did not have human coders.
+
 
 ## Testing Hypotheses
 
@@ -146,8 +167,16 @@ These hypotheses are tested using regression models with student-level clusterin
 
 <!-- RQ4: Does Socratic tutoring affect student engagement and interaction patterns? -->
 
-**H4 (RQ4: Engagement and interaction behaviour).**
-We hypothesise that Socratic AI increases engagement, as reflected in a higher number of student–AI exchanges and shorter message length per exchange, compared to non-Socratic AI. This hypothesis is tested using non-parametric comparisons of message frequency and word-count distributions.
+<!-- **H4 (RQ4: Engagement and interaction behaviour).** We hypothesise that Socratic AI increases engagement, as reflected in a higher number of student–AI exchanges and shorter message length per exchange, compared to non-Socratic AI. This hypothesis is tested using non-parametric comparisons of message frequency and word-count distributions. -->
+
+**H4a (RQ4: Interaction volume).**
+We hypothesise that Socratic AI leads students to send more messages than non-Socratic AI. This is tested with non-parametric comparisons of the number of student messages and words per conversation. Because the Socratic agent was instructed to reply with questions, this difference partly follows from the condition, and we do not treat it as evidence of engagement.
+
+**H4b (RQ4: Observable student reasoning and effort).**
+We hypothesise that, in conversations with the Socratic agent, students show more observable reasoning, knowledge building, effort and content questions than students with the non-Socratic agent, over and above the greater number and length of their messages. This is tested with linear mixed models of LLM-coded scores (see \@ref(sec:analysis-llm)).
+
+**H5 (RQ5: Socratic conduct, manipulation check).**
+We hypothesise that the Socratic agent scores higher than the non-Socratic agent on supportive guidance, next-step guidance, encouraging tone and conversational flow, as coded by LLM raters.
 
 <!-- RQ5: Does Socratic tutoring improve pedagogical quality of AI responses, and does this vary across student characteristics? -->
 
@@ -157,3 +186,18 @@ We hypothesise that Socratic AI improves pedagogical quality along core dimensio
 **H5b (RQ5: Heterogeneous effects)**. We further hypothesise that treatment effects vary by student characteristics (e.g., prior ChatGPT experience, gender, and task type), reflecting heterogeneous responsiveness to Socratic guidance.
 
 These hypotheses are tested using mixed-effects regressions on LLM-coded rubric scores, including student random effects and interaction terms between treatment and covariates.
+
+
+
+### Statistical analysis of the coded dialogues {#sec:analysis-llm}
+
+For each item, each rater's scores were standardised (z-scores over all rated conversations) and the two raters' standardised scores were averaged; the yes/no item was averaged as 0, 0.5 or 1. We estimated linear mixed models of the item score with a random intercept for student, since students contributed one to seven conversations and the condition varied within some students, and fixed effects for condition, school and the order of the conversation within the student. 
+
+The primary specification also adjusts for the logarithm of the number of student messages and of the number of student words, because these differ strongly between conditions. We also report the model without this adjustment, which mixes the effect of the agent on what students did with the mechanical effect of the condition on how much they typed. 
+
+Coefficients are reported as differences between the Socratic and non-Socratic conditions in standardised units with 95% confidence intervals. We corrected for multiple testing with the Benjamini-Hochberg procedure [@benjamini1995] within each family of four items (student behaviour; AI agent Socratic conduct).
+
+We used non-parametric tests (Wilcoxon rank-sum) for the number of messages and words, which are strongly right-skewed, and linear mixed models for the standardised averages of ordinal ratings. 
+<!-- [To reconsider: cumulative-link models on each rater's raw scores are a straightforward robustness check, and ordinal mixed models are an alternative primary analysis.] -->
+
+Sensitivity analyses: (i) ratings made on student messages only; (ii) each rater analysed separately; (iii) excluding conversations in which the student sent a single message; (iv) including the 40 development conversations; and (v) comparing how much of the variation in each score is accounted for by message and word counts alone.

@@ -6,15 +6,14 @@ title: |
   AI Chatbots in K-12 Education: An Experimental Study of Socratic vs. Non-Socratic AI Agents and the Role of Step-by-Step Reasoning
 
 author:
-  - "`r ifelse(!params$anonymous, 'Andrea Blasco', 'Anonymous') `":
+  - "`r ifelse(params$anonymous, 'Anonymous', 'Andrea Blasco') `":
       institute:
         - jrc
       correspondence: "yes"
-      email: "`r ifelse(!params$anonymous, 'andrea.blasco@ec.europa.eu', 'Email') `"
-  - "`r ifelse(!params$anonymous, 'Vicky Charisi', 'Anonymous') `":
+      email: "`r ifelse(params$anonymous, 'Email', 'andrea.blasco@ec.europa.eu') `"
+  - "`r ifelse(params$anonymous, 'Anonymous', 'Vicky Charisi') `":
       institute: [jrc, harvard]
-      correspondence: "yes"
-      email: "`r ifelse(!params$anonymous, 'vcharisi@cyber.harvard.edu', 'Email') `"
+      email: "`r ifelse(params$anonymous, 'Email', 'vcharisi@cyber.harvard.edu') `"
 
 institute:
   - jrc: "`r ifelse(!params$anonymous, 'European Commission, Joint Research Centre, Brussels, Belgium', 'Anonymous Institute 1') `"
@@ -23,17 +22,17 @@ institute:
 date: |
   `r format(Sys.Date(), 'This version: %B %d, %Y')`
 
-fontsize: 11pt # 11
-linestretch: 1.25 # 1.25
-colorlinks: true
+fontsize: 12pt # 11
+linestretch: 1.5 # 1.25
 link-citations: true
+colorlinks: true
 graphics: true
 tables: true
-mainfont: Helvetica
-geometry: margin=2cm
+mainfont: Times New Roman
+geometry: margin=1in
 always_allow_html: true
 
-bibliography: [../refs.bib]
+bibliography: [refs.bib]
 csl: [hssc.csl]
 ---
 
