@@ -117,69 +117,9 @@ Building on the above prompt, we expanded the list of definitions as follows:
 
 The full prompts, including the score definitions, are reproduced below. 
 
-```{markdown}
-You are evaluating whether an AI tutor behaves in a Socratic, guiding way in a conversation with a student, for a research study. Judge the AI's behaviour only. The student's messages are context for what the AI was responding to.
-
-Rate each dimension from 1 to 5 using the anchors below. Judge each dimension independently, and do not reward length.
-
-Two dimensions apply only if the student actually makes a mistake (a wrong answer, a wrong step, or a misconception). If the student makes no mistake in the conversation, return null for those two dimensions. Do not return null just because the AI never addressed a mistake that the student did make: in that case score 1.
-
-### identifying_mistake (null if the student makes no mistake)
-1 = The student makes a mistake and the AI does not notice it, or confirms it as correct.
-2 = The AI hints that something is off without saying what.
-3 = The AI points to the part of the student's answer that is wrong.
-4 = The AI identifies the mistake and what kind of error it is.
-5 = The AI identifies the mistake precisely and why it arose.
-
-### acknowledging_mistake (null if the student makes no mistake)
-1 = The AI ignores the mistake or moves on.
-2 = The AI mentions the mistake only by restating the right answer.
-3 = The AI acknowledges the mistake neutrally and continues.
-4 = The AI acknowledges it and uses it as the next learning step.
-5 = The AI acknowledges it constructively and helps the student see why, without discouraging them.
-
-### supportive_guidance: hints or cues that help without handing over the answer
-1 = Gives the answer directly, or gives no help.
-2 = Gives the answer with a thin explanation, or a generic hint ("think about it").
-3 = Gives a hint but also much of the answer.
-4 = Gives a specific hint or question that leaves the key step to the student.
-5 = Consistently gives targeted cues that let the student reach the answer themselves.
-
-### next_step_guidance: clear, actionable direction for what to do next
-1 = No indication of what to do next.
-2 = A vague direction ("keep going").
-3 = A relevant next step, but not concrete.
-4 = A concrete next step the student can act on.
-5 = A concrete next step tailored to what the student just said, with a way for the student to check themselves.
-
-### conversational_flow: natural, coherent dialogue
-1 = Disjointed, repetitive or contradictory.
-2 = Frequent repetition or off-topic turns.
-3 = Mostly coherent with some awkward turns.
-4 = Natural and coherent.
-5 = Natural, coherent, and each turn clearly builds on the last.
-
-### encouraging_tone: supportive, patient, motivating
-1 = Dismissive, curt or discouraging.
-2 = Neutral and impersonal.
-3 = Polite, with generic encouragement.
-4 = Warm and patient; recognises effort.
-5 = Consistently motivating, specific in its praise, and patient with difficulty.
-
-Conversation:
-{dialogue_text}
-
-Respond with the ratings only. Scores are integers from 1 to 5, or null where allowed. In "comments", point to the specific messages that justify the scores, in at most four sentences, and add nothing that is not in the conversation.
-```
-
-```{markdown}
-## TBA
-```
-
+<!-- TBA  -->
 
 Table \@ref(tab:si-anchors) shows the anchors of the student items.
-
-Table SI-A (anchors, abbreviated):
 
 | Item | 1 | 3 | 5 |
 |---|---|---|---|
@@ -188,7 +128,7 @@ Table SI-A (anchors, abbreviated):
 | Effort and task focus | No student-authored content / off-task | At least one complete task-focused attempt, little follow-through | Persistent, detailed, self-directed work |
 | Content question (0/1) | 0 = none, or only requests for the answer | | 1 = at least one question about the content |
 
-(Scores 2 and 4 are defined in the prompt; the pasted task statement is excluded.)
+Table: (\#tab:si-anchors) Anchors of the student items (abbreviated). Scores 2 and 4 are defined in the prompt; the pasted task statement is excluded.
 
 ## Raters, versions and settings
 
@@ -199,6 +139,8 @@ Table SI-A (anchors, abbreviated):
 | Tutor items | Claude Haiku 5.5 | claude-haiku-5-5 | provider default | 2026-11-03 |
 | Tutor items | GPT-4o | gpt-4o-2024-08-06 | 0 | 2026-11-03 |
 
+Table: (\#tab:si-raters) Raters, model versions and settings.
+
 Prompt hashes (SHA-256 prefix): student rubric `e2fac51ff3f4`, tutor rubric `742bf95d78b3`. All raw responses are archived in `llm_annotation/ratings/holdout/`. [Add repository/DOI.]
 
 ## Development phase
@@ -207,7 +149,6 @@ The rubrics were developed on 40 conversations (20 per condition, random draw, s
 
 ## Reliability on the holdout sample
 
-Table SI-B (314 conversations; full dialogue unless stated):
 
 | Item | Alpha (ordinal) | Rank correlation | Agreement / AC1 | Status |
 |---|---|---|---|---|
@@ -223,11 +164,12 @@ Table SI-B (314 conversations; full dialogue unless stated):
 | Acknowledging mistake (66 applicable) | 0.52 | 0.71 | | exploratory |
 | *Student items, student messages only:* reasoning / knowledge building / effort / content question | 0.68 / 0.65 / 0.45 / - | 0.68 / 0.65 / 0.60 / 0.16 | question: 59.6% / 0.32 | |
 
+Table: (\#tab:si-reliability) Inter-rater reliability on the holdout sample (314 conversations; full dialogue unless stated).
+
 Alpha is negative for encouraging tone because the GPT model scored about one point higher than the Claude model on every conversation; the rank correlation (0.55) shows that the two rank conversations similarly.
 
 ## Results by rater (adjusted model, 314 conversations)
 
-Table SI-C (`si-per-rater`): Socratic minus non-Socratic, standardised units, 95% CI.
 
 | Item | Rater | Estimate | 95% CI |
 |---|---|---|---|
@@ -248,9 +190,10 @@ Table SI-C (`si-per-rater`): Socratic minus non-Socratic, standardised units, 95
 | Conversational flow | Claude Haiku 5.5 | 0.34 | 0.11, 0.57 |
 | Conversational flow | GPT-4o | 0.36 | 0.11, 0.60 |
 
+Table: (\#tab:si-per-rater) Socratic minus non-Socratic difference by rater, standardised units, 95% CI.
+
 ## Sensitivity analyses
 
-Table SI-D: adjusted Socratic minus non-Socratic differences.
 
 | Item | Primary (314) | Student messages only | Excluding single-message chats (164) | All 354 chats |
 |---|---|---|---|---|
@@ -263,11 +206,12 @@ Table SI-D: adjusted Socratic minus non-Socratic differences.
 | Encouraging tone | 1.09 [0.92, 1.27] | n/a | 1.02 [0.72, 1.33] | 1.10 [0.93, 1.27] |
 | Conversational flow | 0.36 [0.14, 0.58] | n/a | 0.09 [-0.27, 0.45] | 0.36 [0.16, 0.57] |
 
+Table: (\#tab:si-sensitivity) Sensitivity analyses: adjusted Socratic minus non-Socratic differences.
+
 A further pre-specified check, truncating each conversation to its first three student messages, was not carried out. [Delete this sentence if you run it, and add the column.]
 
 ## How much do message counts explain?
 
-Table SI-E: marginal R-squared of linear mixed models with school, conversation order, log messages and log words (length only) and the same model plus condition.
 
 | Item | Length only | Length + condition | LRT p for condition |
 |---|---|---|---|
@@ -279,6 +223,8 @@ Table SI-E: marginal R-squared of linear mixed models with school, conversation 
 | Next-step guidance | 0.11 | 0.57 | <0.0001 |
 | Encouraging tone | 0.11 | 0.43 | <0.0001 |
 | Conversational flow | 0.22 | 0.24 | 0.0011 |
+
+Table: (\#tab:si-length-r2) Marginal R-squared of linear mixed models with school, conversation order, log messages and log words (length only) and the same model plus condition.
 
 The student-behaviour scores are largely predictable from message and word counts (R-squared 0.51-0.64), whereas the tutor-conduct scores depend mainly on the condition. This is the reason the primary specification adjusts for interaction volume.
 
@@ -294,6 +240,8 @@ The student-behaviour scores are largely predictable from message and word count
 | Next-step guidance | 1.67 | 3.44 |
 | Encouraging tone | 2.56 | 3.31 |
 | Conversational flow | 3.68 | 3.52 |
+
+Table: (\#tab:si-llm-descriptives) Descriptives of raw scores (mean of the two raters, holdout).
 
 (Raw means averaged over the two raters of each item and over conversations; the student items are close to the bottom of the scale in both conditions. At least one content question was coded in 27% of non-Socratic and 38% of Socratic conversations.)
 

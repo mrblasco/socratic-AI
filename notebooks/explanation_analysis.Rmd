@@ -1,0 +1,609 @@
+---
+title: "Experiment 1 (AI step-by-step reasoning): a complementary analysis"
+subtitle: "Reliance on, accuracy after, and trust in an AI estimate, with and without an explanation"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    df_print: paged
+    self_contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4.5)
+suppressPackageStartupMessages({
+  library(dplyr); library(tidyr); library(ggplot2); library(knitr)
+  library(sandwich); library(lmtest); library(MASS); library(ordinal)
+})
+select <- dplyr::select
+theme_set(theme_minimal(base_size = 12))
+set.seed(20261106)
+
+N_PERM <- 5000   # randomisation-inference draws
+N_BOOT <- 2000   # bootstrap draws
+COL <- c("No explanation" = "#7a7a7a", "Explanation" = "#c2410c")
+```
+
+# 0. Purpose and status of this analysis
+
+The first experiment gave every student the same AI estimate of the value of the coins in a jar (US$ 213; the true value is US$ 379.54) after the student had made an initial guess. Half of the students saw the estimate **with a step-by-step reasoning**, half saw **the number alone**. Students then gave a final guess and rated how accurate they thought the AI estimate was.
+
+The manuscript analyses (i) whether students changed their guess (sign of the change), (ii) the absolute error in dollars of the final guess, with bootstrapped medians after trimming extreme answers, and (iii) Wilcoxon and ordinal tests of perceived accuracy. This notebook **does not repeat those analyses**. It asks complementary questions with different estimands and methods:
+
+| Question | Estimand / method here |
+|---|---|
+| Did the explanation make students *rely more on the AI number*? | Movement of the guess towards the AI estimate on the log scale; exact adoption of the estimate |
+| Did it change how *accurate* the final guess is? | Absolute and signed log error, adjusted for the same quantity measured *before* seeing the advice |
+| Did it change *trust* in the AI? | Proportional-odds model, effects as differences in probabilities |
+| Is the result robust to inference choices? | Covariate-adjusted (Lin) estimator with HC3 errors, randomisation inference, Holm correction |
+| Is the average hiding something? | Quantile effects; exploratory heterogeneity |
+| What could we have detected? | Minimum detectable effect |
+
+**Status.** The data were already analysed by the authors, and this plan was written after seeing them (the primary outcomes below were chosen on conceptual grounds, before any model was fitted in this notebook, but they are *not* pre-registered). Results are therefore best read as a robustness and sensitivity analysis, not as confirmatory tests. Sections 6 and 7 are explicitly exploratory.
+
+# 1. Data
+
+```{r data}
+ADVICE <- 213       # AI estimate shown to all students (US$)
+TRUTH  <- 379.54    # true value of the coins in the jar (US$)
+
+raw <- readRDS("analysis/data/processed/tutorgpt.rds")
+
+d <- raw %>%
+  transmute(
+    student_id,
+    arm      = factor(treatment_explain_id, c("explain_no", "explain_yes"),
+                      c("No explanation", "Explanation")),
+    z        = as.integer(arm == "Explanation"),
+    site     = factor(location),
+    tutor    = treatment_tutor_id,          # second, independent experiment
+    used_before = has_used_before,
+    top_grades,
+    init     = q9_guess_coins_initial,
+    final    = q12_guess_coins_final,
+    # perceived accuracy of the AI estimate: 1 = very poor ... 5 = very good
+    ai_acc   = 6L - as.integer(q10_guess_coins_ai_accuracy),
+    human_acc = 6L - as.integer(q11_guess_coins_human_accuracy)
+  )
+stopifnot(!anyNA(d$init), !anyNA(d$final), !anyNA(d$ai_acc), nrow(d) == 122)
+```
+
+`r nrow(d)` students, `r sum(d$z == 0)` without and `r sum(d$z == 1)` with the explanation. No missing values in the variables used for the primary analysis (two students lack school grades and one lacks gender, so these are not used as adjustment variables).
+
+**Timing and independence of the second experiment.** The coin task precedes the tutor chats in the questionnaire, so the Socratic/non-Socratic assignment cannot have influenced coin outcomes. It is nonetheless included as an adjustment variable because it is a pre-outcome random factor that happens to be (almost) orthogonal to the explanation arm.
+
+```{r crosstab}
+kable(table(d$arm, d$site), caption = "Explanation arm by site")
+kable(table(d$arm, d$tutor), caption = "Explanation arm by tutor arm (second experiment)")
+```
+
+# 2. Variable construction
+
+All amounts are analysed on the **log scale**. Guesses span four orders of magnitude (12 to 300,000 at baseline), and a relative error (a guess that is 2x too high is as wrong as one that is 2x too low) is more natural than a dollar error. This also removes the need to trim extreme answers.
+
+```{r construct}
+lg <- function(x, ref) log(x / ref)
+
+d <- d %>%
+  mutate(
+    # distance from the advice, before and after (log scale)
+    gap_init  = abs(lg(init,  ADVICE)),
+    gap_final = abs(lg(final, ADVICE)),
+    # (1) reliance: how much closer to the AI number did the student move?
+    #     >0 = moved towards the advice, <0 = moved away from it
+    toward = gap_init - gap_final,
+    # exact adoption and near adoption
+    adopt  = as.integer(final == ADVICE),
+    near   = as.integer(gap_final <= log(1.10)),      # within +/-10% of the advice
+    # (2) accuracy against the true value
+    err_init  = abs(lg(init,  TRUTH)),
+    err_final = abs(lg(final, TRUTH)),
+    bias_init  = lg(init,  TRUTH),                    # signed: <0 under-estimate
+    bias_final = lg(final, TRUTH),
+    # size of the revision, regardless of direction
+    revision  = abs(lg(final, init)),
+    revised   = as.integer(final != init),
+    init_side = factor(if_else(init < ADVICE, "Started below advice", "Started at/above advice"),
+                       c("Started below advice", "Started at/above advice")),
+    log_init  = log(init)
+  )
+
+# centred pre-treatment covariates for the Lin estimator
+d <- d %>%
+  mutate(
+    c_loginit = log_init - mean(log_init),
+    c_seville = as.numeric(site == "Seville") - mean(site == "Seville"),
+    c_socr    = as.numeric(tutor == "socratic") - mean(tutor == "socratic")
+  )
+```
+
+# 3. Descriptive picture
+
+```{r desc-table}
+d %>%
+  group_by(arm) %>%
+  summarise(
+    n = n(),
+    `median initial guess` = median(init),
+    `median final guess`   = median(final),
+    `initial within 10% of advice (%)` = 100 * mean(abs(lg(init, ADVICE)) <= log(1.1)),
+    `adopted advice exactly (%)` = 100 * mean(adopt),
+    `final within 10% of advice (%)` = 100 * mean(near),
+    `revised guess (%)` = 100 * mean(revised),
+    `median |log error| initial` = median(err_init),
+    `median |log error| final`   = median(err_final)
+  ) %>%
+  mutate(across(where(is.numeric), ~ round(.x, 2))) %>%
+  kable(caption = "Descriptives by explanation arm (medians because of skew)")
+```
+
+```{r ecdf, fig.height=4.2, fig.cap="Cumulative distributions of guesses (log axis) before and after seeing the AI estimate. Dotted lines: the AI estimate (213) and the true value (379.54)."}
+d %>%
+  select(student_id, arm, Before = init, After = final) %>%
+  pivot_longer(c(Before, After), names_to = "stage", values_to = "guess") %>%
+  mutate(stage = factor(stage, c("Before", "After"))) %>%
+  ggplot(aes(guess, colour = arm)) +
+  stat_ecdf(linewidth = 0.9) +
+  geom_vline(xintercept = ADVICE, linetype = 3) +
+  geom_vline(xintercept = TRUTH,  linetype = 3) +
+  scale_x_log10(labels = scales::label_number(accuracy = 1)) +
+  scale_colour_manual(values = COL) +
+  facet_wrap(~stage) +
+  labs(x = "Guess (US$, log scale)", y = "Cumulative share of students", colour = NULL) +
+  theme(legend.position = "bottom")
+```
+
+Two features shape what follows. First, before seeing any advice the median student was already close to the AI number, so there is limited room to "move towards" the advice for many students. Second, a visible block of students adopts the AI estimate verbatim. The reliance outcome is therefore defined relative to each student's *own* starting point, and exact adoption is reported separately.
+
+```{r advice-vs-baseline}
+d %>%
+  count(init_side) %>%
+  mutate(share = round(100 * n / sum(n), 1)) %>%
+  kable(caption = "Where students started relative to the AI estimate")
+```
+
+# 4. Randomisation check
+
+Balance on pre-treatment variables is shown as standardised mean differences (SMD). With 122 students and a handful of covariates, some imbalance is expected by chance; the check is for gross failures, and it motivates adjusting for the prognostic baseline.
+
+```{r balance, fig.height=3.2, fig.cap="Standardised mean differences (Explanation minus No explanation). Dashed lines at +/-0.25."}
+smd <- function(x, z) {
+  x <- as.numeric(x)
+  (mean(x[z == 1], na.rm = TRUE) - mean(x[z == 0], na.rm = TRUE)) /
+    sqrt((var(x[z == 1], na.rm = TRUE) + var(x[z == 0], na.rm = TRUE)) / 2)
+}
+bal <- tibble(
+  Covariate = c("log initial guess", "Seville", "Socratic tutor arm",
+                "Used ChatGPT before", "Top grades"),
+  SMD = c(smd(d$log_init, d$z), smd(d$site == "Seville", d$z),
+          smd(d$tutor == "socratic", d$z), smd(d$used_before == "Yes", d$z),
+          smd(d$top_grades == "Top grades", d$z))
+)
+ggplot(bal, aes(SMD, reorder(Covariate, abs(SMD)))) +
+  geom_vline(xintercept = c(-.25, .25), linetype = 2, colour = "grey60") +
+  geom_vline(xintercept = 0) +
+  geom_point(size = 3, colour = "#c2410c") +
+  labs(y = NULL, x = "Standardised mean difference")
+```
+
+A formal omnibus check, with the randomisation distribution rather than asymptotics:
+
+```{r balance-omnibus}
+# Permutation test of a prediction-based omnibus: can covariates predict arm?
+omni_stat <- function(z) {
+  fit <- glm(z ~ c_loginit + c_seville + c_socr + I(used_before == "Yes"),
+             family = binomial, data = d |> mutate(z = z))
+  fit$null.deviance - fit$deviance
+}
+obs <- omni_stat(d$z)
+perm <- replicate(2000, omni_stat(ave(d$z, d$site, FUN = sample)))
+cat(sprintf("Omnibus balance (permutation within site): LR = %.2f, p = %.2f\n",
+            obs, (1 + sum(perm >= obs)) / (length(perm) + 1)))
+```
+
+# 5. Main analysis
+
+## 5.1 Outcomes and estimator
+
+**Primary outcomes** (one for each question in the table above; Holm-adjusted jointly):
+
+1. *Reliance*: `toward`, the reduction in log distance to the AI estimate from the initial to the final guess.
+2. *Accuracy*: `err_final`, the absolute log error against the true value.
+3. *Trust*: perceived accuracy of the AI estimate (1-5).
+
+**Secondary outcomes**: exact adoption, final guess within 10% of the advice, signed log error (bias), size of revision, any revision, and perceived accuracy of the *students' own* guess.
+
+**Estimator.** For continuous and binary outcomes we estimate the average treatment effect (ATE) with the regression estimator of Lin (2013): the outcome is regressed on treatment, centred covariates and their interactions with treatment. This is consistent for the ATE under randomisation without assuming a linear model, cannot do worse than the unadjusted difference asymptotically, and is reported with HC3 standard errors, which are suited to n = 122. Covariates are fixed before treatment: site, the tutor arm of the independent second experiment, and the **baseline value of the outcome** (for accuracy: the log error of the initial guess; for reliance: the initial log gap, so we adjust for the headroom; for the others: log initial guess). The effect on the binary outcomes is a risk difference (linear probability model with HC3).
+
+**Randomisation inference.** For each outcome we also compute a permutation p-value for the studentised ATE, shuffling the arm *within site* (the 29/29 split in Seville suggests blocking, and within-site permutation is conservative if assignment was not blocked). Under the weak null this studentised statistic gives asymptotically valid tests (Wu & Ding, 2021).
+
+```{r estimators}
+# ---- Lin estimator pieces -----------------------------------------------------
+lin_design <- function(z, C) {
+  C <- as.matrix(C)
+  cbind(1, z, C, z * C)
+}
+
+lin_fit <- function(y, z, C) {
+  X <- lin_design(z, C)
+  qrX <- qr(X)
+  b  <- qr.coef(qrX, y)
+  e  <- y - X %*% b
+  h  <- rowSums(qr.Q(qrX)^2)
+  XtXi <- chol2inv(qr.R(qrX))
+  meat <- crossprod(X * as.numeric(e / (1 - h)))      # HC3
+  V <- XtXi %*% meat %*% XtXi
+  c(est = b[2], se = sqrt(V[2, 2]))
+}
+
+lin_ate <- function(data, y, baseline = NULL, n_perm = N_PERM) {
+  yv <- data[[y]]
+  C  <- data[, c("c_seville", "c_socr")]
+  if (!is.null(baseline)) {
+    C$base <- data[[baseline]] - mean(data[[baseline]])
+  }
+  z  <- data$z
+  f  <- lin_fit(yv, z, C)
+  est <- unname(f["est.z"]); se <- unname(f["se"])
+  t_obs <- est / se
+  # permutation distribution of the studentised ATE, within site
+  t_perm <- replicate(n_perm, {
+    zp <- ave(z, data$site, FUN = sample)
+    ff <- lin_fit(yv, zp, C)
+    ff["est.z"] / ff["se"]
+  })
+  tibble(
+    estimate = est, se = se,
+    lwr = est - qt(.975, nrow(data) - ncol(lin_design(z, C))) * se,
+    upr = est + qt(.975, nrow(data) - ncol(lin_design(z, C))) * se,
+    p_hc3 = 2 * pt(-abs(t_obs), nrow(data) - ncol(lin_design(z, C))),
+    p_perm = (1 + sum(abs(t_perm) >= abs(t_obs))) / (n_perm + 1),
+    sd_control = sd(yv[z == 0]),
+    smd = est / sd(yv[z == 0])
+  )
+}
+```
+
+A quick unit check of the hand-rolled estimator against `lm` + `sandwich`, so the numbers can be trusted:
+
+```{r estimator-check}
+fit_chk <- lm(err_final ~ z * (c_seville + c_socr + I(err_init - mean(err_init))), data = d)
+chk <- coeftest(fit_chk, vcov. = vcovHC(fit_chk, "HC3"))["z", 1:2]
+mine <- lin_fit(d$err_final, d$z, cbind(d$c_seville, d$c_socr, d$err_init - mean(d$err_init)))
+stopifnot(isTRUE(all.equal(unname(chk[1]), unname(mine["est.z"]))),
+          isTRUE(all.equal(unname(chk[2]), unname(mine["se"]))))
+cat("lin_fit() matches lm() + vcovHC(HC3): OK\n")
+```
+
+## 5.2 Continuous and binary outcomes
+
+```{r main-results}
+spec <- tribble(
+  ~outcome,      ~label,                                         ~baseline,    ~family,
+  "toward",      "Reliance: movement towards the AI estimate (log)",   "gap_init",   "Primary",
+  "err_final",   "Accuracy: absolute log error vs truth",              "err_init",   "Primary",
+  "adopt",       "Adopted the AI number exactly (risk diff.)",         "log_init",   "Secondary",
+  "near",        "Final within 10% of AI number (risk diff.)",         "log_init",   "Secondary",
+  "bias_final",  "Signed log error vs truth (bias)",                   "bias_init",  "Secondary",
+  "revision",    "Size of revision |log(final/initial)|",              "log_init",   "Secondary",
+  "revised",     "Changed the guess at all (risk diff.)",              "log_init",   "Secondary"
+)
+
+res <- bind_rows(lapply(seq_len(nrow(spec)), function(i) {
+  lin_ate(d, spec$outcome[i], spec$baseline[i]) |>
+    mutate(outcome = spec$outcome[i], label = spec$label[i], family = spec$family[i])
+}))
+```
+
+## 5.3 Trust: perceived accuracy of the AI estimate (ordinal)
+
+The 1-5 rating is ordinal, so the primary model is a proportional-odds (cumulative logit) model with the same adjustment set (site, tutor arm, log initial guess). Odds ratios are hard to interpret, so we also report the **difference in the probability** of each rating, standardised over the sample (g-computation), with a bootstrap CI that resamples students within arm x site cells.
+
+```{r ordinal}
+fit_ord <- function(data, resp = "ai_acc") {
+  data$resp <- factor(data[[resp]], levels = 1:5, ordered = TRUE)
+  clm(resp ~ z + log_init + site + tutor, data = data, link = "logit")
+}
+```
+
+```{r ordinal-gcomp}
+# Direct g-computation for a cumulative-logit model
+gcomp_probs <- function(data, resp = "ai_acc") {
+  fit <- fit_ord(data, resp)
+  X <- model.matrix(~ z + log_init + site + tutor, data)[, -1, drop = FALSE]
+  be <- fit$beta[colnames(X)]
+  th <- fit$alpha
+  probs <- function(zv) {
+    X2 <- X; X2[, "z"] <- zv
+    eta <- as.numeric(X2 %*% be)
+    cum <- sapply(th, function(t) plogis(t - eta))        # P(Y <= k), k = 1..4
+    cum <- cbind(cum, 1)
+    p <- cbind(cum[, 1], cum[, -1, drop = FALSE] - cum[, -ncol(cum), drop = FALSE])
+    colMeans(p)
+  }
+  p1 <- probs(1); p0 <- probs(0)
+  list(fit = fit, p0 = p0, p1 = p1,
+       diff = p1 - p0,
+       top2 = sum(p1[4:5]) - sum(p0[4:5]),
+       mean_score = sum((1:5) * p1) - sum((1:5) * p0))
+}
+
+g0 <- gcomp_probs(d)
+
+# stratified bootstrap
+boot_ord <- replicate(N_BOOT, {
+  idx <- unlist(lapply(split(seq_len(nrow(d)), interaction(d$arm, d$site)), function(i) sample(i, replace = TRUE)))
+  b <- try(gcomp_probs(d[idx, ]), silent = TRUE)
+  if (inherits(b, "try-error")) rep(NA_real_, 7) else c(b$diff, b$top2, b$mean_score)
+})
+ci <- apply(boot_ord, 1, quantile, c(.025, .975), na.rm = TRUE)
+
+ord_tab <- tibble(
+  Rating = c("1 Very poor", "2 Poor", "3 Neutral", "4 Good", "5 Very good",
+             "Top-2 box (good or very good)", "Mean score (1-5)"),
+  `P(no explanation)` = c(g0$p0, sum(g0$p0[4:5]), sum((1:5) * g0$p0)),
+  `P(explanation)`    = c(g0$p1, sum(g0$p1[4:5]), sum((1:5) * g0$p1)),
+  Difference = c(g0$diff, g0$top2, g0$mean_score),
+  lwr = ci[1, ], upr = ci[2, ]
+)
+ord_tab %>% mutate(across(where(is.numeric), ~ round(.x, 3))) %>%
+  kable(caption = "Standardised category probabilities and differences (proportional-odds model; bootstrap 95% CI)")
+
+ord_sum <- summary(g0$fit)$coefficients["z", ]
+ord_or  <- exp(c(ord_sum["Estimate"], ord_sum["Estimate"] + c(-1, 1) * 1.96 * ord_sum["Std. Error"]))
+cat(sprintf("Proportional odds ratio for Explanation: %.2f [95%% CI %.2f, %.2f], Wald p = %.3f\n",
+            ord_or[1], ord_or[2], ord_or[3], ord_sum["Pr(>|z|)"]))
+```
+
+Proportional odds should hold if one shift parameter describes the treatment effect. We check it by comparing the model to one with a separate treatment effect at each cut-point (likelihood-ratio test), and by plotting the cut-point-specific log odds ratios:
+
+```{r po-check, fig.height=3.2, fig.cap="Treatment log odds ratio for each dichotomisation of the 1-5 rating (P(rating >= k)). Under proportional odds these should be similar."}
+nom <- clm(factor(ai_acc, 1:5, ordered = TRUE) ~ log_init + site + tutor,
+           nominal = ~ z, data = d)
+prop <- fit_ord(d)
+lrt <- anova(prop, nom)
+cat(sprintf("LR test of proportional odds for 'Explanation': chi2(%d) = %.2f, p = %.3f\n",
+            lrt$df[2], lrt$LR.stat[2], lrt$`Pr(>Chi)`[2]))
+
+cuts <- bind_rows(lapply(2:5, function(k) {
+  f <- glm(I(ai_acc >= k) ~ z + log_init + site + tutor, binomial, d)
+  s <- summary(f)$coefficients["z", ]
+  tibble(cut = paste0("P(rating >= ", k, ")"), est = s[1], se = s[2])
+}))
+ggplot(cuts, aes(est, cut)) +
+  geom_vline(xintercept = 0) +
+  geom_vline(xintercept = unname(coef(prop)["z"]), linetype = 2, colour = "#c2410c") +
+  geom_pointrange(aes(xmin = est - 1.96 * se, xmax = est + 1.96 * se)) +
+  labs(x = "log odds ratio (Explanation vs none)", y = NULL)
+```
+
+```{r human-acc}
+# secondary: perceived accuracy of the students' OWN guess, same model
+g_h <- gcomp_probs(d, "human_acc")
+cat(sprintf("Own-guess accuracy rating: mean-score difference (Explanation - none) = %.2f\n", g_h$mean_score))
+```
+
+## 5.4 Results table with multiplicity control
+
+For the ordinal primary outcome, the Wald p-value of the proportional-odds model enters the Holm family. Holm is applied to the three primary outcomes only; secondary outcomes are shown unadjusted and flagged as such.
+
+```{r results-table}
+ord_row <- tibble(
+  estimate = g0$mean_score, se = NA_real_,
+  lwr = ci[1, 7], upr = ci[2, 7],
+  p_hc3 = unname(ord_sum["Pr(>|z|)"]), p_perm = NA_real_,
+  sd_control = sd(d$ai_acc[d$z == 0]), smd = g0$mean_score / sd(d$ai_acc[d$z == 0]),
+  outcome = "ai_acc", label = "Trust: perceived accuracy of AI (mean score diff., 1-5)",
+  family = "Primary"
+)
+all_res <- bind_rows(res, ord_row) %>%
+  mutate(p_holm = NA_real_)
+prim <- all_res$family == "Primary"
+all_res$p_holm[prim] <- p.adjust(all_res$p_hc3[prim], "holm")
+
+all_res %>%
+  arrange(desc(family == "Primary")) %>%
+  transmute(
+    Family = family, Outcome = label,
+    `Effect (95% CI)` = sprintf("%.3f [%.3f, %.3f]", estimate, lwr, upr),
+    `Effect / SD(control)` = round(smd, 2),
+    `p (HC3)` = signif(p_hc3, 2),
+    `p (permutation)` = signif(p_perm, 2),
+    `p Holm (primary)` = signif(p_holm, 2)
+  ) %>%
+  kable(caption = "Effect of showing the step-by-step reasoning. Positive = higher under Explanation.")
+```
+
+```{r forest, fig.height=4.2, fig.cap="Standardised effects (Explanation minus No explanation, in SD of the control group) with 95% CI. Dark = primary outcomes."}
+all_res %>%
+  mutate(
+    lw = lwr / sd_control, up = upr / sd_control,
+    label = factor(label, rev(label))
+  ) %>%
+  ggplot(aes(smd, label, colour = family)) +
+  geom_vline(xintercept = 0) +
+  geom_pointrange(aes(xmin = lw, xmax = up)) +
+  scale_colour_manual(values = c(Primary = "#111827", Secondary = "#9ca3af")) +
+  labs(x = "Effect in SD of the control group", y = NULL, colour = NULL) +
+  theme(legend.position = "bottom")
+```
+
+# 6. Beyond the mean: quantile treatment effects
+
+An explanation might not shift the average student but change the *spread* of answers, for instance by pulling the lowest guesses up or discouraging extreme ones. We compare the 10th to 90th percentiles of the final guess (log scale) with a bootstrap stratified by arm and site.
+
+```{r quantiles, fig.height=3.8, fig.cap="Difference in quantiles of the final guess (log scale, Explanation minus None). 95% stratified-bootstrap CI."}
+qs <- c(.10, .25, .50, .75, .90)
+qdiff <- function(dat) {
+  sapply(qs, function(q) quantile(dat$bias_final[dat$z == 1], q, type = 7) -
+                         quantile(dat$bias_final[dat$z == 0], q, type = 7))
+}
+q_obs <- qdiff(d)
+q_boot <- replicate(N_BOOT, {
+  idx <- unlist(lapply(split(seq_len(nrow(d)), interaction(d$arm, d$site)),
+                       function(i) sample(i, replace = TRUE)))
+  qdiff(d[idx, ])
+})
+q_ci <- apply(q_boot, 1, quantile, c(.025, .975))
+tibble(q = qs, est = q_obs, lwr = q_ci[1, ], upr = q_ci[2, ]) %>%
+  ggplot(aes(factor(q * 100), est)) +
+  geom_hline(yintercept = 0) +
+  geom_pointrange(aes(ymin = lwr, ymax = upr)) +
+  labs(x = "Percentile of the final guess", y = "Difference in log(final / true value)")
+```
+
+Quantiles also address the objection that a mean difference on the log scale is hard to interpret: a quantile difference of *x* means that, at that percentile, guesses are *exp(x)* times as high under the explanation.
+
+# 7. Exploratory: does the effect depend on who the student is?
+
+The theoretically relevant moderator is **where the student started relative to the AI number**: advice above the student's own guess can be used to revise upward, advice below it to revise downward, and an explanation might help one direction more than the other. We also look at prior ChatGPT use and grades. With n = 122 these subgroup analyses are underpowered and are only meant to flag patterns for future work. No multiplicity correction is applied and none of this should be used for inference about subgroups.
+
+```{r heterogeneity}
+het <- function(mod, outcome, baseline) {
+  dd <- d %>% filter(!is.na(.data[[mod]]))
+  # site is collinear with the site moderator, so it is dropped as a covariate then
+  covs <- c(if (mod != "site") "c_seville", "c_socr", baseline)
+  lev <- levels(factor(dd[[mod]]))
+  sub <- bind_rows(lapply(lev, function(l) {
+    ds <- dd[dd[[mod]] == l, ]
+    f <- lm(reformulate(c("z", covs), outcome), ds)
+    s <- coeftest(f, vcov. = vcovHC(f, "HC3"))["z", ]
+    tibble(moderator = mod, level = l, n = nrow(ds),
+           est = s[1], lwr = s[1] - 1.96 * s[2], upr = s[1] + 1.96 * s[2])
+  }))
+  f1 <- lm(reformulate(c(paste0("z * factor(", mod, ")"), covs), outcome), dd)
+  f0 <- lm(reformulate(c("z", paste0("factor(", mod, ")"), covs), outcome), dd)
+  p <- waldtest(f0, f1, vcov = vcovHC(f1, "HC3"))$`Pr(>F)`[2]
+  sub$p_interaction <- p
+  sub
+}
+mods <- c("init_side", "used_before", "top_grades", "site")
+het_res <- bind_rows(lapply(mods, function(m) {
+  bind_rows(
+    het(m, "toward",    "gap_init") %>% mutate(outcome = "Reliance (toward)"),
+    het(m, "err_final", "err_init") %>% mutate(outcome = "Accuracy (|log error|)")
+  )
+}))
+```
+
+```{r het-plot, fig.height=5, fig.cap="Subgroup effects of the explanation (HC3 95% CI), exploratory. Interaction p-values (robust Wald) are shown in the facet labels."}
+het_res %>%
+  mutate(
+    lab = paste0(level, " (n=", n, ")"),
+    mod_lab = paste0(recode(moderator, init_side = "Start vs advice", used_before = "Used ChatGPT before",
+                            top_grades = "Grades", site = "Site"),
+                     "  [p_int = ", signif(p_interaction, 2), "]")
+  ) %>%
+  ggplot(aes(est, lab)) +
+  geom_vline(xintercept = 0) +
+  geom_pointrange(aes(xmin = lwr, xmax = upr)) +
+  facet_grid(mod_lab ~ outcome, scales = "free", space = "free_y") +
+  theme(strip.text.y = element_text(angle = 0, hjust = 0)) +
+  labs(x = "Effect of explanation", y = NULL)
+```
+
+# 8. Sensitivity to analytic choices
+
+The primary estimates depend on choices a reader might disagree with: the covariate set, how extreme answers are handled and whether the estimator is least squares. The table repeats the two continuous primary outcomes under alternative choices; if the conclusion changed with the choice, that would be a warning sign.
+
+```{r sensitivity}
+trim <- d %>% filter(abs(scale(log_init)[, 1]) < 3, final < 6000)        # drop extreme baseline / final guesses
+variants <- list(
+  "Primary (Lin, site + tutor + baseline)" = list(data = d, f = "primary"),
+  "Unadjusted difference"                  = list(data = d, f = "none"),
+  "Site only"                              = list(data = d, f = "site"),
+  "+ prior ChatGPT use"                    = list(data = d, f = "used"),
+  "Excl. extreme guesses (|z|>3, final>6000)" = list(data = trim, f = "primary"),
+  "Huber robust regression"                = list(data = d, f = "rlm"),
+  "Wilcoxon / Hodges-Lehmann, no covariates" = list(data = d, f = "rank")
+)
+
+sens_one <- function(v, y, base) {
+  dd <- v$data
+  rhs <- switch(v$f,
+    primary = c("z", "c_seville", "c_socr", base),
+    none    = "z",
+    site    = c("z", "c_seville"),
+    used    = c("z", "c_seville", "c_socr", base, "I(used_before == 'Yes')"),
+    rlm     = c("z", "c_seville", "c_socr", base),
+    rank    = NULL)
+  if (v$f == "rank") {
+    wt <- wilcox.test(dd[[y]] ~ dd$z, conf.int = TRUE)
+    return(tibble(est = -unname(wt$estimate), lwr = -wt$conf.int[2], upr = -wt$conf.int[1]))
+  }
+  if (v$f == "rlm") {
+    f <- rlm(reformulate(rhs, y), dd)
+    s <- summary(f)$coefficients["z", ]
+    return(tibble(est = s[1], lwr = s[1] - 1.96 * s[2], upr = s[1] + 1.96 * s[2]))
+  }
+  f <- lm(reformulate(rhs, y), dd)
+  s <- coeftest(f, vcov. = vcovHC(f, "HC3"))["z", ]
+  tibble(est = s[1], lwr = s[1] - 1.96 * s[2], upr = s[1] + 1.96 * s[2])
+}
+
+sens <- bind_rows(lapply(names(variants), function(nm) {
+  bind_rows(
+    sens_one(variants[[nm]], "toward", "gap_init") %>% mutate(outcome = "Reliance (toward)"),
+    sens_one(variants[[nm]], "err_final", "err_init") %>% mutate(outcome = "Accuracy (|log error|)")
+  ) %>% mutate(variant = nm)
+})) %>% mutate(variant = factor(variant, rev(names(variants))))
+```
+
+```{r sens-plot, fig.height=4, fig.cap="Effect of the explanation under alternative analytic choices. The Wilcoxon variant is a Hodges-Lehmann location shift of the raw outcome, with no covariates, so it is a median-type effect rather than a mean."}
+ggplot(sens, aes(est, variant)) +
+  geom_vline(xintercept = 0) +
+  geom_pointrange(aes(xmin = lwr, xmax = upr)) +
+  facet_wrap(~outcome, scales = "free_x") +
+  labs(x = "Effect of explanation", y = NULL)
+```
+
+# 9. What could this experiment detect?
+
+A precision statement is more informative than a "non-significant" label. With 58-64 students per arm and a two-sided 5% test at 80% power:
+
+```{r mde}
+mde <- power.t.test(n = 61, sd = 1, power = 0.80, sig.level = 0.05)$delta
+cat(sprintf("Minimum detectable effect (unadjusted): %.2f SD.\n", mde))
+# with a baseline covariate correlated rho with the outcome, variance shrinks by (1 - rho^2)
+rho <- c(toward = cor(d$toward, d$gap_init), err_final = cor(d$err_final, d$err_init))
+cat(sprintf("Baseline-outcome correlations: reliance %.2f, accuracy %.2f -> adjusted MDE about %.2f and %.2f SD.\n",
+            rho[1], rho[2], mde * sqrt(1 - rho[1]^2), mde * sqrt(1 - rho[2]^2)))
+```
+
+Compare these thresholds with the confidence intervals above: effects smaller than roughly half a standard deviation cannot be reliably detected, so the absence of a statistically significant effect is not evidence that the explanation does nothing. The intervals in the forest plot (section 5.4) show which effect sizes can and cannot be ruled out.
+
+# 10. Interpretation
+
+```{r interp-numbers, echo=FALSE}
+g <- function(o, col) all_res[[col]][all_res$outcome == o]
+fmt <- function(o) sprintf("%.2f SD [%.2f, %.2f]", g(o, "smd"), g(o, "lwr") / g(o, "sd_control"), g(o, "upr") / g(o, "sd_control"))
+sens_rel <- sens %>% filter(outcome == "Reliance (toward)")
+```
+
+**Overall: no outcome shows a clear effect of the step-by-step reasoning once multiplicity is accounted for, and the data are too imprecise to rule out moderate effects in either direction.**
+
+* **Reliance on the AI number.** Students who saw the explanation moved *less* towards the AI estimate than those who saw the number alone: `r fmt("toward")` (95% CI in SD units; randomisation p = `r signif(g("toward", "p_perm"), 2)`; Holm-adjusted p = `r signif(g("toward", "p_holm"), 2)`). This is the opposite of the intuitive hypothesis that an explanation makes the advice more persuasive. The point estimate is **not stable across analytic choices**: it ranges from `r sprintf("%.2f", min(sens_rel$est))` to `r sprintf("%.2f", max(sens_rel$est))` in section 8, and it shrinks when extreme answers are excluded or down-weighted, which suggests that students with extreme baseline guesses influence it considerably (we did not isolate them individually). The most robust descriptive fact is that exact adoption of the number was rarer with the explanation (4 of 58 versus 10 of 64), and so was ending within 10% of it (adjusted risk difference `r sprintf("%.0f", 100 * g("near", "estimate"))` percentage points; unadjusted p = `r signif(g("near", "p_perm"), 2)` by permutation). That is one of four secondary outcomes with no correction, so it is a lead to follow, not a finding.
+* **Accuracy.** The explanation did not detectably change the final error against the true value: `r fmt("err_final")` (randomisation p = `r signif(g("err_final", "p_perm"), 2)`). The baseline error is almost uncorrelated with the final error (r = `r sprintf("%.2f", rho["err_final"])`), so baseline adjustment buys little precision here, and the interval is correspondingly wide.
+* **Trust.** Perceived accuracy of the AI estimate was similar in the two arms (proportional odds ratio `r sprintf("%.2f [%.2f, %.2f]", ord_or[1], ord_or[2], ord_or[3])`; top-2-box probability changed by `r sprintf("%.1f", 100 * g0$top2)` percentage points). The proportional-odds assumption is not rejected (section 5.3).
+* **Why these outcomes need to be read together.** The AI number (213) is below the true value (379.54). For a student who starts near the truth, moving towards the advice *reduces* accuracy; for a student who starts very low, it improves it. Reliance and accuracy therefore do not move together by design, and a reader should not equate "relied less on the AI" with "did worse".
+* **Distribution and subgroups.** The quantile differences in section 6 are all compatible with zero. Subgroup estimates in section 7 are too imprecise to support any claim of heterogeneity (no interaction p-value is below 0.17, and with eight tests that is unremarkable).
+
+**What the data can say.** With roughly 60 students per arm, only standardised effects of about `r sprintf("%.1f", mde)` SD are detectable at 80% power without covariates. The reliance outcome gains a lot from adjustment (baseline correlation `r sprintf("%.2f", rho["toward"])`, adjusted MDE about `r sprintf("%.2f", mde * sqrt(1 - rho["toward"]^2))` SD), the accuracy outcome essentially none. A conclusion of "no effect on accuracy" is not supported; a conclusion of "no large effect on reliance" is.
+
+## Caveats
+
+* **Not pre-registered.** The outcomes are chosen on conceptual grounds but after the data were seen by the authors. Treat as sensitivity analysis.
+* **Clustering.** Students worked in about ten sessions in two schools. Session identifiers are not in the data, so we adjust for site and cannot account for within-session correlation. Standard errors may be too small if session effects exist.
+* **One task, one estimate, one explanation.** All students saw the same AI number and one specific explanation. The study cannot separate "an explanation" from "this explanation", nor an explanation's content from its length.
+* **The AI estimate was below the truth.** This makes the reliance and accuracy outcomes partially opposed (see above) and means that a similar experiment with an over-estimate could behave differently.
+* **Perceived accuracy is self-reported** and measured after the final guess; the final guess could itself influence the rating (post-treatment, though not a confounder of the arm effect, it limits a mediation reading). We do not estimate mediation.
+* **Multiple testing** is controlled only within the three primary outcomes; heterogeneity results are exploratory.
+
+# Reproducibility
+
+```{r session}
+sessionInfo()
+```

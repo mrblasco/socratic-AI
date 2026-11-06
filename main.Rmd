@@ -33,7 +33,7 @@ geometry: margin=1in
 always_allow_html: true
 
 bibliography: [refs.bib]
-csl: [hssc.csl]
+csl: [styles/hssc.csl]
 ---
 
 <!-- # The Impact of Large Language Models on Students: A Randomised Study of Socratic vs. Non-Socratic AI and the Role of Step-by-Step Reasoning -->
@@ -51,22 +51,22 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, child = "00-abstract.Rmd"}
+```{r, child = "sections/00-abstract.Rmd"}
 ```
 
-```{r, child = "01-intro.Rmd"}
+```{r, child = "sections/01-intro.Rmd"}
 ```
 
-```{r, child = "02-literature.Rmd"}
+```{r, child = "sections/02-literature.Rmd"}
 ```
 
-```{r, child = "02-methods.Rmd"}
+```{r, child = "sections/02-methods.Rmd"}
 ```
 
-```{r, child = "03-results.Rmd"}
+```{r, child = "sections/03-results.Rmd"}
 ```
 
-```{r, child = "04-discussion.Rmd"}
+```{r, child = "sections/04-discussion.Rmd"}
 ```
 
 # References {-}
@@ -74,12 +74,12 @@ knitr::opts_chunk$set(
 ::: {#refs}
 :::
 
-```{r child = "90-supporting.Rmd"}
+```{r child = "sections/90-supporting.Rmd"}
 ```
 
-```{r child = "91-statements.Rmd"}
+```{r child = "sections/91-statements.Rmd"}
 ```
 
-```{r child = "99-questionnaire.Rmd"}
+```{r child = "sections/99-questionnaire.Rmd"}
 ```
 

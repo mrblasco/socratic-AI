@@ -21,4 +21,4 @@ if [ ! -d "$OUTDIR" ]; then
 fi
 
 echo "Rendering report to $OUTDIR (format: $FORMAT)..."
-Rscript -e "rmarkdown::render('main_report.Rmd', output_dir='$OUTDIR', output_format='$FORMAT')"
+Rscript -e "rmarkdown::render('main.Rmd', output_dir='$OUTDIR', output_format='$FORMAT')"

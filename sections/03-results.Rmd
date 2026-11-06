@@ -248,15 +248,66 @@ tutorgpt %>%
 
 ## The Impact of AI Step-by-step Reasoning Exposure
 
-Nearly all students revised their initial estimates (110 out of 122), with no significant difference between treatment groups (Fisher’s test, p = 0.9). However, presenting students with AI-generated step-by-step reasoning may have influenced the accuracy of their revised estimates.
+Figure \@ref(fig:reasoning-ecdf) and Table \@ref(tab:reasoning) illustrate the results of the first manipulation. The distribution shows that students' initial estimates were close to the AI-generated advice, although slightly lower on average. Nearly all students revised their initial guesses, with little difference between treatment arms (90.6% in the no-explanation group and 89.7% in the explanation group). However, students who received an explanation of how the AI advice was generated appeared **less likely to follow the advice** closely. Only 6.9% adopted the advice exactly, compared with 15.6% of those who received no explanation. Similarly, the proportion of students whose final estimate fell within 10% of the advice was lower in the explanation condition (13.8% versus 31.2%). Despite these differences, both groups improved substantially in estimation accuracy, as reflected in reductions in median absolute log error, from 148.6 to 44.6 in the no-explanation condition and from 133.4 to 36.9 in the explanation condition.
+
+```{r reasoning}
+# Computed in analysis_reasoning.R; only formatting is done here.
+tab <- read.csv("output/tables/reasoning_descriptives.csv", check.names = FALSE)
+
+arms <- c("No explanation", "Explanation")
+body <- tab %>%
+    mutate(across(all_of(arms), ~ ifelse(measure == "N", sprintf("%.0f", .x), sprintf("%.1f", .x))))
+
+groups <- rle(tab$group)
+ends <- cumsum(groups$lengths)
+starts <- ends - groups$lengths + 1
+
+tbl <- body %>%
+    dplyr::select(measure, all_of(arms)) %>%
+    kable(
+        format = "latex",
+        booktabs = TRUE,
+        align = c("l", "c", "c"),
+        col.names = c("Measure", arms),
+        caption = "Descriptive statistics by explanation arm",
+        linesep = ""
+    )
+for (i in seq_along(groups$values)) {
+    tbl <- pack_rows(tbl, groups$values[i], starts[i], ends[i], bold = TRUE)
+}
+tbl %>%
+    kable_styling(
+        latex_options = c("hold_position", "scale_down"),
+        font_size = 10,
+        full_width = FALSE
+    ) %>%
+    footnote(
+        general = paste(
+            "Absolute log errors are multiplied by 100.",
+            "Within 10% indicates that the estimate is within",
+            "10% of the advice in multiplicative terms."
+        ),
+        general_title = "Notes: ",
+        threeparttable = TRUE,
+        escape = TRUE
+    )
+```
+
+```{r reasoning-ecdf, fig.cap = cap, out.width = "100%"}
+cap <- paste(
+    "Cumulative distribution of students' guesses of the value of the coins",
+    "before and after seeing the AI estimate (USD 213), by explanation arm.",
+    "Dotted lines mark the AI estimate and the true value (USD 379.54)."
+)
+fig_ext <- if (knitr::is_latex_output()) "pdf" else "png"
+knitr::include_graphics(here::here(sprintf("output/figures/fig_reasoning_ecdf.%s", fig_ext)))
+```
 
 To address RQ1, we examined whether the treatment—showing step-by-step AI reasoning—affected how students used the AI’s prediction, compared to seeing the prediction alone without any accompanying explanation. For each student $i = 1, \cdots, 122$, we computed the absolute error as the absolute difference between student $i$'s guess, $\text{Guess}_i$, and the actual value of coins:
 $$
   \text{Absolute Error}_i = \mid \text{Guess}_i - \text{Actual Value Coins} \mid,
 $$
 where a smaller absolute error indicated greater accuracy.
-
-<!-- The absolute error distribution in our sample was positively skewed, complicating the testing for mean differences. Consequently, we shifted our analysis towards treatment differences in the median absolute error, as illustrated in Figure \@ref(fig:boot-accuracy).  -->
 
 Figure \@ref(fig:boot-accuracy) illustrates that students' prediction accuracy was positively skewed in both treatment groups, with a greater accuracy for students exposed to AI reasoning. To estimate confidence intervals for the median difference in accuracy betweeen the groups, we used a nonparametric bootstrap approach.[^outlier] This procedure involved resampling participants' absolute errors (n = 1,999) to build a distribution of medians for each group. The 5th and 95th percentiles of the resulting distribution were used to construct a 90% confidence interval for the difference in accuracy between groups. The interval ranged from 0 to 70, indicating a greater accuracy (lower error) for the students exposed to AI-generated reasoning (one-sided, p < 0.05).
 

@@ -10,7 +10,7 @@ bookdown::pdf_document2:
     - "--lua-filter=assets/lua-filters/scholarly-metadata.lua"
     - "--lua-filter=assets/lua-filters/author-info-blocks.lua"
   includes:
-    in_header: preamble.tex
+    in_header: styles/preamble.tex
 
 bookdown::word_document2:
   toc: true

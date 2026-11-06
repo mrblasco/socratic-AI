@@ -1,0 +1,10 @@
+"group","measure","No explanation","Explanation"
+"Sample","N",64,58
+"Belief revisions","Initial guess (median)",195,200
+"Belief revisions","Final guess (median)",256.5,307.5
+"Belief revisions","Revised guess (%)",90.625,89.6551724137931
+"Agreement with advice","Adopted advice exactly (%)",15.625,6.89655172413793
+"Agreement with advice","Initial within 10% of advice (%)",14.0625,10.3448275862069
+"Agreement with advice","Final within 10% of advice (%)",31.25,13.7931034482759
+"Absolute log error","Initial abs. log error (median)",148.569553432857,133.378980713774
+"Absolute log error","Final abs. log error (median)",44.5898549785284,36.9015581085132
