@@ -1,0 +1,11 @@
+linters: linters_with_defaults(
+    line_length_linter(170),
+    object_name_linter(styles = c("snake_case", "SNAKE_CASE")),
+    semicolon_linter(allow_compound = TRUE),
+    brace_linter = NULL,
+    pipe_continuation_linter = NULL,
+    indentation_linter = NULL,
+    object_usage_linter = NULL,
+    commented_code_linter = NULL
+  )
+encoding: "UTF-8"

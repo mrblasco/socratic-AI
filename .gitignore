@@ -24,3 +24,14 @@ _tmp/
 notebooks/*.html
 __pycache__/
 *.pyc
+
+# LaTeX / rendering leftovers
+*.aux
+*.out
+*.toc
+*.bbl
+*.blg
+output/main.tex
+output/main.pdf
+output/main_anonym.pdf
+output/main_files/
