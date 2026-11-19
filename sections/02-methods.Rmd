@@ -10,7 +10,7 @@ We conducted a study involving K–12 students from two schools to investigate h
 
 ## Experimental Manipulations
 
-Figure \@ref(fig:manipulations) illustrates the two experimental manipulations: (1) AI advice with vs without explanation and (2) Socratic vs non-Socratic AI agents. Each manipulation consists of two conditions. Students were randomly assigned to one condition within each manipulation, with the two assignments conducted independently. Given the independent randomisation procedures, assignment to one manipulation does not systematically influence the estimated treatment effect of the other. Thus, the randomisation of one manipulation does not introduce systematic bias into the estimated treatment effects of the other, although it may contribute to greater estimate uncertainty. 
+Figure \@ref(fig:manipulations) illustrates the two experimental manipulations: (1) AI advice with vs without explanation and (2) Socratic vs non-Socratic AI agents. Each manipulation consists of two conditions. Students were randomly assigned to one condition within each manipulation, with the two assignments conducted independently. Given the independent randomisation procedures, assignment to one manipulation does not systematically influence the estimated treatment effect of the other, although it may contribute to greater estimate uncertainty.
 
 ```{r manipulations, fig.cap = cap}
 cap <- paste(
@@ -105,15 +105,11 @@ To examine student interactions with AI and their potential impact on learning a
 
 ### AI Attitudes and Usage
 
-To better understand students' general attitudes toward AI, we selected four questions from Schepman and Rodway's AI Attitudes Scale [@schepman2020initial]. These questions explored students' beliefs about AI's societal benefits, potential dangers, capacity to support learning, and the likelihood of misuse by students (Appendix, Section \@ref(questionnaire)). We also asked students about their direct experience using ChatGPT for homework, the most common chatbot at the time of the study, and their beliefs about how many of their peers use ChatGPT for their homework, thereby capturing both individual behaviour and the perceived social norm around AI usage. These measures help establish baseline orientations that may moderate how students engage with and evaluate AI explanations (related to RQ-1) and how they perceive different AI interaction guidance (related to RQ-3).
+To better understand students' general attitudes toward AI, we selected four questions from Schepman and Rodway's AI Attitudes Scale [@schepman2020initial]. These questions explored students' beliefs about AI's societal benefits, potential dangers, capacity to support learning, and the likelihood of misuse by students (Appendix, Section \@ref(questionnaire)). We also asked students about their direct experience using ChatGPT for homework, the most common chatbot at the time of the study, and their beliefs about how many of their peers use ChatGPT for their homework, thereby capturing both individual behaviour and the perceived social norm around AI usage. These measures help establish baseline orientations that may moderate how students engage with and evaluate AI explanations (related to RQ1) and how they perceive different AI interaction guidance (related to RQ3 and RQ4).
 
 ### AI Academic Habits and Skills
 
 Academic skills or habits may moderate the effect of AI interactions on problem-solving activities. Accordingly, to account for participants' heterogeneity in academic skills, we asked students to report their average school grades (six-item scale from 5/F to 9/A). We also asked students about their academic habits or the challenges they face at school, such as how often they complete their homework assignments on time (five-item scale from Never to Always) and what factors affect their ability to do so, such as distraction, poor time management or lack of clear instructions from teachers (Appendix, Section \@ref(questionnaire)).
-
-<!-- ### Student-AI Interaction Metrics
-
-To quantify engagement, we analyzed students' interaction logs with the AI agent, recording the number of turns and the word counts as a proxy for interaction intensity. While this provides a basic behavioural metric, it does not capture the quality of cognitive engagement or helpfulness, limiting its direct relevance to RQ-1 and RQ-2. Therefore, we also asked students about how useful they found the AI interactions and how confident they were in their answers to selected tasks. These self-reported metrics are needed to assess whether explanations were helpful to students (for RQ-1) and whether Socratic dialogue promoted confidence (for RQ-2). -->
 
 ### AI-student Exchanges
 
@@ -137,52 +133,42 @@ We pre-specified that an item is treated as a primary outcome only if the two ra
 
 ### Testing Hypotheses
 
-To guide the empirical analysis, we specified a set of hypotheses corresponding to the five research questions (RQ1–RQ5). Each hypothesis maps directly to a specific outcome domain and is tested using the statistical procedures described in the Section \@ref(sec:results).
+To guide the empirical analysis, we specified a set of hypotheses corresponding to the five research questions stated in the Introduction (RQ1–RQ5). Each hypothesis maps directly to a specific outcome domain and is tested using the statistical procedures described in the Section \@ref(sec:results).
 
 <!-- RQ1: Does exposure to AI-generated step-by-step reasoning improve students’ problem-solving accuracy? -->
 
-**H1 (RQ1: Accuracy and learning gains)**. 
-We hypothesise that exposure to AI-generated step-by-step reasoning improves students’ ability to update and refine their answers to the first task (guessing coins in a jar), leading to lower absolute prediction error and higher post-intervention accuracy compared to students receiving only the AI-generated output. This hypothesis is tested using differences in absolute error distributions and non-parametric bootstrap inference for median differences.
+#### H1 (RQ1: Accuracy and Learning Gains)
 
-<!-- RQ2: How does AI reasoning affect students’ perceptions of AI and human credibility? -->
+We hypothesise that exposure to AI-generated explanations improves students’ ability to critically evaluate, update, and refine their initial guesses in the first task (guessing the number of coins in a jar). Specifically, compared to students who receive only the AI-generated estimate, students who receive AI-generated estimate with an explanation are expected to exhibit lower absolute prediction errors and higher post-intervention accuracy.
+
+Furthermore, we hypothesise that providing explanations reduces students’ tendency to blindly reproduce the AI-generated numerical answer without independently adjusting or critically evaluating it.
+
+We test these hypotheses by comparing the distributions of absolute prediction errors across experimental conditions and using non-parametric bootstrap inference to estimate differences in median prediction errors. Additionally, we employ logistic regression to examine whether exposure to AI-generated explanations reduces the probability that students reproduce the AI-generated numerical answer either exactly or within a 10% margin, rather than independently adjusting their predictions.
 
 **H2 (RQ2: Perceived credibility and trust)**.
 We hypothesise that providing explicit AI-generated reasoning may reduce perceived reliability of AI outputs by making uncertainty more salient, while also potentially reshaping evaluations of human benchmark performance.  This hypothesis is tested using Fisher’s exact tests and ordinal logistic regression models comparing perceived accuracy ratings across treatments.
 
-<!-- RQ3: Does Socratic tutoring change students’ learning outcomes, confidence, and perceived helpfulness compared to non-Socratic tutoring? -->
+**H3a (RQ3: Learning outcomes)**.
+We hypothesise that Socratic AI improves learning outcomes relative to non-Socratic tutoring. Learning outcomes are measured only in Task 3 (sound propagation), as the correctness of the answer given after the AI interaction and of the follow-up question answered without AI assistance.
 
-**H3a (RQ3: Learning outcomes)**. 
-We hypothesise that Socratic AI improves learning outcomes relative to non-Socratic tutoring.
-
-**H3b (RQ3: Confidence)**. 
+**H3b (RQ3: Confidence)**.
 We hypothesise that Socratic AI increases students' self-confidence in their answers.
-
-**H3c (RQ3: Perceived helpfulness)**. 
-We hypothesise that Socratic AI increases perceived helpfulness of the AI agent.
 
 These hypotheses are tested using regression models with student-level clustering and task fixed effects, as well as ordinal logistic regressions for Likert-scale outcomes.
 
-<!-- RQ4: Does Socratic tutoring affect student engagement and interaction patterns? -->
+**H4 (RQ4: Perceived helpfulness)**.
+We hypothesise that Socratic AI changes the perceived helpfulness of the AI agent relative to non-Socratic AI. We expected an increase, but students' habits with direct-answer chatbots could push in the opposite direction. This hypothesis is tested with the same models as H3.
 
-<!-- **H4 (RQ4: Engagement and interaction behaviour).** We hypothesise that Socratic AI increases engagement, as reflected in a higher number of student–AI exchanges and shorter message length per exchange, compared to non-Socratic AI. This hypothesis is tested using non-parametric comparisons of message frequency and word-count distributions. -->
-
-**H4a (RQ4: Interaction volume).**
+**H5a (RQ5: Interaction volume).**
 We hypothesise that Socratic AI leads students to send more messages than non-Socratic AI. This is tested with non-parametric comparisons of the number of student messages and words per conversation. Because the Socratic agent was instructed to reply with questions, this difference partly follows from the condition, and we do not treat it as evidence of engagement.
 
-**H4b (RQ4: Observable student reasoning and effort).**
+**H5b (RQ5: Observable student reasoning and effort).**
 We hypothesise that, in conversations with the Socratic agent, students show more observable reasoning, knowledge building, effort and content questions than students with the non-Socratic agent, over and above the greater number and length of their messages. This is tested with linear mixed models of LLM-coded scores (see \@ref(sec:analysis-llm)).
 
-**H5 (RQ5: Socratic conduct, manipulation check).**
-We hypothesise that the Socratic agent scores higher than the non-Socratic agent on supportive guidance, next-step guidance, encouraging tone and conversational flow, as coded by LLM raters.
+**H5c (RQ5: Socratic conduct, manipulation check).**
+We hypothesise that the Socratic agent scores higher than the non-Socratic agent on supportive guidance, next-step guidance, encouraging tone and conversational flow, as coded by LLM raters. These items capture the pedagogical quality of the AI's responses (scaffolding, stepwise guidance, encouraging tone) and serve as a check that the manipulation worked.
 
-<!-- RQ5: Does Socratic tutoring improve pedagogical quality of AI responses, and does this vary across student characteristics? -->
-
-**H5a (RQ5: Pedagogical quality)**. 
-We hypothesise that Socratic AI improves pedagogical quality along core dimensions such as scaffolding, stepwise guidance, and encouraging tone.
-
-**H5b (RQ5: Heterogeneous effects)**. We further hypothesise that treatment effects vary by student characteristics (e.g., prior ChatGPT experience, gender, and task type), reflecting heterogeneous responsiveness to Socratic guidance.
-
-These hypotheses are tested using mixed-effects regressions on LLM-coded rubric scores, including student random effects and interaction terms between treatment and covariates.
+**Exploratory analysis (heterogeneous effects).** We also explore whether the Socratic effects in H3–H5 differ by student characteristics (prior ChatGPT experience, gender, school and task). These analyses add interactions between condition and each covariate to the models above. They were not pre-specified as confirmatory hypotheses, and we report them as exploratory.
 
 ### Statistical analysis of the coded dialogues {#sec:analysis-llm}
 
