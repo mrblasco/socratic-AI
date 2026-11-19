@@ -1,0 +1,5 @@
+arm,post_correct,n,mean_confidence
+Non-Socratic,0,18,4.166666666666667
+Non-Socratic,1,40,4.25
+Socratic,0,21,3.619047619047619
+Socratic,1,41,4.121951219512195

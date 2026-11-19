@@ -1,0 +1,5 @@
+outcome,label,mde,unit,mde_sd
+C1,"C1  Confidence, Task 1",0.5065035555270704,scale points,0.5157043542489227
+C2,"C2  Confidence, Task 2",0.4342229393218726,scale points,0.5157043542489226
+C3,"C3  Confidence, Task 3",0.5117164224161891,scale points,0.5157043542489226
+K3,"K3  Correct, Task 3",20.54452190936142,percentage points,NA

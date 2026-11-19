@@ -1,0 +1,7 @@
+task,arm,observed,median,mean,wilcoxon_p
+Task 1: water estimate,Non-Socratic,32,2,3.3125,2.3362547938879847e-5
+Task 1: water estimate,Socratic,31,8,7.741935483870968,2.3362547938879847e-5
+Task 2: social-media essay,Non-Socratic,32,2,2.4375,1.6277497909717494e-4
+Task 2: social-media essay,Socratic,31,6,6.935483870967742,1.6277497909717494e-4
+Task 3: sound physics,Non-Socratic,32,2,2.6875,0.08152911892736539
+Task 3: sound physics,Socratic,31,4,3.6451612903225805,0.08152911892736539

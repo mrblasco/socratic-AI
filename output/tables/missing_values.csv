@@ -1,0 +1,11 @@
+variable,n_missing
+arm,0
+school,0
+eff1,0
+eff2,0
+eff3,0
+conf1,0
+conf2,1
+conf3,1
+pre_correct,1
+post_correct,1

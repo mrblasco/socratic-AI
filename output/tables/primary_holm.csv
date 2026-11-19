@@ -1,0 +1,5 @@
+outcome,p_raw,label,p_holm
+C1,0.9963681031527588,"C1  Confidence, Task 1",1
+C2,0.6918401160812618,"C2  Confidence, Task 2",1
+C3,0.28896967813266405,"C3  Confidence, Task 3",1
+K3,0.9055408877396636,"K3  Correct, Task 3",1

@@ -1,0 +1,5 @@
+outcome,label,obs,p
+C1,"C1  Confidence, Task 1",-0.024447428940817115,0.913
+C2,"C2  Confidence, Task 2",0.03622250889351548,0.7968
+C3,"C3  Confidence, Task 3",-0.25484192864073385,0.1372
+K3,"K3  Correct, Task 3",0.009479085659210944,0.905
