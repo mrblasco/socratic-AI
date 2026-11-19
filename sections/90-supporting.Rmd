@@ -139,103 +139,95 @@ Prompt hashes (SHA-256 prefix): student rubric `e2fac51ff3f4`, tutor rubric `742
 
 The rubrics were developed on 40 conversations (20 per condition, random draw, seed 20261103). On these, repeating the same rater gave stable scores (alpha 0.77-1.00 for four models), models of the same provider agreed more than models of different providers (alpha 0.63-0.68 versus about 0.45), and a first version of the effort anchors produced systematic differences between providers (GPT scored about 0.5 higher) that disappeared after we specified how to score one-word replies and the pasted task statement. The yes/no format for content questions replaced a 1-5 scale that was close to its minimum for most conversations. The Socratic rubric produced no agreement with GPT-4o-mini and was therefore rated with Claude Haiku 5.5 and GPT-4o.
 
+## Deviation from the pre-specified holdout {#sec:si-deviation}
+
+The pre-specified holdout contained 314 conversations. In the chat logs, `user_id` and `chat_id` restart at 1 in each school, and the conversations were first exported and rated with `chat_id` alone as the identifier. Twelve of the 314 holdout identifiers therefore each merged one Brussels and one Seville conversation, and the ratings of those twelve dialogues are not valid. We dropped them, so the primary analysis uses 302 conversations (156 with the non-Socratic and 146 with the Socratic agent), identified by school and `chat_id`, and students are identified by school and `user_id`. None of the 40 development conversations was affected. Reliability was recomputed on the 302 conversations with the same code and the same thresholds. This changes no rubric, prompt, rater or model; it removes 12 invalid ratings, and it is a departure from the pre-specification that we report here. The corrected conversation logs identify 120 students (64 in Brussels and 56 in Seville), each with one to four conversations and a single experimental condition; the questionnaire has 121 students (63 and 58).
+
 ## Reliability on the holdout sample
 
+```{r si-reliability}
+library(dplyr)
+rd <- function(x) readr::read_csv(here::here("output", "tables", paste0(x, ".csv")), show_col_types = FALSE)
+si_labs <- c(reasoning_quality = "Reasoning quality", knowledge_building = "Knowledge building", effort_seriousness = "Effort and task focus",
+             question_asking = "Content question (0/1)", supportive_guidance = "Supportive guidance", next_step_guidance = "Next-step guidance",
+             encouraging_tone = "Encouraging tone", conversational_flow = "Conversational flow",
+             identifying_mistake = "Identifying mistake", acknowledging_mistake = "Acknowledging mistake")
+rel_si <- rd("tab_llm_reliability")
+rel_si %>%
+  mutate(Item = si_labs[item], Mode = ifelse(mode == "full", "Full dialogue", "Student messages only"),
+         `n` = n,
+         Alpha = ifelse(is.na(alpha) | !is.na(pct_agree), "", sprintf("%.2f", alpha)),
+         `Rank correlation` = sprintf("%.2f", spearman),
+         `Agreement / AC1` = ifelse(is.na(pct_agree), "", sprintf("%.1f%% / %.2f", pct_agree, ac1)),
+         Status = ifelse(status == "primary", "primary", "exploratory")) %>%
+  arrange(mode, match(item, names(si_labs))) %>%
+  select(Mode, Item, n, Alpha, `Rank correlation`, `Agreement / AC1`, Status) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Inter-rater reliability on the holdout sample (302 conversations; the mistake items apply only when the student made a mistake). Thresholds: alpha 0.67 for ordinal items; 80\\% agreement and AC1 0.60 for the yes/no item.") %>%
+  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
+  kableExtra::collapse_rows(columns = 1, latex_hline = "major")
+```
 
-| Item | Alpha (ordinal) | Rank correlation | Agreement / AC1 | Status |
-|---|---|---|---|---|
-| Reasoning quality | 0.70 | 0.72 | | primary |
-| Knowledge building | 0.81 | 0.81 | | primary |
-| Effort and task focus | 0.669 | 0.71 | | exploratory (threshold 0.67) |
-| Content question (0/1) | | | 73.6% / 0.62 | exploratory (threshold 80%) |
-| Supportive guidance | 0.43 | 0.66 | | exploratory |
-| Next-step guidance | 0.56 | 0.70 | | exploratory |
-| Encouraging tone | -0.20 | 0.55 | | exploratory |
-| Conversational flow | 0.31 | 0.59 | | exploratory |
-| Identifying mistake (66 applicable) | 0.54 | 0.75 | | exploratory |
-| Acknowledging mistake (66 applicable) | 0.52 | 0.71 | | exploratory |
-| *Student items, student messages only:* reasoning / knowledge building / effort / content question | 0.68 / 0.65 / 0.45 / - | 0.68 / 0.65 / 0.60 / 0.16 | question: 59.6% / 0.32 | |
+Alpha is negative for encouraging tone because the GPT model scored about one point higher than the Claude model on every conversation; the rank correlation shows that the two rank conversations similarly.
 
-Table: (\#tab:si-reliability) Inter-rater reliability on the holdout sample (314 conversations; full dialogue unless stated).
+## Results by rater (adjusted model, 302 conversations)
 
-Alpha is negative for encouraging tone because the GPT model scored about one point higher than the Claude model on every conversation; the rank correlation (0.55) shows that the two rank conversations similarly.
-
-## Results by rater (adjusted model, 314 conversations)
-
-
-| Item | Rater | Estimate | 95% CI |
-|---|---|---|---|
-| Reasoning quality | Claude Haiku 5.5 | 0.29 | 0.10, 0.48 |
-| Reasoning quality | GPT-4o-mini | 0.29 | 0.10, 0.48 |
-| Knowledge building | Claude Haiku 5.5 | 0.09 | -0.08, 0.27 |
-| Knowledge building | GPT-4o-mini | 0.25 | 0.06, 0.44 |
-| Effort | Claude Haiku 5.5 | 0.23 | 0.09, 0.38 |
-| Effort | GPT-4o-mini | 0.25 | 0.07, 0.44 |
-| Content question | Claude Haiku 5.5 | 0.03 | -0.05, 0.12 |
-| Content question | GPT-4o-mini | 0.11 | 0.00, 0.22 |
-| Supportive guidance | Claude Haiku 5.5 | 1.61 | 1.44, 1.78 |
-| Supportive guidance | GPT-4o | 1.30 | 1.10, 1.51 |
-| Next-step guidance | Claude Haiku 5.5 | 1.57 | 1.41, 1.74 |
-| Next-step guidance | GPT-4o | 1.25 | 1.04, 1.46 |
-| Encouraging tone | Claude Haiku 5.5 | 0.93 | 0.73, 1.13 |
-| Encouraging tone | GPT-4o | 1.27 | 1.05, 1.49 |
-| Conversational flow | Claude Haiku 5.5 | 0.34 | 0.11, 0.57 |
-| Conversational flow | GPT-4o | 0.36 | 0.11, 0.60 |
-
-Table: (\#tab:si-per-rater) Socratic minus non-Socratic difference by rater, standardised units, 95% CI.
+```{r si-per-rater}
+rater_labs <- c("claude-haiku-5-5" = "Claude Haiku 5.5", "gpt-4o" = "GPT-4o", "gpt-4o-mini" = "GPT-4o-mini")
+rd("tab_llm_per_rater") %>%
+  mutate(Item = si_labs[item], Rater = rater_labs[model], Estimate = sprintf("%.2f", est), `95% CI` = sprintf("%.2f, %.2f", lo, hi)) %>%
+  arrange(match(item, names(si_labs)), Rater) %>%
+  select(Item, Rater, Estimate, `95% CI`) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Socratic minus non-Socratic difference by rater, standardised units, 95\\% CI.") %>%
+  kableExtra::kable_styling(font_size = 9) %>%
+  kableExtra::collapse_rows(columns = 1, latex_hline = "major")
+```
 
 ## Sensitivity analyses
 
+```{r si-sensitivity}
+sens_si <- rd("tab_llm_sensitivity")
+cell <- function(an) sens_si %>% filter(analysis == an) %>% transmute(item, cell = sprintf("%.2f [%.2f, %.2f]", est, lo, hi))
+nn <- function(an) max(sens_si$n[sens_si$analysis == an])
+cols <- c("primary (holdout)", "student-only ratings", "excl. 1-message chats", "all chats (holdout + development)")
+wide <- Reduce(function(a, b) left_join(a, b, by = "item"), lapply(cols, function(an) rename(cell(an), !!an := cell)))
+wide <- wide %>% mutate(Item = si_labs[item]) %>% arrange(match(item, names(si_labs))) %>%
+  mutate(across(all_of(cols), ~ ifelse(is.na(.x), "n/a", .x))) %>% select(Item, all_of(cols))
+names(wide) <- c("Item", sprintf("Primary (%d)", nn(cols[1])), "Student messages only", sprintf("Excluding single-message chats (%d)", nn(cols[3])), sprintf("All %d chats", nn(cols[4])))
+wide %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Sensitivity analyses: adjusted Socratic minus non-Socratic differences.") %>%
+  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down")
+```
 
-| Item | Primary (314) | Student messages only | Excluding single-message chats (164) | All 354 chats |
-|---|---|---|---|---|
-| Reasoning quality | 0.29 [0.12, 0.46] | 0.30 [0.12, 0.47] | 0.49 [0.19, 0.80] | 0.28 [0.11, 0.44] |
-| Knowledge building | 0.17 [0.01, 0.33] | 0.19 [0.03, 0.35] | 0.31 [0.01, 0.61] | 0.16 [0.01, 0.32] |
-| Effort | 0.24 [0.10, 0.39] | 0.21 [0.04, 0.38] | 0.37 [0.13, 0.62] | 0.24 [0.10, 0.38] |
-| Content question | 0.07 [0.00, 0.14] | 0.01 [-0.07, 0.09] | 0.05 [-0.07, 0.18] | 0.06 [-0.01, 0.13] |
-| Supportive guidance | 1.45 [1.30, 1.61] | n/a | 1.13 [0.90, 1.37] | 1.47 [1.33, 1.61] |
-| Next-step guidance | 1.41 [1.25, 1.56] | n/a | 1.09 [0.87, 1.32] | 1.43 [1.29, 1.58] |
-| Encouraging tone | 1.09 [0.92, 1.27] | n/a | 1.02 [0.72, 1.33] | 1.10 [0.93, 1.27] |
-| Conversational flow | 0.36 [0.14, 0.58] | n/a | 0.09 [-0.27, 0.45] | 0.36 [0.16, 0.57] |
-
-Table: (\#tab:si-sensitivity) Sensitivity analyses: adjusted Socratic minus non-Socratic differences.
-
-A further pre-specified check, truncating each conversation to its first three student messages, was not carried out. [Delete this sentence if you run it, and add the column.]
+The reasoning-quality agreement in the student-messages-only mode (alpha `r sprintf("%.3f", rel_si$alpha[rel_si$mode == "student_only" & rel_si$item == "reasoning_quality"])`) is just below the 0.67 threshold, so this check is itself not above the pre-specified reliability level. A further pre-specified check, truncating each conversation to its first three student messages, was not carried out because it requires re-rating the conversations.
 
 ## How much do message counts explain?
 
+```{r si-length-r2}
+rd("tab_llm_length_r2") %>%
+  mutate(Item = si_labs[item], `Length only` = sprintf("%.2f", R2_length_only), `Length + condition` = sprintf("%.2f", R2_length_plus_arm),
+         `LRT p for condition` = ifelse(LRT_p_arm_given_length < 0.0001, "< 0.0001", sprintf("%.4f", LRT_p_arm_given_length))) %>%
+  arrange(match(item, names(si_labs))) %>%
+  select(Item, `Length only`, `Length + condition`, `LRT p for condition`) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Marginal R-squared of linear mixed models with school, conversation order, log messages and log words (length only) and the same model plus condition.") %>%
+  kableExtra::kable_styling(font_size = 9)
+```
 
-| Item | Length only | Length + condition | LRT p for condition |
-|---|---|---|---|
-| Reasoning quality | 0.51 | 0.53 | 0.0009 |
-| Knowledge building | 0.59 | 0.60 | 0.035 |
-| Effort | 0.64 | 0.66 | 0.0008 |
-| Content question | 0.056 | 0.067 | 0.061 |
-| Supportive guidance | 0.083 | 0.58 | <0.0001 |
-| Next-step guidance | 0.11 | 0.57 | <0.0001 |
-| Encouraging tone | 0.11 | 0.43 | <0.0001 |
-| Conversational flow | 0.22 | 0.24 | 0.0011 |
-
-Table: (\#tab:si-length-r2) Marginal R-squared of linear mixed models with school, conversation order, log messages and log words (length only) and the same model plus condition.
-
-The student-behaviour scores are largely predictable from message and word counts (R-squared 0.51-0.64), whereas the tutor-conduct scores depend mainly on the condition. This is the reason the primary specification adjusts for interaction volume.
+The student-behaviour scores are largely predictable from message and word counts (R-squared about 0.5 to 0.6 for reasoning, knowledge building and effort), whereas the scores of the agent's conduct depend mainly on the condition. This is the reason the primary specification adjusts for interaction volume.
 
 ## Descriptives (raw scores, mean of the two raters, holdout)
 
-| Item | Non-Socratic | Socratic |
-|---|---|---|
-| Reasoning quality | 1.19 | 1.79 |
-| Knowledge building | 1.20 | 1.84 |
-| Effort | 1.49 | 2.41 |
-| Content question (0/1) | 0.15 | 0.24 |
-| Supportive guidance | 1.54 | 3.22 |
-| Next-step guidance | 1.67 | 3.44 |
-| Encouraging tone | 2.56 | 3.31 |
-| Conversational flow | 3.68 | 3.52 |
+```{r si-llm-descriptives}
+rd("tab_llm_descriptives_raw") %>%
+  mutate(cell = sprintf("%.2f", mean)) %>%
+  select(item, arm, cell) %>%
+  tidyr::pivot_wider(names_from = arm, values_from = cell) %>%
+  mutate(Item = si_labs[item]) %>% arrange(match(item, names(si_labs))) %>%
+  select(Item, `Non-Socratic` = non_socratic, Socratic = socratic) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Descriptives of raw scores (mean of the two raters, holdout; the yes/no item is a proportion).") %>%
+  kableExtra::kable_styling(font_size = 9)
+```
 
-Table: (\#tab:si-llm-descriptives) Descriptives of raw scores (mean of the two raters, holdout).
-
-(Raw means averaged over the two raters of each item and over conversations; the student items are close to the bottom of the scale in both conditions. At least one content question was coded in 27% of non-Socratic and 38% of Socratic conversations.)
+The student items are close to the bottom of the scale in both conditions.
 
 ## Data and code availability
 

@@ -89,3 +89,29 @@ Structure: sample and randomisation; Experiment 1 (RQ1, RQ2); Experiment 2 (RQ3 
 - Methods describe student-clustered models for H3/H4; the pipeline estimates per-task models (one row per student), plus a pooled clustered model.
 - Planned heterogeneity by ChatGPT experience and gender is not in `steps/`.
 - Step 07 keeps the 6,969 outlier (log scale); the old text removed it.
+
+---
+
+# LLM analysis: chat-ID collision fixed (option 1)
+
+In `chats.rds` both `user_id` and `chat_id` restart in each school. Step 08 grouped by `chat_id` and took `user_id` as the student, which gave
+"86 accounts", merged 12 Brussels/Seville chats and created a spurious "19 accounts in both arms". Real counts: 366 chats, 120 students
+(64 Brussels, 56 Seville), 1-4 chats each, no student in both arms.
+
+- `steps/08_llm_ratings.R`: chats keyed by (school, chat_id), students by (school, user_id); the 12 colliding holdout dialogues (v1 IDs
+  175 179 184 185 199 202 211 222 226 228 229 234) are dropped, so the holdout is 302 chats / 119 students; the volume tests use all 366 chats / 120 students;
+  reliability is read from the recomputed `reliability_holdout_clean`. New `tab_llm_descriptives_raw.csv`.
+- `llm_annotation/`: new `scripts/find_colliding_ids.R`, `src/drop_chats.py`, Makefile target `clean-holdout`, `input/colliding_chat_ids.json`.
+  Reliability code was checked first: it reproduces the committed 314-chat table exactly.
+- SI: LLM tables are now generated from the CSVs (they were hard-coded) and a section reports the deviation.
+- Methods: 302 chats, "one to four conversations".
+
+Effect on results (adjusted Socratic minus non-Socratic, standardised units):
+| Item | Before (314) | After (302) |
+|---|---|---|
+| Reasoning quality | 0.29 [0.12, 0.46], BH p = 0.002 | 0.28 [0.10, 0.46], BH p = 0.006 |
+| Knowledge building | 0.17 [0.01, 0.33], BH p = 0.0496 | 0.14 [-0.03, 0.32], BH p = 0.115 (no longer significant) |
+| Effort (exploratory) | 0.24 | 0.24 |
+| Content question (exploratory) | 0.07, p = 0.064 | 0.08, p = 0.044 (BH 0.058) |
+Reliability gate unchanged for the full-dialogue items (effort alpha 0.656). Student-only reasoning alpha is now 0.668, just below 0.67.
+`docs/prespecification.md` was not edited (its hash is stored in `ratings/holdout/PRESPEC.sha256`); the deviation is documented in the paper and here.

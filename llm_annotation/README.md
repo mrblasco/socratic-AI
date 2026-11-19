@@ -76,6 +76,14 @@ is a deviation and must be reported as one.
 `../analysis.R` still reads the v1 ID lists, and its chat-level covariates have
 the same per-school ID problem; it has not been changed yet.
 
+## Analysis without the 12 merged chats (option 1)
+
+`../steps/08_llm_ratings.R` identifies chats by (school, `chat_id`) and students by (school, `user_id`) and drops the 12
+colliding holdout dialogues, so the analysed holdout has 302 chats (119 students). `make clean-holdout` writes
+`input/colliding_chat_ids.json`, `output/llm_ratings_holdout_clean_long.csv` and `output/reliability_holdout_clean/`
+(no API calls). This is a deviation from the pre-specified 314 and is reported in the paper's supporting information.
+`docs/prespecification.md` is left unchanged because its hash is stored in `ratings/holdout/PRESPEC.sha256`.
+
 ## Provenance notes
 
 - The pipeline was moved here from the repo root on 2026-11-04. Saved records

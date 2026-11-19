@@ -3,19 +3,25 @@
 # Results describe observable reasoning and effort in transcripts as rated by LLMs; they are not
 # measures of learning, and rater agreement shows consistency, not validity.
 #
+# DEVIATION from the pre-specified holdout (314 chats): in chats.rds, user_id and chat_id restart in each
+# school, and the ratings were made on input keyed by chat_id alone, so 12 holdout dialogues merged a
+# Brussels and a Seville chat (llm_annotation/README.md, "Chat IDs"). Their ratings are invalid and are dropped:
+# the holdout analysed here has 302 chats. Chats are identified by (school, chat_id) and students by
+# (school, user_id).
+#
 # Inputs (produced by the separate pipeline in llm_annotation/):
 #   analysis/data/processed/chats.rds
-#   llm_annotation/input/holdout_ids.json
+#   llm_annotation/input/holdout_ids.json, colliding_chat_ids.json
 #   llm_annotation/output/llm_ratings_holdout_long.csv, llm_ratings_dev_v3_long.csv
-#   llm_annotation/output/reliability_holdout/reliability_table.csv
+#   llm_annotation/output/reliability_holdout_clean/reliability_table.csv   (make clean-holdout)
 # Writes: output/tables/tab_llm_*.csv, output/figures/fig_llm_*.pdf (names read by the manuscript)
 
 if (!exists("save_table")) source("R/helpers.R")
 suppressPackageStartupMessages({ library(lme4); library(lmerTest); library(jsonlite) })  # lmerTest: Satterthwaite p-values
 
 LLM_DIR <- "llm_annotation"
-needed <- file.path(LLM_DIR, c("input/holdout_ids.json", "output/llm_ratings_holdout_long.csv",
-                               "output/llm_ratings_dev_v3_long.csv", "output/reliability_holdout/reliability_table.csv"))
+needed <- file.path(LLM_DIR, c("input/holdout_ids.json", "input/colliding_chat_ids.json", "output/llm_ratings_holdout_long.csv",
+                               "output/llm_ratings_dev_v3_long.csv", "output/reliability_holdout_clean/reliability_table.csv"))
 if (!all(file.exists(needed))) stop("LLM annotation outputs missing: ", paste(needed[!file.exists(needed)], collapse = ", "))
 ARM_FILL <- c("#d95f02", "#7570b3")
 ITEM_LAB <- c(reasoning_quality = "Reasoning quality", knowledge_building = "Knowledge building",
@@ -23,26 +29,36 @@ ITEM_LAB <- c(reasoning_quality = "Reasoning quality", knowledge_building = "Kno
               supportive_guidance = "Supportive guidance", next_step_guidance = "Next-step guidance",
               encouraging_tone = "Encouraging tone", conversational_flow = "Conversational flow")
 
-holdout <- fromJSON(file.path(LLM_DIR, "input", "holdout_ids.json"))
+holdout_v1 <- fromJSON(file.path(LLM_DIR, "input", "holdout_ids.json"))                 # 314, pre-specified
+colliding <- fromJSON(file.path(LLM_DIR, "input", "colliding_chat_ids.json"))           # 12 merged dialogues
+holdout <- setdiff(holdout_v1, colliding)                                              # 302 analysed
 
-# ---- Chat-level covariates (one row per chat) -----------------------------------------
+# ---- Chat-level covariates (one row per real chat) -------------------------------------
 # No task identifier exists in the chat data: chat order within student is the pre-specified proxy.
-chats <- readRDS("analysis/data/processed/chats.rds")
-chat_info <- chats %>%
-  filter(user_id != 1) %>%                                   # drop the test user
-  group_by(chat_id) %>%
-  summarise(student = first(user_id), arm = first(treatment_tutor_id), school = first(location),
+# user_id and chat_id restart in each school, so chats are keyed by (school, chat_id), students by (school, user_id).
+chats <- readRDS("analysis/data/processed/chats.rds") %>%
+  filter(!(location == "Seville" & user_id == 1))            # researcher test account
+chat_all <- chats %>%
+  group_by(school = location, chat_id) %>%
+  summarise(student = paste(first(location), first(user_id)), arm = first(treatment_tutor_id),
+            n_students = n_distinct(user_id), n_arms = n_distinct(treatment_tutor_id),
             start = min(created_at), n_msgs = sum(role == "user"), n_words = sum(words[role == "user"], na.rm = TRUE),
             .groups = "drop") %>%
   group_by(student) %>% mutate(chat_order = rank(start, ties.method = "first")) %>% ungroup() %>%
   mutate(arm = factor(arm, c("non_socratic", "socratic")), log_msgs = log(n_msgs), log_words = log1p(n_words))
+stopifnot(all(chat_all$n_students == 1), all(chat_all$n_arms == 1))   # one student and one arm per chat
+# Rated chats: those whose chat_id identifies one chat (the 12 colliding IDs identify two)
+chat_info <- chat_all %>% filter(!chat_id %in% colliding)
+stopifnot(!anyDuplicated(chat_info$chat_id), setequal(colliding, chat_all$chat_id[duplicated(chat_all$chat_id)]),
+          all(holdout %in% chat_info$chat_id))
 
 ratings <- read_csv(file.path(LLM_DIR, "output", "llm_ratings_holdout_long.csv"), show_col_types = FALSE) %>%
+  filter(!chat_id %in% colliding) %>%
   mutate(rubric = sub("^rate_", "", sub("__.*", "", rater)), mode = ifelse(student_only, "student_only", "full"))
 stopifnot(setequal(unique(ratings$chat_id), holdout))
 
 # ---- Reliability gate (pre-specified: ordinal alpha >= .67; binary >= 80% agreement and AC1 >= .60) ----
-rel <- read_csv(file.path(LLM_DIR, "output", "reliability_holdout", "reliability_table.csv"), show_col_types = FALSE) %>%
+rel <- read_csv(file.path(LLM_DIR, "output", "reliability_holdout_clean", "reliability_table.csv"), show_col_types = FALSE) %>%
   transmute(rubric = sub("^rate_", "", prompt), mode = ifelse(mode == "student", "student_only", mode),
             item = dimension, n = n_chats, alpha = alpha_between_models, spearman, pct_agree, ac1) %>%
   mutate(pass = ifelse(!is.na(pct_agree), pct_agree >= 80 & ac1 >= 0.60, alpha >= 0.67),
@@ -67,6 +83,11 @@ outcome <- ratings_z %>%
   left_join(chat_info, by = "chat_id")
 
 # ---- Descriptives -----------------------------------------------------------------------
+# Raw scores (mean of the two raters per chat), by arm, for the supporting information
+save_table(ratings %>% filter(mode == "full", chat_id %in% holdout) %>% rename(item = dimension) %>% semi_join(items, by = c("rubric", "item")) %>%
+             group_by(chat_id, rubric, item) %>% summarise(score = mean(score, na.rm = TRUE), .groups = "drop") %>%
+             left_join(select(chat_info, chat_id, arm), by = "chat_id") %>%
+             group_by(rubric, item, arm) %>% summarise(mean = mean(score), sd = sd(score), n = n(), .groups = "drop"), "tab_llm_descriptives_raw")
 save_table(outcome %>% filter(mode == "full") %>% group_by(rubric, item, arm) %>%
              summarise(mean = mean(y), sd = sd(y), n = n(), .groups = "drop"), "tab_llm_descriptives")
 save_table(chat_info %>% filter(chat_id %in% holdout) %>% group_by(arm) %>%
@@ -165,10 +186,10 @@ save_table(len, "tab_llm_length_r2")
 
 # Sensitivity 3 (truncate each chat to its first 3 student messages) needs re-rating by the LLMs; not run here.
 
-# ---- Interaction volume (H5a): student messages and words per conversation, all conversations ----
+# ---- Interaction volume (H5a): student messages and words per conversation, all 366 real chats ----
 # Descriptive medians, Wilcoxon rank-sum (ignores that students contribute several chats) and a mixed model on
-# the log scale with a random intercept for student; exp(est) is the ratio Socratic / non-Socratic.
-vol <- chat_info %>% mutate(school = factor(school))
+# the log scale with a random intercept for student (school, user_id); exp(est) is the ratio Socratic / non-Socratic.
+vol <- chat_all %>% mutate(school = factor(school))
 vol_tests <- bind_rows(lapply(list(c("n_msgs", "log_msgs", "Student messages"), c("n_words", "log_words", "Student words")), function(m) {
   raw_v <- vol[[m[1]]]
   fit <- lmer(reformulate(c("arm", "school", "chat_order", "(1 | student)"), m[2]), vol, REML = TRUE,
