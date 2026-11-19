@@ -1,5 +1,7 @@
 \clearpage
-\processdelayedfloats
+<!-- \processdelayedfloats -->
+
+
 \clearpage
 \appendix
 \setcounter{table}{0}

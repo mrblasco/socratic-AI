@@ -20,6 +20,10 @@ readRDS <- function(x, ...) {
 read.csv <- function(x, ...) {
     utils::read.csv(here::here(x), ...)
 }
+include_graphics <- function(x, ...) {
+  knitr::include_graphics(here::here(x), ...)
+}
+
 set.seed(4881)
 
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
@@ -33,225 +37,69 @@ theme_set(theme_custom())
 tutorgpt <- readRDS("analysis/data/processed/tutorgpt.rds")
 chats <- readRDS("analysis/data/processed/chats.rds")
 tutorgpt_wide <- readRDS("analysis/data/processed/tutorgpt_wide.rds")
+
+read_tab_csv <- function(x, ...) {
+  read.csv(here::here("output", "tables", x), ...)
+}
+
 ```
 
 # Results {#sec:results}
 
-## Overview of Student Demographics
+## Overview of Student Characteristics
 
-A total of 122 students participated in the study, 64 in Brussels and 58 in Seville. The sample was gender balanced. Over half of the students reported B+ grades and prior use of ChatGPT, with boys more likely to report ChatGPT experience. Around 50% reported to always complete homework on time, with a minority reporting less than always, with factors like time management (17% in Brussels, 25% in Seville) and material comprehension (56% in Brussels, 28% in Seville) affecting completion. Students' self-efficacy varied by task, with 30% of the students feeling they could "easily" write a technology essay (task 2) but only 6% and 11% feeling confident about explaining sound propagation (task 3) or solving a numerical estimation task such as guessing the litres of water in a pool (task 1). Thus, the sample was substantially homogeneous in terms of demographics but diverse in terms of self-efficacy. 
+A total of 122 students participated in the study, 64 in Brussels and 58 in Seville. Table \@ref(tab:summary-statistics) illustrates the distribution of student characteristics across treatment groups alongside the results of separate Fisher's Exact Tests on the association with treatment assignment. The sample characteristics were generally balanced across treatment groups. Only one variable out of ten -- i.e., self-reported difficulties in homework -- was statistically associated (p = 0.05) with the Socratic/Non-Socratic assignment, while no significant associations were found for the AI-reasoning assignment. Thus, only one out of twenty Fisher's exact tests showed a significant result, indicating a good balance across treatments.
 
-Table \@ref(tab:summary-statistics) illustrates the distribution of student characteristics across treatment groups alongside the results of separate Fisher's Exact Tests on the association with treatment assignment. The sample characteristics were generally balanced across treatment groups. Only one variable out of ten -- i.e., self-reported difficulties in homework -- was statistically associated (p = 0.05) with the Socratic/Non-Socratic assignment, while no significant associations were found for the AI-reasoning assignment. Thus, only one out of twenty Fisher's exact tests showed a significant result, indicating a good balance across treatments.
+The sample was gender balanced. Over half of the students reported using ChatGPT, with boys more likely to report ChatGPT experience. Around 50% reported to always complete homework on time, with a minority reporting less than always, with factors like time management (17% in Brussels, 25% in Seville) and material comprehension (56% in Brussels, 28% in Seville) affecting completion. Students' self-efficacy varied by task, with 30% of the students feeling they could "easily" write a technology essay (task 2) but only 6% and 11% feeling confident about explaining sound propagation (task 3) or solving a numerical estimation task such as guessing the litres of water in a pool (task 1). Thus, the sample was substantially homogeneous in terms of demographics but diverse in terms of self-efficacy.
+
 
 ```{r summary-statistics, echo = FALSE, warning=FALSE, message=FALSE}
-tutorgpt_rename <- tutorgpt %>%
-    dplyr::select(
-        treatment_tutor_id,
-        treatment_explain_id,
-        "Gender" = gender,
-        "Has used ChatGPT" = has_used_before,
-        "Location" = location,
-        "Grades" = top_grades,
-        "Homework weekly study" = hours_per_week,
-        "Homework on time" = on_time_completion,
-        "Homework difficulties" = factors_contributing,
-        "Self-efficacy (sound)" = q5_self_physics,
-        "Self-efficacy (essay)" = q6_self_technology,
-        "Self-efficacy (guess)" = q7_self_swimming_pool,
-    )
-
-table_socratic <- tutorgpt_rename %>%
-    dplyr::select(-treatment_explain_id) %>%
-    tidyr::pivot_longer(-treatment_tutor_id) %>%
-    dplyr::mutate(
-        pval = xtabs(~ value + treatment_tutor_id) %>%
-            fisher.test() %>%
-            .$p.value,
-        .by = name
-    ) %>%
-    dplyr::count(name, value, pval, treatment_tutor_id) %>%
-    na.omit() %>%
-    dplyr::mutate(
-        percent = 100 * n / sum(n),
-        .by = c(name, treatment_tutor_id)
-    ) %>%
-    tidyr::pivot_wider(
-        names_from = treatment_tutor_id,
-        values_from = c(percent, n),
-        values_fill = 0
-    ) %>%
-    dplyr::mutate(totals = n_non_socratic + n_socratic)
-
-table_explain <- tutorgpt_rename %>%
-    dplyr::select(-treatment_tutor_id) %>%
-    tidyr::pivot_longer(-treatment_explain_id) %>%
-    dplyr::mutate(
-        pval_explain = xtabs(~ value + treatment_explain_id) %>%
-            fisher.test() %>%
-            .$p.value,
-        .by = name,
-    ) %>%
-    dplyr::count(name, value, treatment_explain_id, pval_explain) %>%
-    na.omit() %>%
-    dplyr::mutate(
-        percent = 100 * n / sum(n),
-        .by = c(name, treatment_explain_id)
-    ) %>%
-    tidyr::pivot_wider(
-        names_from = treatment_explain_id,
-        values_from = c(percent, n),
-        values_fill = 0
-    )
-
-table_socratic %>%
-    dplyr::left_join(table_explain, by = c("name", "value")) %>%
-    dplyr::mutate(
-        name = ifelse(row_number() == 1, name, ""),
-        pval = ifelse(row_number() == 1, sprintf("%0.2f", pval), ""),
-        pval_explain = ifelse(row_number() == 1, sprintf("%0.2f", pval_explain), ""),
-        .by = name
-    ) %>%
-    dplyr::select(
-        name, value,
-        percent_socratic, percent_non_socratic, pval,
-        percent_explain_yes, percent_explain_no, pval_explain,
-        totals,
-    ) %>%
-    kableExtra::kbl(
-        col.names = c(
-            "Name", "Value",
-            "Yes", "No", "p.",
-            "Yes", "No", "p.",
-            "N"
-        ),
-        digits = 0,
-        booktabs = TRUE,
-        caption = "Sample Characteristics",
-        linesep = if (knitr::is_latex_output()) "\\hline" else "",
-    ) %>%
-    kableExtra::kable_styling() %>%
-    kableExtra::add_header_above(c(" " = 2, "Socratic (%)" = 3, "AI Explain (%)" = 3, " "))
+# Computed in steps/09_sample_characteristics.R; only formatting is done here.
+read_tab_csv("summary_statistics.csv", check.names = FALSE) %>%
+  dplyr::mutate(
+    name = ifelse(row_number() == 1, name, ""),
+    pval = ifelse(row_number() == 1, sprintf("%0.2f", pval), ""),
+    pval_explain = ifelse(
+        row_number() == 1, 
+        sprintf("%0.2f", pval_explain), ""
+      ),
+    .by = name
+  ) %>%
+  dplyr::select(
+    name, value,
+    percent_socratic, percent_non_socratic, pval,
+    percent_explain_yes, percent_explain_no, pval_explain,
+    totals,
+  ) %>%
+  kableExtra::kbl(
+    col.names = c(
+      "Name", "Value",
+      "Yes", "No", "p.",
+      "Yes", "No", "p.",
+      "N"
+    ),
+    digits = 0,
+    booktabs = TRUE,
+    caption = "Sample Characteristics",
+    linesep = if (knitr::is_latex_output()) "\\hline" else "",
+  ) %>%
+  kableExtra::kable_styling() %>%
+  kableExtra::add_header_above(c(" " = 2, "Socratic (%)" = 3, "AI Explain (%)" = 3, " "))
 ```
 
-## Attitudes Towards AI
+Figure \@ref(fig:attitudes-AI) illustrates conflicting views on the role of AI in education. On the one hand, a majority of students felt that AI is often misused by students (65%) and potentially dangerous (57%). On the other hand, most students also anticipated that AI would enhance student learning in the future (59%) and contribute positively to society (65%). These findings suggest that most students in our sample are aware of the risks of misuse and safety with a prevailing optimism that AI could support educational growth and societal progress.
 
-As illustrated in Figure \@ref(fig:attitudes-AI), students expressed conflicting views on the role of AI in education. On the one hand, a majority felt that AI is often misused by students (65%) and potentially dangerous (57%). On the other hand, most students also anticipated that AI would enhance student learning in the future (59%) and contribute positively to society (65%). These findings suggest that most students in our sample are aware of the risks of misuse and safety with a prevailing optimism that AI could support educational growth and societal progress.
-
-```{r attitudes-AI, echo = FALSE, fig.cap = "Student attitudes on AI in education"}
-agree_labels <- c(
-    strongly_agree = "S-Agree",
-    agree = "Agree",
-    neutral = "Neutral",
-    disagree = "Disagree",
-    strongly_disagree = "S-Disagree"
-)
-
-palette <- c(
-    "#ca0020", "#f4a582",
-    "#d1e5f0", "#92c5de", "#0571b0"
-)
-
-attitudes_df <- tutorgpt %>%
-    dplyr::select(
-        "Society will benefit from a future of AI?" = q1_ai_future,
-        "AI is dangerous" = q2_ai_danger,
-        "AI is often misused by students" = q4_ai_misuse,
-        "AI will foster students' learning in the future" = q3_ai_learning
-    ) %>%
-    tidyr::pivot_longer(cols = everything()) %>%
-    dplyr::count(name, value) %>%
-    dplyr::mutate(percent = 100 * (n + 1) / (sum(n) + 5), .by = name)
-
-attitudes_df %>%
-    ggplot() +
-    aes(
-        x = percent,
-        y = factor(value, levels = names(agree_labels)),
-        label = paste0(round(percent), "%"),
-        fill = factor(value, levels = names(agree_labels)),
-    ) +
-    geom_col(width = 0.8, show.legend = FALSE) +
-    geom_text(
-        aes(hjust = ifelse(percent < 5, -0.5, 0.5)),
-        position = position_stack(vjust = 0.5),
-    ) +
-    facet_wrap(~ wrap_text(name), scales = "free") +
-    scale_y_discrete(labels = agree_labels) +
-    scale_fill_manual(values = rev(palette)) +
-    theme(
-        axis.line.x = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text.x = element_blank(),
-        panel.spacing = unit(2, "lines")
-    ) +
-    labs(
-        x = NULL, y = NULL,
-        caption = "Source: Full sample (n = 122)",
-        title = "Student Attitudes on AI in Education",
-        subtitle = "% of students who agree or disagree with the statement:",
-    )
+```{r attitudes-AI, fig.cap = "Student attitudes on AI in education"}
+include_graphics("output/figures/fig_attitudes_AI.pdf")
 ```
 
-```{r update-propensity, include = FALSE}
-update_ds <- tutorgpt %>%
-    dplyr::mutate(
-        update = sign(q12_guess_coins_final - q9_guess_coins_initial),
-        initial_guess_100 = q9_guess_coins_initial / 100
-    )
 
-update_propensity_table <- update_ds %>%
-    xtabs(formula = ~ update + treatment_explain_id)
+## The Impact of AI Advice with Explanation
 
-knitr::kable(update_propensity_table)
-fisher.test(update_propensity_table)
-
-model <- center(q12_guess_coins_final) ~ initial_guess_100 +
-    I(initial_guess_100^2) + treatment_explain_id + location
-
-fit_update_propensity <- lm(model, update_ds)
-fit_robust <- rlm(model, update_ds)
-fit_no_out <- fit_robust %>%
-    update(subset = q9_guess_coins_initial < 1e5)
-
-fit <- list(fit_update_propensity, fit_robust, fit_no_out)
-stargazer::stargazer(fit, type = "text", keep.stat = "n", digits = 1)
-
-# ---- Figure ----
-cap <- "Difference between first and second guess.  "
-tutorgpt %>%
-    dplyr::mutate(
-        final_tc = q12_guess_coins_final %>%
-            topcode(1e3),
-        initial_tc = q9_guess_coins_initial %>%
-            topcode(1e3),
-    ) %>%
-    ggplot(
-        aes(
-            x = initial_tc,
-            y = final_tc,
-            color = treatment_explain_id,
-            pch = treatment_explain_id,
-            fill = treatment_explain_id,
-            linetype = treatment_explain_id
-        )
-    ) +
-    geom_point() +
-    geom_smooth(alpha = .25) +
-    labs(
-        x = "First Guess ($)",
-        y = "Second Guess ($)"
-    ) +
-    theme(
-        legend.position = "bottom",
-    )
-```
-
-## The Impact of AI Step-by-step Reasoning Exposure
-
-Figure \@ref(fig:reasoning-ecdf) and Table \@ref(tab:reasoning) illustrate the results of the first manipulation. The distribution shows that students' initial estimates were close to the AI-generated advice, although slightly lower on average. Nearly all students revised their initial guesses, with little difference between treatment arms (90.6% in the no-explanation group and 89.7% in the explanation group). However, students who received an explanation of how the AI advice was generated appeared **less likely to follow the advice** closely. Only 6.9% adopted the advice exactly, compared with 15.6% of those who received no explanation. Similarly, the proportion of students whose final estimate fell within 10% of the advice was lower in the explanation condition (13.8% versus 31.2%). Despite these differences, both groups improved substantially in estimation accuracy, as reflected in reductions in median absolute log error, from 148.6 to 44.6 in the no-explanation condition and from 133.4 to 36.9 in the explanation condition.
+Figure \@ref(fig:reasoning-ecdf) and Table \@ref(tab:reasoning) illustrate the results of the first manipulation. The distribution shows that students' initial guesses of the value of coins were close to the AI-generated advice, although slightly lower on average. Nearly all students revised their initial guesses, with little difference between treatment arms (90.6% in the no-explanation group and 89.7% in the explanation group). However, students who received an explanation of how the AI advice was generated appeared **less likely to follow the advice** closely. Only 6.9% adopted the advice exactly, compared with 15.6% of those who received no explanation. Similarly, the proportion of students whose final estimate fell within 10% of the advice was lower in the explanation condition (13.8% versus 31.2%). Despite these differences, both groups improved substantially in estimation accuracy, as reflected in reductions in median absolute log error, from 148.6 to 44.6 in the no-explanation condition and from 133.4 to 36.9 in the explanation condition.
 
 ```{r reasoning}
-# Computed in analysis_reasoning.R; only formatting is done here.
+# Computed in steps/07_reasoning.R; only formatting is done here.
 tab <- read.csv("output/tables/reasoning_descriptives.csv", check.names = FALSE)
 
 arms <- c("No explanation", "Explanation")
@@ -276,11 +124,7 @@ for (i in seq_along(groups$values)) {
     tbl <- pack_rows(tbl, groups$values[i], starts[i], ends[i], bold = TRUE)
 }
 tbl %>%
-    kable_styling(
-        latex_options = c("hold_position", "scale_down"),
-        font_size = 10,
-        full_width = FALSE
-    ) %>%
+    kable_styling() %>%
     footnote(
         general = paste(
             "Absolute log errors are multiplied by 100.",
@@ -300,10 +144,10 @@ cap <- paste(
     "Dotted lines mark the AI estimate and the true value (USD 379.54)."
 )
 fig_ext <- if (knitr::is_latex_output()) "pdf" else "png"
-knitr::include_graphics(here::here(sprintf("output/figures/fig_reasoning_ecdf.%s", fig_ext)))
+include_graphics(sprintf("output/figures/fig_reasoning_ecdf.%s", fig_ext))
 ```
 
-To address RQ1, we examined whether the treatment—showing step-by-step AI reasoning—affected how students used the AI’s prediction, compared to seeing the prediction alone without any accompanying explanation. For each student $i = 1, \cdots, 122$, we computed the absolute error as the absolute difference between student $i$'s guess, $\text{Guess}_i$, and the actual value of coins:
+To address RQ1, we examined whether the AI-advice-with-explanation condition affected students' final guesses. For each student $i = 1, \cdots, 122$, we computed the absolute error as the absolute difference between student $i$'s guess, $\text{Guess}_i$, and the actual value of coins:
 $$
   \text{Absolute Error}_i = \mid \text{Guess}_i - \text{Actual Value Coins} \mid,
 $$

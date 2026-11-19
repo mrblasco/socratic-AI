@@ -3,7 +3,7 @@ distill::distill_article:
   toc_level: 1
 
 bookdown::pdf_document2:
-  toc: false
+  toc: true
   latex_engine: xelatex
   keep_tex: true
   pandoc_args:

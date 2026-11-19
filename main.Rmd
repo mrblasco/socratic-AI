@@ -36,9 +36,6 @@ bibliography: [refs.bib]
 csl: [styles/hssc.csl]
 ---
 
-<!-- # The Impact of Large Language Models on Students: A Randomised Study of Socratic vs. Non-Socratic AI and the Role of Step-by-Step Reasoning -->
-
-
 ```{r setup, include = FALSE}
 library(patchwork)
 library(figpatch)
@@ -51,35 +48,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, child = "sections/00-abstract.Rmd"}
-```
+\clearpage
 
-```{r, child = "sections/01-intro.Rmd"}
-```
-
-```{r, child = "sections/02-literature.Rmd"}
-```
-
-```{r, child = "sections/02-methods.Rmd"}
-```
-
-```{r, child = "sections/03-results.Rmd"}
-```
-
-```{r, child = "sections/04-discussion.Rmd"}
+```{r, child = list.files("sections", full.names = TRUE)}
 ```
 
 # References {-}
 
 ::: {#refs}
 :::
-
-```{r child = "sections/90-supporting.Rmd"}
-```
-
-```{r child = "sections/91-statements.Rmd"}
-```
-
-```{r child = "sections/99-questionnaire.Rmd"}
-```
 
