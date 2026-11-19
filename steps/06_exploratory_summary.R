@@ -13,22 +13,23 @@ het <- bind_rows(lapply(1:4, function(i) {
 }))
 save_table(het, "exploratory_heterogeneity_school")
 
-# ---- Heterogeneity: treatment x prior ChatGPT use (interaction), primary outcomes and helpfulness -------
-# Same adjustment set as the main models; "used_ai_before" = has used ChatGPT before (Yes/No); the interaction is Socratic x prior use.
-dd_ai <- dd %>% mutate(prior = as.integer(used_ai_before == "Yes"))
-int_row <- function(y, covs, data, label, outcome) {
-  m <- lm(reformulate(c("z", "prior", "z:prior", covs), y), data)
-  ct <- hc2(m)
-  tibble(outcome = outcome, label = label, n = nrow(data),
-         effect_no_prior = ct["z", 1], effect_prior_extra = ct["z:prior", 1], se_interaction = ct["z:prior", 2], p_interaction = ct["z:prior", 4])
+# ---- Heterogeneity: treatment x student characteristic (prior ChatGPT use, gender) -------
+# Primary outcomes and helpfulness in each task, same adjustment set as the main models, HC2 errors.
+# "mod" = 1 for students who had used ChatGPT before / for girls; the interaction is Socratic x mod.
+dd_m <- dd %>% mutate(prior_ai = as.integer(used_ai_before == "Yes"), girl = as.integer(gender == "Girl"))
+int_row <- function(y, covs, data, mod, label, outcome) {
+  data$mod <- data[[mod]]; data <- data %>% filter(!is.na(mod))
+  ct <- hc2(lm(reformulate(c("z", "mod", "z:mod", covs), y), data))
+  tibble(moderator = mod, outcome = outcome, label = label, n = nrow(data),
+         effect_mod0 = ct["z", 1], effect_mod1_extra = ct["z:mod", 1], se_interaction = ct["z:mod", 2], p_interaction = ct["z:mod", 4])
 }
-het_ai <- bind_rows(
-  lapply(1:4, function(i) { o <- PRIMARY[i, ]; int_row(o$y, covs_for(o$task), task_data(dd_ai, o$task), o$label, o$id) }),
-  lapply(1:3, function(k) { hd <- task_data(dd_ai, k) %>% mutate(help = help_code(.data[[paste0("h", k, "_raw")]], school)) %>% filter(!is.na(help))
-                            int_row("help", covs_for(k), hd, paste("Helpfulness, Task", k), paste0("H", k)) })
-)
-save_table(het_ai, "exploratory_heterogeneity_prior_ai")
-save_table(dd_ai %>% count(arm, used_ai_before), "exploratory_prior_ai_by_arm")
+het_mod <- bind_rows(lapply(c("prior_ai", "girl"), function(m) bind_rows(
+  lapply(1:4, function(i) { o <- PRIMARY[i, ]; int_row(o$y, covs_for(o$task), task_data(dd_m, o$task), m, o$label, o$id) }),
+  lapply(1:3, function(k) { hd <- task_data(dd_m, k) %>% mutate(help = help_code(.data[[paste0("h", k, "_raw")]], school)) %>% filter(!is.na(help))
+                            int_row("help", covs_for(k), hd, m, paste("Helpfulness, Task", k), paste0("H", k)) }))))
+save_table(het_mod, "exploratory_heterogeneity_student")
+save_table(bind_rows(dd_m %>% count(arm, level = used_ai_before) %>% mutate(characteristic = "prior_ai"),
+                     dd_m %>% count(arm, level = gender) %>% mutate(characteristic = "gender")), "exploratory_student_chars_by_arm")
 
 # ---- Task 2: did the tutor change students' opinions? (no correct answer; not accuracy) ----
 o2 <- dd %>% filter(!is.na(op_pre), !is.na(op_post)) %>%

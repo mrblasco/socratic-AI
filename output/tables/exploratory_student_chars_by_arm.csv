@@ -1,0 +1,9 @@
+arm,level,n,characteristic
+Non-Socratic,No,21,prior_ai
+Non-Socratic,Yes,37,prior_ai
+Socratic,No,27,prior_ai
+Socratic,Yes,35,prior_ai
+Non-Socratic,Boy,28,gender
+Non-Socratic,Girl,30,gender
+Socratic,Boy,34,gender
+Socratic,Girl,28,gender
