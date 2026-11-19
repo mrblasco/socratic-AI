@@ -104,7 +104,7 @@ factor_assignment <- apply(
 cluster_fa_df <- data.frame(
     depvar = names(factor_assignment),
     fa_cluster = as.numeric(factor_assignment)
-) %>% 
+) %>%
 mutate(
     fa_cluster_label = case_when(
         fa_cluster == 1 ~ "Cognitive quality",
@@ -128,7 +128,7 @@ ds_reg <- mutate(
 ys <- c("cognitive_quality", "communication_quality", "engagement_effort")
 fits <- lapply(ys, function(v) {
     lm(reformulate("treatment_tutor_id", v), ds_reg)
-}) %>% 
+}) %>%
 setNames(ys)
 
 library(modelsummary)
@@ -143,7 +143,7 @@ modelsummary(
     gof_omit = "IC|Log|F|RMSE|Std.Errors",
 )
 
-# Correlations 
+# Correlations
 fig_cormat <- ggcorrplot::ggcorrplot(
     cor_mat,
     type = "full",
@@ -173,7 +173,7 @@ names(coeffs) <- depvars
 plot_data <- bind_rows(coeffs, .id = "depvar") %>%
     filter(grepl("treat", term)) %>%
     left_join(cluster_df, by = "depvar") %>%
-    left_join(cluster_fa_df, by = "depvar") %>% 
+    left_join(cluster_fa_df, by = "depvar") %>%
     mutate(depvar = reorder(depvar, estimate))
 
 fig_coeffs <- plot_data %>%
