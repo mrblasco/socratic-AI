@@ -318,8 +318,15 @@ hrow <- function(k) {
          `Odds ratio [95% CI]` = ci(r), `p (ordinal)` = sprintf("%.3f", r$p))
 }
 bind_rows(hrow("Task 1"), hrow("Task 2"), hrow("Task 3")) %>%
-  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Perceived helpfulness of the AI agent (1-5): Socratic versus non-Socratic") %>%
-  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", align = "lcccccc", caption = "Perceived helpfulness of the AI agent (1-5): Socratic versus non-Socratic") %>%
+  kableExtra::kable_styling(font_size = 8) %>%
+  kableExtra::column_spec(1, width = "1.1cm") %>%
+  kableExtra::column_spec(2, width = "1.9cm") %>%
+  kableExtra::column_spec(3, width = "2.1cm") %>%
+  kableExtra::column_spec(4, width = "2.7cm") %>%
+  kableExtra::column_spec(5, width = "1.2cm") %>%
+  kableExtra::column_spec(6, width = "2.7cm") %>%
+  kableExtra::column_spec(7, width = "1.2cm") %>%
   kableExtra::footnote(general = "Differences are Socratic minus non-Socratic, adjusted for school and task-specific self-efficacy (and the baseline answer in Task 3); linear models use HC2 robust errors. Odds ratios below 1 mean lower helpfulness ratings with the Socratic agent. N = 120 per task.",
                        general_title = "Notes: ", threeparttable = TRUE, escape = TRUE)
 ```
