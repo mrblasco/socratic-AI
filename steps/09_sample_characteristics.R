@@ -1,13 +1,16 @@
 # 09_sample_characteristics: student characteristics by treatment arm (manuscript "Sample Characteristics" table).
 # One row per answer category: % of students in each arm, Fisher's exact test of association with
-# assignment (one p-value per characteristic), and the total count. All 122 students are used.
+# assignment (one p-value per characteristic), and the total count. All students are used (the test account is excluded).
 # Also writes output/figures/fig_attitudes_AI.pdf (attitudes towards AI; all students)
 # Reads:  raw
 # Writes: output/tables/summary_statistics.csv (the manuscript only formats it)
 
 if (!exists("raw")) { source("R/helpers.R"); source("steps/00_data.R") }
 
-characteristics <- raw %>%
+# `raw` includes the test account (student_id == 1); the analysis sample excludes it
+students <- raw %>% dplyr::filter(student_id > 1)
+
+characteristics <- students %>%
   dplyr::select(
     treatment_tutor_id, treatment_explain_id,
     "Gender" = gender,
@@ -57,7 +60,7 @@ agree_labels <- c(
 )
 agree_colours <- c("#ca0020", "#f4a582", "#d1e5f0", "#92c5de", "#0571b0")
 
-attitudes <- raw %>%
+attitudes <- students %>%
   dplyr::select(
     "Society will benefit from a future of AI?" = q1_ai_future,
     "AI is dangerous" = q2_ai_danger,
@@ -83,7 +86,7 @@ fig_attitudes <- attitudes %>%
   ggplot2::scale_fill_manual(values = rev(agree_colours)) +
   ggplot2::labs(
     x = NULL, y = NULL,
-    caption = paste0("Source: Full sample (n = ", nrow(raw), ")"),
+    caption = paste0("Source: Full sample (n = ", nrow(students), ")"),
     title = "Student Attitudes on AI in Education",
     subtitle = "% of students who agree or disagree with the statement:"
   ) +

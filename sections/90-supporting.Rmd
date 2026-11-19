@@ -42,33 +42,23 @@ Students were asked to perform three different tasks, reflecting different skill
 
 - **Task 3: Explaining sound waves propagation** The final tasks involved answering basic conceptual physics questions, such as explaining how the sound propagates through different media or identify factors that affect sound propagation. This task tested students' understanding of scientific concepts and their ability to apply new conceptual knowledge. By comparing the responses of students who interacted with the Socratic and non-Socratic AI tutors, we aimed to determine whether one approach led to better conceptual understanding and retention of scientific knowledge. -->
 
-## Regression analysis for differences in students confidence {#sec:regress-confidence}
+## Statistical models for the Socratic versus non-Socratic comparison {#sec:regress-confidence}
 
-We analyzed the impact of Socratic AI versus Non-Socratic AI on student $i$'s outcomes after task $j$, $Y_{ij}$, using different specifications based on following ordinal regression model:
+Each student completed each task once, so the main models are estimated separately for each task $j$, with one observation per student $i$. Let $T_i$ indicate assignment to the Socratic agent (1) or the non-Socratic agent (0), $S_i$ the school (Seville = 1), $E_{ij}$ the student's self-efficacy for task $j$ before the task (1 to 4), and, in Task 3 only, $B_i$ whether the student answered the question correctly before using the AI. The adjustment set $\{S_i, E_{ij}, B_i\}$ was fixed in advance.
+
+*Confidence and perceived helpfulness* ($Y_{ij}$ on a five-point scale) are analysed with a proportional-odds (ordinal logit) model,
 $$
-  P(Y_{ij} = k) = 
-    \beta_0 + \beta_1 \text{self-efficacy}_{ij} + \gamma T_{i} 
-    + \delta_j + \eta_i + \epsilon_{ij}.
+  \text{logit}\, P(Y_{ij} \leq k) = \theta_k - \gamma T_i - \beta_1 S_i - \beta_2 E_{ij} \; [-\beta_3 B_i],
 $$
-Where:
+whose treatment effect is reported as the odds ratio $\exp(\gamma)$ with a Wald confidence interval, and with the corresponding linear model (ordinary least squares, HC2 robust errors), whose coefficient is in scale points. For helpfulness we also report the linear probability of a rating of 4 or 5.
 
-- $P(Y_{ij} \leq k)$ represents the cumulative probability for $Y_{ij}$ and $P(Y_{ij} = k)$ is the probability that the self-reported confidence level or perceived helpfulness of student $i$ for task $j$ falls at a certain point $k$.
+*Task 3 correctness* is analysed with a linear probability model with HC2 errors (primary; the coefficient is a difference in percentage points) and, as a check, a logit model whose average marginal effect and odds ratio are reported.
 
-- $\text{self-efficacy}_{ij}$ is the student $i$'s self-efficacy relevant for task $j$ (i.e., perceived ability to peform the task)
+*Multiplicity and inference.* The four primary outcomes (confidence in each task and Task 3 correctness) are corrected with the Holm procedure, using the p-values of the adjusted ordinal-logit models for confidence and of the linear probability model for correctness. As a check that does not rely on large-sample approximations, we also compute randomisation-inference p-values by permuting the assignment within school 5,000 times and refitting the adjusted linear model. Robustness checks are the unadjusted model, a model with additional covariates (gender, grades, prior use of ChatGPT and the explanation arm), a fully interacted model in which the covariates are centred and interacted with the treatment (the estimator of Lin, 2013), and models by school. The minimum detectable effects use the observed standard deviations, 60 students per arm, 80% power and a two-sided 5% test.
 
-- $T_i$ indicates the AI tutor assigned to student $i$ (1 = Socratic or 0 = non-Socratic).
+*Pooled effect.* To summarise the three tasks we stack the observations, standardise the outcome within task, and fit a linear model with the treatment, task fixed effects, school and standardised self-efficacy, with HC2 standard errors clustered by student. An $F$-test compares this model with one in which the treatment effect varies by task.
 
-- $\delta_j$ is a random effect associated with task $j$, accounting for task-specific variation.
-
-- $\eta_i$ is a random effect associated with student $i$, capturing individual-level differences.
-
-- $\epsilon_{ij}$ is the error term.
-
-<!-- Figure \@ref(fig:socratic-effects) displays the results for both outcomes. For simplicity, we reported results from a specification where the confidence variable is binary, categorized as "confident" when the response was greater than the mid point of the scale, and "not confident" otherwise. Similarly, we binarised to "helpful" or "not helpful" the other variable. Nevertheless, similar results were obtained using Ordinal Logistic Regression.  -->
-
-<!-- ![Regression coefficients and 95% confidence intervals from a linear regression using as dependent variable the (**A**) students' self-reported confidence level and (**B**) perceived helpfulness of the AI tutor. The controls include task type, student's gender, grades, location, and ChatGPT experience. All models also include individual student random effects, and the student's response to questions about their confidence in their skills before performing each task.](11_socratic_regression.pdf){#fig:socratic-effects} -->
-
-The regression specification described above assumes homogeneous treatment effects across individuals and tasks. To relax this assumption, we employed a more flexible model that allows the average treatment effect, $\gamma$, to vary based on individual-level and task-specific factors. Specifically, we included interaction terms between the treatment indicator and variables such as the student’s gender, academic performance (as measured by school grades), prior experience with ChatGPT, and school location. Additionally, we accounted for heterogeneity in treatment effects across tasks by estimating separate regressions for each task-specific subset of the data. The results are shown in Figure \@ref(fig:interactions), Figure \@ref(fig:confidence-regression), and Figure \@ref(fig:helpful-regression).
+*Helpfulness scales.* The two schools used different labels for the five points (Seville's top label was "Extremely helpful", Brussels' was "Very helpful"). The labels are aligned by position, and we repeat the analysis within each school and with the alternative alignment used in earlier versions of this manuscript (Table \@ref(tab:helpfulness-checks)).
 
 
 # Automatic evaluation of Socratic dimensions {#sec:socratic-dimension}

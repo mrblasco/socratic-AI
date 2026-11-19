@@ -159,3 +159,21 @@ len <- outcome %>% filter(mode == "full", chat_id %in% holdout) %>% group_by(rub
 save_table(len, "tab_llm_length_r2")
 
 # Sensitivity 3 (truncate each chat to its first 3 student messages) needs re-rating by the LLMs; not run here.
+
+# ---- Interaction volume (H5a): student messages and words per conversation, all conversations ----
+# Descriptive medians, Wilcoxon rank-sum (ignores that students contribute several chats) and a mixed model on
+# the log scale with a random intercept for student; exp(est) is the ratio Socratic / non-Socratic.
+vol <- chat_info %>% mutate(school = factor(school))
+vol_tests <- bind_rows(lapply(list(c("n_msgs", "log_msgs", "Student messages"), c("n_words", "log_words", "Student words")), function(m) {
+  raw_v <- vol[[m[1]]]
+  fit <- lmer(reformulate(c("arm", "school", "chat_order", "(1 | student)"), m[2]), vol, REML = TRUE,
+              control = lmerControl(optimizer = "bobyqa"))
+  cf <- summary(fit)$coefficients["armsocratic", ]
+  ci <- suppressMessages(confint(fit, "armsocratic", method = "Wald"))
+  tibble(measure = m[3],
+         median_non_socratic = median(raw_v[vol$arm == "non_socratic"]), median_socratic = median(raw_v[vol$arm == "socratic"]),
+         wilcoxon_p = wilcox.test(raw_v ~ vol$arm, exact = FALSE)$p.value,
+         ratio = exp(cf[["Estimate"]]), ratio_lo = exp(ci[1]), ratio_hi = exp(ci[2]), p_mixed = cf[["Pr(>|t|)"]],
+         chats = nobs(fit), students = lme4::ngrps(fit)[["student"]])
+}))
+save_table(vol_tests, "tab_llm_volume_tests")

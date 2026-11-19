@@ -1,1154 +1,415 @@
 ```{r setup-results, include = FALSE}
+# Every number in this section is read from output/tables/*.csv, which are written by
+# analysis.R (steps/00-10). Nothing is estimated here; this file only formats results.
 library(dplyr)
-library(kableExtra)
 library(tidyr)
-library(ordinal) # clm()
-library(ggplot2)
-library(ggdist)
-library(ggrepel)
-library(ggtext)
+library(kableExtra)
 library(knitr)
-library(patchwork)
-library(broom.mixed)
-library(boot)
-library(MASS)
-library(here)
 
-readRDS <- function(x, ...) {
-    base::readRDS(here::here(x), ...)
-}
-read.csv <- function(x, ...) {
-    utils::read.csv(here::here(x), ...)
-}
-include_graphics <- function(x, ...) {
-  knitr::include_graphics(here::here(x), ...)
-}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
-set.seed(4881)
+tab <- function(x) readr::read_csv(here::here("output", "tables", paste0(x, ".csv")), show_col_types = FALSE)
+fig <- function(x) here::here("output", "figures", x)
 
-knitr::opts_chunk$set(echo = FALSE, message = FALSE)
-
-source(here::here("R/util_funs.R"))
-source(here::here("R/text_funs.R"))
-source(here::here("R/theme.R"))
-
-theme_set(theme_custom())
-
-tutorgpt <- readRDS("analysis/data/processed/tutorgpt.rds")
-chats <- readRDS("analysis/data/processed/chats.rds")
-tutorgpt_wide <- readRDS("analysis/data/processed/tutorgpt_wide.rds")
-
-read_tab_csv <- function(x, ...) {
-  read.csv(here::here("output", "tables", x), ...)
+# ---- formatting helpers ----------------------------------------------------------
+num <- function(x, d = 2) formatC(x, format = "f", digits = d)
+pct <- function(x, d = 0) paste0(formatC(x, format = "f", digits = d), "%")
+pv <- function(p) ifelse(p < 0.001, "p < 0.001", ifelse(p < 0.01, sprintf("p = %.3f", p), sprintf("p = %.2f", p)))
+ci <- function(r, scale = 1, d = 2) sprintf("%s [%s, %s]", num(r$est * scale, d), num(r$lo * scale, d), num(r$hi * scale, d))
+one <- function(df, ...) {
+  out <- dplyr::filter(df, ...)
+  stopifnot(nrow(out) == 1)
+  out
 }
 
+# ---- results read from the analysis pipeline ---------------------------------------
+raw <- readRDS(here::here("analysis/data/processed/tutorgpt.rds")) %>% filter(student_id > 1)
+chats <- readRDS(here::here("analysis/data/processed/chats.rds")) %>% filter(user_id != 1)
+
+sample_arm <- tab("sample_by_school_arm")
+smd <- tab("balance_smd")
+bal_joint <- tab("balance_joint_test")
+ss <- tab("summary_statistics")
+
+rs_desc <- tab("reasoning_descriptives")
+rs_eff <- tab("reasoning_effects")
+pa_desc <- tab("perceived_accuracy_descriptives")
+pa_eff <- tab("perceived_accuracy_effects")
+
+conf_desc <- tab("confidence_descriptives")
+conf_eff <- tab("confidence_effects")
+conf_size <- tab("confidence_effect_sizes")
+conf_pool <- tab("confidence_pooled")
+corr_desc <- tab("correctness_descriptives")
+corr_eff <- tab("correctness_effects")
+corr_or <- tab("correctness_odds_ratio")
+trans <- tab("learning_transitions")
+calib <- tab("calibration_means")
+calib_int <- tab("calibration_interaction")
+retention <- tab("retention_effects")
+holm <- tab("primary_holm")
+ri <- tab("primary_randomisation_inference")
+robust <- tab("primary_robustness")
+mde <- tab("primary_mde")
+het <- tab("exploratory_heterogeneity_school")
+
+help_desc <- tab("helpfulness_descriptives")
+help_eff <- tab("helpfulness_effects")
+help_chk <- tab("helpfulness_checks")
+help_pool <- tab("helpfulness_pooled")
+
+vol <- tab("tab_llm_volume_tests")
+vol_desc <- tab("tab_llm_interaction_volume")
+use <- tab("exploratory_tutor_usage")
+rel <- tab("tab_llm_reliability")
+llm <- tab("tab_llm_effects")
+llm_rater <- tab("tab_llm_per_rater")
+llm_sens <- tab("tab_llm_sensitivity")
+llm_r2 <- tab("tab_llm_length_r2")
+op_desc <- tab("exploratory_opinion_descriptives")
+op_eff <- tab("exploratory_opinion_effects")
+
+# ---- derived quantities used in the text -----------------------------------------------
+n_all <- nrow(raw)
+n_bru <- sum(raw$location == "Brussels")
+n_sev <- sum(raw$location == "Seville")
+n_an <- sum(sample_arm$n)                                    # analysis sample (complete on the primary outcomes)
+n_soc <- sum(sample_arm$n[sample_arm$arm == "Socratic"])
+n_non <- sum(sample_arm$n[sample_arm$arm == "Non-Socratic"])
+
+p_fisher <- ss %>% distinct(name, pval, pval_explain)
+n_tests <- 2 * nrow(p_fisher)
+n_sig <- sum(p_fisher$pval < 0.05) + sum(p_fisher$pval_explain < 0.05)
+p_min_fisher <- min(c(p_fisher$pval, p_fisher$pval_explain))
+
+agree <- function(v) 100 * mean(raw[[v]] %in% c("agree", "strongly_agree"), na.rm = TRUE)
+easy <- function(v) 100 * mean(raw[[v]] == "Could do easily", na.rm = TRUE)
+
+# Conversation logs: accounts and accounts seen under both conditions
+acct <- chats %>% distinct(chat_id, user_id, treatment_tutor_id) %>% group_by(user_id) %>% summarise(arms = n_distinct(treatment_tutor_id))
+n_accounts <- nrow(acct)
+n_both <- sum(acct$arms > 1)
+
+# Task 3 correctness pooled over arms
+pct_before <- sum(corr_desc$pct_correct_before * corr_desc$n) / sum(corr_desc$n)
+pct_after <- sum(corr_desc$pct_correct_after * corr_desc$n) / sum(corr_desc$n)
+tr_rate <- function(a, pre, post) trans %>% filter(arm == a, pre_correct == pre, post_correct == post) %>% pull(pct_of_row)
+
+task_name <- c(C1 = "Task 1: water estimate", C2 = "Task 2: social-media essay", C3 = "Task 3: sound physics")
+c_ols <- function(id) one(conf_eff, outcome == id, model == "OLS, adjusted (points)")
+r_rs <- function(o, s = "adjusted") one(rs_eff, spec == s, outcome == o)
+h_ols <- function(k) one(help_eff, grepl(k, task), model == "OLS, adjusted (points)")
+h_or <- function(k) one(help_eff, grepl(k, task), model == "Ordinal logit, adjusted (OR)")
+rs_m <- function(m, arm) rs_desc[[arm]][rs_desc$measure == m]
+conduct_items <- c("supportive_guidance", "next_step_guidance", "encouraging_tone", "conversational_flow")
+rel_c <- filter(rel, rubric == "socratic", mode == "full", item %in% conduct_items)
 ```
 
 # Results {#sec:results}
 
-## Overview of Student Characteristics
+We first describe the sample and the randomisation (Section \@ref(sec:res-sample)). We then report the first experiment, on AI-generated explanations (RQ1 and RQ2), and the second, on Socratic versus non-Socratic AI agents (RQ3 to RQ5). In the second experiment the four primary outcomes are the students' confidence in their answer in each of the three tasks and the correctness of the Task 3 answer; they are tested with a Holm correction across the four outcomes. Perceived helpfulness (RQ4), the analysis of the conversations (RQ5) and the heterogeneity analyses are reported with their own caveats and are not corrected jointly with the primary outcomes. All estimates come from the scripts in the `steps/` folder of the replication package.
 
-A total of 122 students participated in the study, 64 in Brussels and 58 in Seville. Table \@ref(tab:summary-statistics) illustrates the distribution of student characteristics across treatment groups alongside the results of separate Fisher's Exact Tests on the association with treatment assignment. The sample characteristics were generally balanced across treatment groups. Only one variable out of ten -- i.e., self-reported difficulties in homework -- was statistically associated (p = 0.05) with the Socratic/Non-Socratic assignment, while no significant associations were found for the AI-reasoning assignment. Thus, only one out of twenty Fisher's exact tests showed a significant result, indicating a good balance across treatments.
+## Sample and Randomisation {#sec:res-sample}
 
-The sample was gender balanced. Over half of the students reported using ChatGPT, with boys more likely to report ChatGPT experience. Around 50% reported to always complete homework on time, with a minority reporting less than always, with factors like time management (17% in Brussels, 25% in Seville) and material comprehension (56% in Brussels, 28% in Seville) affecting completion. Students' self-efficacy varied by task, with 30% of the students feeling they could "easily" write a technology essay (task 2) but only 6% and 11% feeling confident about explaining sound propagation (task 3) or solving a numerical estimation task such as guessing the litres of water in a pool (task 1). Thus, the sample was substantially homogeneous in terms of demographics but diverse in terms of self-efficacy.
+A total of `r n_all` students took part (`r n_bru` in Brussels and `r n_sev` in Seville), after excluding one test account. Primary outcomes are missing for `r n_all - n_an` of them, so the analyses of the second experiment use `r n_an` students (`r n_soc` with the Socratic and `r n_non` with the non-Socratic agent). The analyses of the first experiment use all `r n_all` students. Randomisation produced comparable groups (Table \@ref(tab:summary-statistics)). Of the `r n_tests` Fisher's exact tests of association between a characteristic and the assignment, `r ifelse(n_sig == 0, "none", n_sig)` reach`r ifelse(n_sig == 1, "es", "")` the 5% level, which is consistent with chance (the smallest p-value is `r num(p_min_fisher, 3)`, for self-reported difficulties with homework in the Socratic comparison). The standardised mean differences between the Socratic and non-Socratic groups are all below 0.25 in absolute value (the largest is `r num(max(abs(smd$smd)), 2)`; Figure \@ref(fig:balance)), and a joint test of whether the covariates predict assignment does not reject (likelihood-ratio $\chi^2$(`r bal_joint$df`) = `r num(bal_joint$chi2, 2)`, `r pv(bal_joint$p)`).
 
-
-```{r summary-statistics, echo = FALSE, warning=FALSE, message=FALSE}
-# Computed in steps/09_sample_characteristics.R; only formatting is done here.
-read_tab_csv("summary_statistics.csv", check.names = FALSE) %>%
-  dplyr::mutate(
+```{r summary-statistics}
+ss %>%
+  mutate(
     name = ifelse(row_number() == 1, name, ""),
     pval = ifelse(row_number() == 1, sprintf("%0.2f", pval), ""),
-    pval_explain = ifelse(
-        row_number() == 1, 
-        sprintf("%0.2f", pval_explain), ""
-      ),
+    pval_explain = ifelse(row_number() == 1, sprintf("%0.2f", pval_explain), ""),
     .by = name
   ) %>%
-  dplyr::select(
-    name, value,
-    percent_socratic, percent_non_socratic, pval,
-    percent_explain_yes, percent_explain_no, pval_explain,
-    totals,
-  ) %>%
+  select(name, value, percent_socratic, percent_non_socratic, pval,
+         percent_explain_yes, percent_explain_no, pval_explain, totals) %>%
   kableExtra::kbl(
-    col.names = c(
-      "Name", "Value",
-      "Yes", "No", "p.",
-      "Yes", "No", "p.",
-      "N"
-    ),
+    col.names = c("Name", "Value", "Yes", "No", "p", "Yes", "No", "p", "N"),
     digits = 0,
     booktabs = TRUE,
-    caption = "Sample Characteristics",
-    linesep = if (knitr::is_latex_output()) "\\hline" else "",
+    caption = "Sample characteristics by treatment arm (percent of students in each arm). p is the p-value of a Fisher's exact test of association with the assignment.",
+    linesep = if (knitr::is_latex_output()) "\\hline" else ""
   ) %>%
-  kableExtra::kable_styling() %>%
-  kableExtra::add_header_above(c(" " = 2, "Socratic (%)" = 3, "AI Explain (%)" = 3, " "))
+  kableExtra::kable_styling(font_size = 9) %>%
+  kableExtra::add_header_above(c(" " = 2, "Socratic AI (%)" = 3, "AI explanation (%)" = 3, " "))
 ```
 
-Figure \@ref(fig:attitudes-AI) illustrates conflicting views on the role of AI in education. On the one hand, a majority of students felt that AI is often misused by students (65%) and potentially dangerous (57%). On the other hand, most students also anticipated that AI would enhance student learning in the future (59%) and contribute positively to society (65%). These findings suggest that most students in our sample are aware of the risks of misuse and safety with a prevailing optimism that AI could support educational growth and societal progress.
-
-```{r attitudes-AI, fig.cap = "Student attitudes on AI in education"}
-include_graphics("output/figures/fig_attitudes_AI.pdf")
+```{r balance, fig.cap = "Standardised mean differences (Socratic minus non-Socratic) in baseline characteristics. The grey band marks |SMD| < 0.25.", out.width = "75%", fig.align = "center"}
+knitr::include_graphics(fig("balance.pdf"))
 ```
 
+The sample was balanced by gender (`r pct(100 * mean(raw$gender == "Girl", na.rm = TRUE))` girls) and `r pct(100 * mean(raw$has_used_before == "Yes", na.rm = TRUE))` of the students had used ChatGPT before. Students were not confident about the tasks on their own: only `r pct(easy("q5_self_physics"))` felt they could easily explain how sound propagates (Task 3) and `r pct(easy("q7_self_swimming_pool"))` that they could easily estimate a quantity such as the water consumed at school (Task 1), against `r pct(easy("q6_self_technology"))` for writing the essay (Task 2). Students held mixed views on AI in education (Figure \@ref(fig:attitudes-AI)): `r pct(agree("q4_ai_misuse"))` agreed that students often misuse AI and `r pct(agree("q2_ai_danger"))` that AI is dangerous, while `r pct(agree("q3_ai_learning"))` expected AI to foster students' learning and `r pct(agree("q1_ai_future"))` that society will benefit from it.
 
-## The Impact of AI Advice with Explanation
+```{r attitudes-AI, fig.cap = "Student attitudes on AI in education", out.width = "85%", fig.align = "center"}
+knitr::include_graphics(fig("fig_attitudes_AI.pdf"))
+```
 
-Figure \@ref(fig:reasoning-ecdf) and Table \@ref(tab:reasoning) illustrate the results of the first manipulation. The distribution shows that students' initial guesses of the value of coins were close to the AI-generated advice, although slightly lower on average. Nearly all students revised their initial guesses, with little difference between treatment arms (90.6% in the no-explanation group and 89.7% in the explanation group). However, students who received an explanation of how the AI advice was generated appeared **less likely to follow the advice** closely. Only 6.9% adopted the advice exactly, compared with 15.6% of those who received no explanation. Similarly, the proportion of students whose final estimate fell within 10% of the advice was lower in the explanation condition (13.8% versus 31.2%). Despite these differences, both groups improved substantially in estimation accuracy, as reflected in reductions in median absolute log error, from 148.6 to 44.6 in the no-explanation condition and from 133.4 to 36.9 in the explanation condition.
+## Experiment 1: AI-Generated Explanations {#sec:res-explain}
+
+All `r n_all` students first guessed the value of the coins in a jar, then saw the same AI estimate (US$ 213; the true value is US$ 379.54), and then revised their guess. Of them, `r rs_desc %>% filter(measure == "N") %>% pull(Explanation)` also saw the AI's step-by-step explanation.
+
+### Estimation performance (RQ1) {#sec:res-rq1}
+
+Nearly all students revised their guess after seeing the AI estimate, with no difference between the arms (`r pct(rs_m("Revised guess (%)", "No explanation"), 1)` without and `r pct(rs_m("Revised guess (%)", "Explanation"), 1)` with the explanation; Table \@ref(tab:reasoning)). Both groups also became much more accurate: the median absolute log error (in hundredths of a log point) fell from `r num(rs_m("Initial abs. log error (median)", "No explanation"), 0)` to `r num(rs_m("Final abs. log error (median)", "No explanation"), 0)` without the explanation and from `r num(rs_m("Initial abs. log error (median)", "Explanation"), 0)` to `r num(rs_m("Final abs. log error (median)", "Explanation"), 0)` with it (Figure \@ref(fig:reasoning-ecdf)). We do not test this before-after improvement, because the AI estimate was given to everyone; the question for RQ1 is whether the explanation changed what students did with it.
 
 ```{r reasoning}
-# Computed in steps/07_reasoning.R; only formatting is done here.
-tab <- read.csv("output/tables/reasoning_descriptives.csv", check.names = FALSE)
-
-arms <- c("No explanation", "Explanation")
-body <- tab %>%
-    mutate(across(all_of(arms), ~ ifelse(measure == "N", sprintf("%.0f", .x), sprintf("%.1f", .x))))
-
-groups <- rle(tab$group)
+groups <- rle(rs_desc$group)
 ends <- cumsum(groups$lengths)
 starts <- ends - groups$lengths + 1
-
-tbl <- body %>%
-    dplyr::select(measure, all_of(arms)) %>%
-    kable(
-        format = "latex",
-        booktabs = TRUE,
-        align = c("l", "c", "c"),
-        col.names = c("Measure", arms),
-        caption = "Descriptive statistics by explanation arm",
-        linesep = ""
-    )
-for (i in seq_along(groups$values)) {
-    tbl <- pack_rows(tbl, groups$values[i], starts[i], ends[i], bold = TRUE)
-}
+tbl <- rs_desc %>%
+  mutate(across(c("No explanation", "Explanation"), ~ ifelse(measure == "N", sprintf("%.0f", .x), sprintf("%.1f", .x)))) %>%
+  select(measure, `No explanation`, Explanation) %>%
+  kableExtra::kbl(
+    booktabs = TRUE, align = c("l", "c", "c"), col.names = c("Measure", "No explanation", "Explanation"),
+    caption = "Descriptive statistics by explanation arm", linesep = ""
+  )
+for (i in seq_along(groups$values)) tbl <- kableExtra::pack_rows(tbl, groups$values[i], starts[i], ends[i], bold = TRUE)
 tbl %>%
-    kable_styling() %>%
-    footnote(
-        general = paste(
-            "Absolute log errors are multiplied by 100.",
-            "Within 10% indicates that the estimate is within",
-            "10% of the advice in multiplicative terms."
-        ),
-        general_title = "Notes: ",
-        threeparttable = TRUE,
-        escape = TRUE
-    )
+  kableExtra::kable_styling() %>%
+  kableExtra::footnote(
+    general = "Absolute log errors are multiplied by 100. Within 10% means within 10% of the AI estimate in multiplicative terms. Guesses are in US dollars.",
+    general_title = "Notes: ", threeparttable = TRUE, escape = TRUE
+  )
 ```
 
-```{r reasoning-ecdf, fig.cap = cap, out.width = "100%"}
-cap <- paste(
-    "Cumulative distribution of students' guesses of the value of the coins",
-    "before and after seeing the AI estimate (USD 213), by explanation arm.",
-    "Dotted lines mark the AI estimate and the true value (USD 379.54)."
-)
-fig_ext <- if (knitr::is_latex_output()) "pdf" else "png"
-include_graphics(sprintf("output/figures/fig_reasoning_ecdf.%s", fig_ext))
+```{r reasoning-ecdf, fig.cap = "Cumulative distribution of students' guesses of the value of the coins before and after seeing the AI estimate (USD 213), by explanation arm. Dotted lines mark the AI estimate and the true value (USD 379.54).", out.width = "100%"}
+knitr::include_graphics(fig(if (knitr::is_latex_output()) "fig_reasoning_ecdf.pdf" else "fig_reasoning_ecdf.png"))
 ```
 
-To address RQ1, we examined whether the AI-advice-with-explanation condition affected students' final guesses. For each student $i = 1, \cdots, 122$, we computed the absolute error as the absolute difference between student $i$'s guess, $\text{Guess}_i$, and the actual value of coins:
-$$
-  \text{Absolute Error}_i = \mid \text{Guess}_i - \text{Actual Value Coins} \mid,
-$$
-where a smaller absolute error indicated greater accuracy.
-
-Figure \@ref(fig:boot-accuracy) illustrates that students' prediction accuracy was positively skewed in both treatment groups, with a greater accuracy for students exposed to AI reasoning. To estimate confidence intervals for the median difference in accuracy betweeen the groups, we used a nonparametric bootstrap approach.[^outlier] This procedure involved resampling participants' absolute errors (n = 1,999) to build a distribution of medians for each group. The 5th and 95th percentiles of the resulting distribution were used to construct a 90% confidence interval for the difference in accuracy between groups. The interval ranged from 0 to 70, indicating a greater accuracy (lower error) for the students exposed to AI-generated reasoning (one-sided, p < 0.05).
-
-[^outlier]: We detected one outlier in the data, which was removed from the bootstrap analysis: one student provided an unusual and notably high guess of 6969. However, this value deviated substantially from both the overall distribution and the student's initial guess, suggesting a mistake rather than an estimate.
-
-```{r boot-accuracy, echo = FALSE, fig.width = 7, fig.height = 3, fig.cap = cap}
-cap <- "Comparison of Students' Absolute Error in Estimating Coin Jar Value with and without AI Explanations. All students received the AI-generated estimate of $213 (the correct value was $379.54). Still, those in the AI reasoning treatment also viewed the AI-generated step-by-step explanation for the estimation. Exposure to the AI-generated explanation significantly reduced the students' median absolute error." # nolint
-
-coins_value <- 379.54
-
-# Regression
-n_boot <- 1999
-palette <- c("#d95f02", "#7570b3")
-
-# # For each bootstrap sample we compute the sample median, boot_med
-resample_median <- function(n_boot, x) {
-    mat <- replicate(n_boot, sample(x, replace = TRUE))
-    apply(mat, 2, median)
+```{r reasoning-eff}
+lab <- c(adopt = "Adopted the AI estimate exactly (prob.)",
+         near = "Final guess within 10% of the AI estimate (prob.)",
+         err_final = "Final absolute log error (x 100)")
+fmt_eff <- function(e, l, h, o) {
+  s <- ifelse(o == "err_final", 100, 1)
+  d <- ifelse(o == "err_final", 1, 2)
+  mapply(function(e, l, h, s, d) sprintf("%s [%s, %s]", num(e * s, d), num(l * s, d), num(h * s, d)), e, l, h, s, d)
 }
-
-bootstrap_accuracy <- tutorgpt %>%
-    dplyr::filter(q12_guess_coins_final < 6e3) %>%
-    dplyr::mutate(abs_err = abs(q12_guess_coins_final - coins_value)) %>%
-    dplyr::reframe(
-        .by = treatment_explain_id,
-        boot_med = resample_median(n_boot, abs_err),
-        sim_id = seq(n_boot)
-    )
-
-bootstrap_accuracy_diff <- bootstrap_accuracy %>%
-    dplyr::summarise(diff = diff(boot_med), .by = sim_id)
-
-
-alpha <- 0.1
-diff_cis <- bootstrap_accuracy_diff %>%
-    dplyr::reframe(quantile(diff, p = c(alpha / 2, 1 - alpha / 2)))
-
-p_value <- bootstrap_accuracy_diff %>%
-    with(1 - (sum(diff < 0) + 1) / (length(diff) + 2))
-
-p_value_one_sided <- bootstrap_accuracy_diff %>%
-    with(mean(diff > 0))
-
-p_dens_diff <- bootstrap_accuracy_diff %>%
-    ggplot() +
-    aes(x = diff) +
-    geom_density(alpha = .4, bw = "sj", fill = "lightgray") +
-    labs(
-        x = "Difference in Median Absolute Error",
-        y = "Density"
-    ) +
-    scale_fill_manual(values = palette) +
-    scale_color_manual(values = palette) +
-    theme(
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        legend.position = "top", legend.title = element_blank()
-    ) +
-    geom_vline(xintercept = 0, linetype = "dashed") +
-    annotate(
-        "text",
-        x = -35, y = 0.015, color = palette[2],
-        label = sprintf(
-            "Bootstrapped median difference\np.value = %0.3f", p_value
-        )
-    )
-
-p_dens <- bootstrap_accuracy %>%
-    ggplot() +
-    aes(x = boot_med, fill = treatment_explain_id, color = treatment_explain_id) +
-    geom_density(alpha = 0.4, bw = "nrd") +
-    labs(
-        x = "Median Absolute Error",
-        y = "Density (bootstrap)"
-    ) +
-    scale_fill_manual(values = palette) +
-    scale_color_manual(values = palette) +
-    theme(
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        legend.position = "top",
-        legend.title = element_blank()
-    )
-
-# Combine plots
-(p_dens + p_dens_diff) +
-    plot_annotation(
-        tag_levels = "A",
-        caption = "Source: Full sample (N = 121, excluding one outlier)."
-    )
+rs_eff %>%
+  mutate(outcome_lab = lab[outcome], effect = fmt_eff(est, lo, hi, outcome), p = sprintf("%.3f", p)) %>%
+  select(outcome_lab, spec, effect, p, n) %>%
+  pivot_wider(names_from = spec, values_from = c(effect, p, n)) %>%
+  select(outcome_lab, effect_unadjusted, p_unadjusted, n_unadjusted, effect_adjusted, p_adjusted, n_adjusted) %>%
+  kableExtra::kbl(
+    booktabs = TRUE, linesep = "",
+    col.names = c("Outcome", "Effect [95% CI]", "p", "N", "Effect [95% CI]", "p", "N"),
+    caption = "Effect of seeing the AI's explanation (difference between arms; linear models with HC3 robust errors)"
+  ) %>%
+  kableExtra::add_header_above(c(" " = 1, "Unadjusted" = 3, "Adjusted" = 3)) %>%
+  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
+  kableExtra::footnote(
+    general = "Adjusted models control for school, the initial guess, gender, grades and prior use of ChatGPT; students with missing gender or grades are dropped from them.",
+    general_title = "Notes: ", threeparttable = TRUE, escape = TRUE
+  )
 ```
 
-To examine the impact of AI explanations on students' perceived credibility of AI predictions (RQ2), we analysed students' five-point ratings of the perceived accuracy of the AI estimated value of coins. We noticed that 53% of students who did not receive step-by-step reasoning considered the AI estimate as either “good” (39%) or “very good” (14%) compared to 43% of students exposed to the AI reasoning (19% and 24%, respectively). This gap of ten percentage points suggests that students viewed the AI as more accurate when the AI-generated guess was presented as a "black box."  However, a non-parametric Mann-Whitney U test found no significant difference between the conditions ($W = 1754.5$, $p = .59$), and even regression analysis controlling for individual characteristics showed no significant differences (Figure \@ref(fig:perceived-accuracy-coins)).
+Students who saw the explanation followed the AI estimate less closely. Only `r pct(rs_m("Adopted advice exactly (%)", "Explanation"), 1)` adopted it exactly, against `r pct(rs_m("Adopted advice exactly (%)", "No explanation"), 1)` of those who saw the estimate alone, and `r pct(rs_m("Final within 10% of advice (%)", "Explanation"), 1)` ended within 10% of it, against `r pct(rs_m("Final within 10% of advice (%)", "No explanation"), 1)`. In the adjusted model (Table \@ref(tab:reasoning-eff)) the explanation lowered the probability of ending within 10% of the estimate by `r num(-100 * r_rs("near")$est, 1)` percentage points (95% CI `r num(-100 * r_rs("near")$hi, 1)` to `r num(-100 * r_rs("near")$lo, 1)`; `r pv(r_rs("near")$p)`). The reduction in exact adoption is similar in size but less precisely estimated (`r num(-100 * r_rs("adopt")$est, 1)` points; `r pv(r_rs("adopt")$p)`).
 
-```{r credibility-ai, include = FALSE, tab.cap = cap}
-cap <- paste(
-    "Percentage of students who perceived the accuracy of the AI-generated",
-    "estimate for the coin value in the jar as accurate"
-)
+However, we find no evidence that the explanation made the final guesses more accurate. The mean absolute log error differs by `r num(100 * r_rs("err_final")$est, 1)` points between the arms (95% CI `r num(100 * r_rs("err_final")$lo, 1)` to `r num(100 * r_rs("err_final")$hi, 1)`; `r pv(r_rs("err_final")$p)`), which rules out neither a modest benefit nor a modest harm. The lower median error in the explanation arm in Table \@ref(tab:reasoning) (`r num(rs_m("Final abs. log error (median)", "Explanation"), 1)` against `r num(rs_m("Final abs. log error (median)", "No explanation"), 1)`) is therefore not a reliable difference. We keep the one student who entered a guess of 6,969, since the log scale limits the influence of such a value.
 
-xtab <- xtabs(~ q10_guess_coins_ai_accuracy + treatment_explain_id, tutorgpt)
-kable(prop.table(addmargins(xtab, 2), margin = 2) * 100, digits = 0)
+### Perceived accuracy of the AI and of the human benchmark (RQ2) {#sec:res-rq2}
 
-wilcox.test(as.numeric(q10_guess_coins_ai_accuracy) ~ treatment_explain_id, tutorgpt)
-```
+Students rated how accurate they thought the AI estimate was on a five-point scale. Without the explanation `r pct(one(pa_desc, target == "AI estimate", explain == "No")$pct_good)` of the students rated it good or very good, against `r pct(one(pa_desc, target == "AI estimate", explain == "Yes")$pct_good)` with the explanation (Table \@ref(tab:perceived)). The difference is not distinguishable from zero (ordinal-logit odds ratio `r ci(one(pa_eff, target == "AI estimate", model == "Ordinal logit, adjusted (OR)"))`, `r pv(one(pa_eff, target == "AI estimate", model == "Ordinal logit, adjusted (OR)")$p)`; Wilcoxon `r pv(one(pa_desc, target == "AI estimate", explain == "No")$wilcoxon_p)`). We therefore find no evidence that seeing the AI's reasoning changed the trust that students placed in its estimate.
 
-```{r credibility-human, include = FALSE, tab.cap = cap}
-cap <- paste(
-    "% of students who perceived the accuracy of the Human-generated average",
-    "guess for the coin value in the jar as _____"
-)
-xtab <- xtabs(~ q11_guess_coins_human_accuracy + treatment_explain_id, tutorgpt)
-kable(prop.table(xtab, margin = 2) * 100, digits = 0)
-
-wilcox.test(as.numeric(q11_guess_coins_human_accuracy) ~ treatment_explain_id, tutorgpt)
-```
-
-Conversely, exposure to the AI step-by-step reasoning seemed associated with students' perception of the accuracy of the "human" guess --- the average guess from 600 participants reported in the original study [@steiner2015turns].^[
-    Notably, this guess was $596, exceeding the correct value ($379.54) by about the same amount as the AI guess underestimated it ($213).
-] While all groups received the same human and AI estimates, 64% of students in the control rated the human estimate as "poor" or "very poor" against 45% of students exposed to AI reasoning. 
-
-Statistically, a Mann-Whitney U test indicates a significant difference between the two conditions at the 10% level ($W = 2179$, $p = .087$). Likewise, regression analysis that controls for fixed differences across schools and across individuals (including gender, the initial guess of the value of coins, and experience with ChatGPT) showed a significant effect (p < 0.05) of the assignment to AI reasoning on students' perceptions of the human guess, as shown in Figure \@ref(fig:perceived-accuracy-coins). These findings underscore the complex relationship between AI and learning. It suggests that students exposed to the AI's step-by-step reasoning may have identified minor errors, thus increasing their expectations of human accuracy, and those who viewed AI as a "black box" tended to underrate human estimates.
-
-```{r perceived-accuracy-coins, fig.cap = "Comparison of students' perceived accuracy of AI and human estimates across treatments on a five-point scale. Coefficients from separate ordinal logistic regressions controlling for students' location,  gender, and prior experience with ChatGPT. Positive coefficients indicate increased perceived accuracy associated with students' exposure to AI reasoning.", fig.width = 7, fig.height=3.5, echo = FALSE, warning = FALSE, message = FALSE}
-reverse_order <- function(x) {
-    factor(x, rev(levels(x)), ordered = TRUE)
+```{r perceived}
+fmt_row <- function(tg) {
+  a <- one(pa_desc, target == tg, explain == "No")
+  b <- one(pa_desc, target == tg, explain == "Yes")
+  o <- one(pa_eff, target == tg, model == "Ordinal logit, adjusted (OR)")
+  tibble(Target = tg,
+         `Poor / very poor (No / Yes)` = sprintf("%.0f%% / %.0f%%", a$pct_poor, b$pct_poor),
+         `Good / very good (No / Yes)` = sprintf("%.0f%% / %.0f%%", a$pct_good, b$pct_good),
+         `Wilcoxon p` = sprintf("%.2f", a$wilcoxon_p), `Odds ratio [95% CI]` = ci(o), p = sprintf("%.3f", o$p))
 }
-
-# Fit model
-model <- reverse_order(q11_guess_coins_human_accuracy) ~ treatment_explain_id +
-    location + has_used_before + gender
-
-fit <- MASS::polr(model, tutorgpt)
-fit_ai <- update(fit, reverse_order(q10_guess_coins_ai_accuracy) ~ .)
-
-list("Human" = fit, "AI" = fit_ai) %>%
-    lapply(broom::tidy, conf.int = TRUE) %>%
-    dplyr::bind_rows(.id = "depvar") %>%
-    filter(term == "treatment_explain_idexplain_yes") %>%
-    ggplot() +
-    aes(
-        color = "95% CI",
-        x = estimate, y = depvar,
-        xmin = conf.low, xmax = conf.high
-    ) +
-    scale_y_discrete(
-        labels = c(
-            Human = "Perceived human accuracy",
-            AI = "Perceived AI accuracy"
-        )
-    ) +
-    scale_color_manual(values = "navy") +
-    geom_vline(xintercept = 0, linetype = "dashed") +
-    geom_linerange(linewidth = 3, alpha = 0.2) +
-    geom_point(size = 3) +
-    guides(
-        colour = guide_legend(position = "inside")
-    ) +
-    theme(
-        legend.position.inside = c(0.1, 0.9),
-        legend.title = element_blank(),
-    ) +
-    labs(
-        x = "Regression coefficient (ordinal logistic)",
-        y = "Dep. var.",
-    )
+bind_rows(fmt_row("AI estimate"), fmt_row("Human average")) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Perceived accuracy of the two estimates, by whether students saw the AI's explanation (No / Yes)") %>%
+  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
+  kableExtra::footnote(
+    general = "Odds ratios above 1 mean a higher perceived accuracy with the explanation; they come from ordinal logit models controlling for school, gender and prior use of ChatGPT (N = 120).",
+    general_title = "Notes: ", threeparttable = TRUE, escape = TRUE
+  )
 ```
 
-## A Comparison of Socratic vs Non-Socratic AI
+The ratings of the human benchmark, the average guess of 600 people in the original study (US$ 596), tell a different story.^[The human average overestimated the true value by `r pct(100 * (596 / 379.54 - 1))`, while the AI estimate underestimated it by `r pct(100 * (1 - 213 / 379.54))`.] Without the explanation `r pct(one(pa_desc, target == "Human average", explain == "No")$pct_poor)` of the students rated the human average as poor or very poor, against `r pct(one(pa_desc, target == "Human average", explain == "Yes")$pct_poor)` with the explanation. In the adjusted model the explanation raised the odds of a higher rating (odds ratio `r ci(one(pa_eff, target == "Human average", model == "Ordinal logit, adjusted (OR)"))`, `r pv(one(pa_eff, target == "Human average", model == "Ordinal logit, adjusted (OR)")$p)`), but the unadjusted comparison is weaker (odds ratio `r ci(one(pa_eff, target == "Human average", model == "Ordinal logit, unadjusted (OR)"))`, `r pv(one(pa_eff, target == "Human average", model == "Ordinal logit, unadjusted (OR)")$p)`; Wilcoxon `r pv(one(pa_desc, target == "Human average", explain == "No")$wilcoxon_p)`). This result is borderline and was not corrected for testing two outcomes, so it should be considered exploratory. One reading is that students who had just seen the AI's reasoning were less inclined to dismiss the alternative estimate.
 
-### Student-AI Interactions
+## Experiment 2: Socratic Versus Non-Socratic AI {#sec:res-socratic}
 
-Figure \@ref(fig:messages) shows the students' message length and frequency in the Socratic AI and Non-Socratic AI groups, allowing us to compare the student-AI interactions across treatment groups. 
+Students then completed three tasks with the help of an AI agent that was randomly Socratic or non-Socratic: a numerical estimate (Task 1), an opinion essay (Task 2) and a physics question on sound (Task 3). Unless stated otherwise, the models are estimated separately for each task, with one observation per student, and adjust for school, the student's self-efficacy for that task and, in Task 3, whether the student answered correctly before using the AI (the pre-specified adjustment set). We report 95% confidence intervals based on HC2 robust errors for linear models and Wald intervals for ordinal-logit models.
 
-As shown in the figure, Socratic AI students exchanged a median of 20 messages, significantly more than the eight messages by non-Socratic AI students (Wilcoxon test, p < 0.01). In addition, the Socratic AI’s messages were significantly shorter, with a median of 42 words, compared to 123 for the non-Socratic tutor (Wilcoxon test, p < 0.01). Socratic students also used fewer words, with two peaks: one at ten and the other at one word. 
+### Confidence and learning (RQ3) {#sec:res-rq3}
 
-Socratic students, therefore, interacted more with the agent. Because the Socratic agent was instructed to answer with questions, part of this difference follows from the condition itself, and message counts alone do not show that students were more engaged or thought harder. We examine the content of the conversations next.
+**Confidence.** Students reported how confident they were that their answer was accurate, on a five-point scale. The distributions are similar in the two groups (Figure \@ref(fig:confidence)). In Tasks 1 and 2 the adjusted difference is essentially zero (Table \@ref(tab:primary)): in Task 1 the Socratic group scored `r num(-c_ols("C1")$est)` points lower on the five-point scale (95% CI `r num(c_ols("C1")$lo)` to `r num(c_ols("C1")$hi)`) and in Task 2 `r num(c_ols("C2")$est)` points higher (`r num(c_ols("C2")$lo)` to `r num(c_ols("C2")$hi)`). In Task 3 the Socratic group was `r num(-c_ols("C3")$est)` points less confident (`r num(c_ols("C3")$lo)` to `r num(c_ols("C3")$hi)`; `r num(-one(conf_size, outcome == "C3")$adj_effect_sd)` standard deviations), which is within the range of chance (`r pv(c_ols("C3")$p)`; randomisation inference `r pv(one(ri, outcome == "C3")$p)`). After the Holm correction across the four primary outcomes the smallest adjusted p-value is `r num(min(holm$p_holm), 2)`. Pooling the three tasks gives a difference of `r ci(conf_pool)` standard deviations (errors clustered by student; `r pv(conf_pool$p)`), and the effect does not differ significantly across tasks (`r pv(conf_pool$p_task_diff)`). The ordinal and linear models agree (Table \@ref(tab:primary)).
 
-```{r messages, fig.cap = "Comparison of message frequency and word count per message across Socratic and non-Socratic treatments. Top panel (**A**) shows differences in the frequency of messages exchanged, while the bottom panels (**B** ) depict the word counts per message for the AI agent (left) and the students (right).", fig.width = 7, fig.height = 7, echo = FALSE}
-palette <- c("#d95f02", "#7570b3")
-
-# Step 1. count messages per users for Panel A
-messages <- chats %>%
-    dplyr::filter(!is.na(created_at)) %>%
-    dplyr::count(location, user_id, treatment_tutor_id, sort = TRUE)
-
-# Show KS-test differences
-# wilcox.test(n ~ treatment_tutor_id, data = messages)
-
-# Compute medians
-df_med_messages <- messages %>%
-    summarise(n = median(n), .by = c(treatment_tutor_id)) %>%
-    mutate(
-        label = case_when(
-            treatment_tutor_id == "socratic" ~
-                paste0("Socratic median exchanges = ", n),
-            TRUE ~ paste0("Non-Socratic median exchanges = ", n)
-        )
-    )
-
-# Step 2: compute med word counts for panel B
-df_med_words <- chats %>%
-    summarise(
-        words = median(words),
-        .by = c(treatment_tutor_id, role_label)
-    ) %>%
-    mutate(
-        label = case_when(
-            treatment_tutor_id == "socratic" ~
-                paste0("Socratic med. words = ", words),
-            TRUE ~ paste0("Non-Socratic med. words = ", words)
-        )
-    )
-
-# Step 3: Create Panel A - Message frequency plot
-p_messages <- ggplot(messages) +
-    aes(
-        x = n,
-        y = treatment_tutor_id,
-        color = treatment_tutor_id,
-        fill = treatment_tutor_id
-    ) +
-    geom_boxplot(
-        width = .15,
-        fill = "whitesmoke",
-        outlier.shape = NA
-    ) +
-    ggdist::stat_halfeye(
-        adjust = .75,
-        alpha = .25,
-        width = 1,
-        justification = -.2,
-        point_colour = NA,
-        point_interval = NULL
-    ) +
-    geom_point(
-        size = .75,
-        alpha = .5,
-        position = position_jitter(width = .05, height = 0.05)
-    ) +
-    geom_text(
-        data = df_med_messages,
-        nudge_y = .25,
-        aes(label = label),
-        size = 3,
-        fontface = "bold"
-    ) +
-    scale_y_discrete(
-        labels = c(socratic = "Socratic", non_socratic = "Non-Socratic")
-    ) +
-    scale_x_log10() +
-    scale_fill_manual(values = palette) +
-    scale_color_manual(values = palette) +
-    theme(
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        legend.position = "none",
-        panel.spacing = unit(3, "lines"),
-    )
-
-# Stpe 4: Create Panel B
-p_words <- chats %>%
-    ggplot() +
-    aes(
-        x = words,
-        y = treatment_tutor_id,
-        color = treatment_tutor_id,
-        fill = treatment_tutor_id
-    ) +
-    geom_boxplot(
-        width = .15,
-        fill = "whitesmoke",
-        outlier.shape = NA
-    ) +
-    ggdist::stat_halfeye(
-        alpha = .25,
-        width = .5,
-        .width = 0,
-        justification = -.2,
-        point_colour = NA,
-        point_interval = NULL
-    ) +
-    geom_point(
-        size = .15,
-        alpha = .3,
-        position = position_jitter(width = .05, height = 0.05)
-    ) +
-    geom_text(
-        data = df_med_words,
-        nudge_y = .25,
-        aes(label = label),
-        size = 3,
-        fontface = "bold"
-    ) +
-    facet_wrap(. ~ role_label) +
-    scale_color_manual(values = palette) +
-    scale_fill_manual(values = palette) +
-    scale_y_discrete(
-        labels = c(socratic = "Socratic", non_socratic = "Non-Socratic")
-    ) +
-    scale_x_log10() +
-    theme(
-        legend.position = "none",
-        panel.spacing = unit(3, "lines"),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-    ) +
-    coord_cartesian(clip = FALSE)
-
-# Panels A and B - combined
-p_combined <-
-    (p_messages + labs(
-        title = NULL,
-        subtitle = NULL,
-        caption = NULL,
-        x = "Messages Exchanged with AI Agent (per student)",
-        y = NULL,
-    )) /
-        (p_words + labs(
-            title = NULL,
-            subtitle = NULL,
-            caption = NULL,
-            y = NULL,
-            x = "Word Counts (per message)"
-        ))
-
-p_combined + plot_annotation(tag_levels = "A")
+```{r primary}
+cm <- function(id, a) sprintf("%.2f", conf_desc$mean[conf_desc$task == task_name[[id]] & conf_desc$arm == a])
+row_conf <- function(id, lab) {
+  o <- c_ols(id)
+  r <- one(conf_eff, outcome == id, model == "Ordinal logit, adjusted (OR)")
+  tibble(Outcome = lab, `Non-Socratic` = cm(id, "Non-Socratic"), Socratic = cm(id, "Socratic"),
+         `Adjusted difference [95% CI]` = ci(o), `Odds ratio [95% CI]` = ci(r),
+         p = sprintf("%.2f", o$p), `RI p` = sprintf("%.2f", one(ri, outcome == id)$p), `Holm p` = sprintf("%.2f", one(holm, outcome == id)$p_holm))
+}
+k_non <- one(corr_desc, arm == "Non-Socratic"); k_soc <- one(corr_desc, arm == "Socratic")
+k_row <- one(corr_eff, model == "Adjusted risk difference (LPM, HC2)")
+k_or <- corr_or %>% rename(est = or)
+rowk <- tibble(Outcome = "Task 3 correct after AI (%)", `Non-Socratic` = sprintf("%.1f", k_non$pct_correct_after),
+               Socratic = sprintf("%.1f", k_soc$pct_correct_after),
+               `Adjusted difference [95% CI]` = ci(k_row, 100, 1), `Odds ratio [95% CI]` = ci(k_or),
+               p = sprintf("%.2f", k_row$p), `RI p` = sprintf("%.2f", one(ri, outcome == "K3")$p), `Holm p` = sprintf("%.2f", one(holm, outcome == "K3")$p_holm))
+bind_rows(row_conf("C1", "Confidence, Task 1 (1-5)"), row_conf("C2", "Confidence, Task 2 (1-5)"),
+          row_conf("C3", "Confidence, Task 3 (1-5)"), rowk) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Primary outcomes: Socratic minus non-Socratic AI. The first two columns are means (confidence) or the percentage correct (Task 3).") %>%
+  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
+  kableExtra::footnote(
+    general = paste("Adjusted differences are in scale points for confidence (linear model) and percentage points for correctness (linear probability model);",
+                    "odds ratios come from ordinal (confidence) or binary (correctness) logit models. RI p = randomisation-inference p-value (5,000 permutations of the assignment within school);",
+                    "Holm p = Holm-adjusted p-value across the four outcomes, based on the adjusted models. N = 120 in every row."),
+    general_title = "Notes: ", threeparttable = TRUE, escape = TRUE
+  )
 ```
 
+```{r confidence, fig.cap = "Students' confidence in their answers by task and AI agent: shares of students at each point of the five-point scale.", out.width = "80%", fig.align = "center"}
+knitr::include_graphics(fig("confidence_distribution.pdf"))
+```
 
-<!-- ### Automatic evaluation of Socratic dimensions 
+With about `r round(n_an / 2)` students per arm, null results must be read with the precision of the design in mind. The minimum detectable effect (80% power, two-sided 5% test) is about `r num(one(mde, outcome == "C1")$mde, 2)` scale points (`r num(one(mde, outcome == "C1")$mde_sd, 2)` standard deviations) for confidence and `r num(one(mde, outcome == "K3")$mde, 0)` percentage points for correctness. The confidence intervals in Table \@ref(tab:primary) are consistent with true effects of that size in either direction, so we can exclude large effects but not small or moderate ones. The conclusion is robust to the specification (Figure \@ref(fig:forest)): unadjusted models, models with additional covariates (gender, grades, prior AI use and the explanation arm) and fully interacted models give the same signs and similar magnitudes (for instance, in Task 3 the estimates of the effect on confidence range from `r num(min(filter(robust, outcome == "C3", !spec %in% c("Brussels only", "Seville only"))$est))` to `r num(max(filter(robust, outcome == "C3", !spec %in% c("Brussels only", "Seville only"))$est))` points). The Task 3 estimate is larger in Seville (`r num(one(robust, outcome == "C3", spec == "Seville only")$est)` points) than in Brussels (`r num(one(robust, outcome == "C3", spec == "Brussels only")$est)`), but the interaction between school and treatment is not significant for any primary outcome (smallest `r pv(min(het$p))`).
 
-We conducted a detailed textual analysis of all AI–student conversations to (1) test the pedagogical differences between the Socratic and Non-Socratic tutors as they emerged in our experiment, and (2) derive additional indicators of student engagement that extend beyond simple measures such as word counts or the number of exchanges. To address the first aim, we adapted a rubric from Pauzi et al. [@pauzi2025automating], originally designed for automating the pedagogical evaluation of LLM-based conversational agents. The rubric captures key dimensions of Socratic tutoring, including providing support without directly giving answers ("scaffolding"), offering stepwise guidance, maintaining an encouraging tone, and sustaining a conversational guidance.
+```{r forest, fig.cap = "Adjusted effects of the Socratic AI on the four primary outcomes with 95% confidence intervals. Confidence is expressed in standard deviations of the five-point scale and correctness in percentage points.", out.width = "75%", fig.align = "center"}
+knitr::include_graphics(fig("summary_forest.pdf"))
+```
 
-While the original rubric consisted of five binary items, we modified it in two ways. First, we replaced the binary response format with a 5-point scale to increase statistical power and improve granularity. Second, we expanded the set of items to capture additional pedagogically relevant dimensions of conversational agents, including clarity, engagement, and depth of response. Using this revised rubric, we evaluated all 362 conversations^[We collected chats from 122 participants in 3 tasks. So, the total chats were 366. After excluding four with no proper conversation, we ended up with 362 chats for analysis.] through an LLM-based coding procedure and subsequently conducted regression analyses that accounted for within-student correlation, included school fixed effects, and controlled for the number of conversational exchanges. (See the Rubric in the Appendix, Section \ref{sec:socratic-dimension}).
+**Learning.** Task 3 asked whether sound travels faster in water than in air, and why. Before using the AI `r pct(pct_before)` of the students gave the correct answer, and after using it `r pct(pct_after)` did (Figure \@ref(fig:correctness)). The improvement came from students who had been wrong: `r pct(tr_rate("Non-Socratic", 0, 1))` of the initially incorrect students in the non-Socratic group and `r pct(tr_rate("Socratic", 0, 1))` in the Socratic group answered correctly afterwards, while only `r pct(tr_rate("Non-Socratic", 1, 0))` and `r pct(tr_rate("Socratic", 1, 0))` of those initially correct changed to a wrong answer. The two agents were equally effective: the adjusted difference in the probability of a correct final answer is `r num(100 * k_row$est, 1)` percentage points (95% CI `r num(100 * k_row$lo, 1)` to `r num(100 * k_row$hi, 1)`; `r pv(k_row$p)`; odds ratio `r ci(k_or)`). This null result is informative only relative to the minimum detectable effect of about `r num(one(mde, outcome == "K3")$mde, 0)` percentage points. The Socratic group started from a lower baseline (`r pct(corr_desc$pct_correct_before[corr_desc$arm == "Socratic"])` correct against `r pct(corr_desc$pct_correct_before[corr_desc$arm == "Non-Socratic"])`), which is why the models control for the baseline answer.
 
-Figure \@ref(fig:socratic-dimensions) presents the regression results. The Socratic AI scored significantly higher on the core Socratic dimensions, showing greater average supportive guidance or scaffolding (coef = 0.55, SE = 0.12), more next-step guidance (coef = 0.54, SE = 0.12), and a more encouraging tone (coef = 0.53, SE = 0.12). We found no significant differences between conditions on the remaining Socratic dimensions. For the additional indicators, the Socratic AI elicited higher student engagement (coef = 0.43, SE = 0.12), although its clarity and depth of response were significantly lower (coef = -0.38, SE = 0.11; coef = -0.55, SE = 0.11, respectively). Taken together, these findings indicate that the Socratic AI followed Socratic principles (encouraging tone and supportive guidance) and, even after controlling for the number of exchanges, was more engaging. However, this increased conversational and encouraging guidance appears to have come at a cost to overall clarity and response depth. -->
+```{r correctness, fig.cap = "Share of students answering the Task 3 question correctly before and after interacting with the AI agent, by agent type (95% Wilson confidence intervals).", out.width = "65%", fig.align = "center"}
+knitr::include_graphics(fig("correctness.pdf"))
+```
 
+Confidence tracked correctness only weakly. In the non-Socratic group, students whose final answer was right were just `r num(one(calib, arm == "Non-Socratic", post_correct == 1)$mean_confidence - one(calib, arm == "Non-Socratic", post_correct == 0)$mean_confidence)` points more confident than those who were wrong; in the Socratic group the gap was `r num(one(calib, arm == "Socratic", post_correct == 1)$mean_confidence - one(calib, arm == "Socratic", post_correct == 0)$mean_confidence)` points. The gap arises because students who were wrong were less confident with the Socratic agent (`r num(one(calib, arm == "Socratic", post_correct == 0)$mean_confidence)` against `r num(one(calib, arm == "Non-Socratic", post_correct == 0)$mean_confidence)`), but this difference is not significant (`r pv(one(calib_int, term == "z")$p)`), and neither is the interaction between the agent and correctness (`r pv(one(calib_int, term == "z:post_correct")$p)`).
 
-### What the conversations show: AI agent conduct and observable student behaviour {#sec:llm-results}
+**Retention.** After the tasks, students answered without the AI a related question: in which of five materials (gold, rubber, warm air, cold air, water) does sound travel fastest. Fewer students answered correctly than after the interaction with the AI in Task 3, and the proportion did not differ by agent (Table \@ref(tab:retention)). This result needs a caveat about the data. The stored answers to this question use different codes in the two schools (numeric in Seville, labels borrowed from another scale in Brussels), so which code stands for gold is an inference. Under the coding used in the previous version of this manuscript `r pct(retention$pct_correct[1], 1)` of the students were correct, under an alternative coding that follows the order of the options `r pct(retention$pct_correct[2], 1)`, and using the Seville students alone `r pct(retention$pct_correct[3], 1)`. Under all three codings fewer than half of the students gave the right answer, and the Socratic and non-Socratic groups do not differ (differences between `r num(100 * min(retention$est), 1)` and `r num(100 * max(retention$est), 1)` percentage points; all p-values above `r num(min(retention$p), 2)`). We therefore conclude that many students did not transfer what they had learned with the AI, but we do not report a precise rate until the coding of this item is verified against the original questionnaire.
 
-We coded the conversations as described in Section \@ref(sec:llm-coding). The 40 development conversations are excluded here; the results below are based on the 314 holdout conversations from 85 students (161 non-Socratic, 153 Socratic), and Appendix \@ref(sec:si-llm-protocol) reports the all-conversations results.
+```{r retention}
+retention %>%
+  mutate(coding = sub("^[ABC]: ", "", coding), pct = sprintf("%.1f", pct_correct),
+         effect = sprintf("%s [%s, %s]", num(100 * est, 1), num(100 * lo, 1), num(100 * hi, 1)), p = sprintf("%.2f", p)) %>%
+  select(coding, n, pct, effect, p) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "",
+                  col.names = c("Coding of the answer 'gold'", "N", "% correct", "Difference, pp [95% CI]", "p"),
+                  caption = "Answer to the transfer question (answered without AI) under three codings of the stored responses") %>%
+  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
+  kableExtra::footnote(general = "Difference is Socratic minus non-Socratic (linear probability models with HC2 robust errors, adjusted for school, Task 3 self-efficacy and the baseline answer).",
+                       general_title = "Notes: ", threeparttable = TRUE, escape = TRUE)
+```
 
-*Agreement between raters.* Of the four student-behaviour items, reasoning quality (alpha = 0.70) and knowledge building (0.81) met the pre-specified reliability threshold and are our primary outcomes. Effort and task focus fell just short (alpha = 0.669; threshold 0.67), and the yes/no question item reached 74% agreement (threshold 80%), because the two raters disagreed on how often students asked questions (13% vs 25% of conversations). We report both as exploratory. None of the four tutor-conduct items reached the threshold (alpha between -0.20 and 0.56). The raters differed in leniency (the GPT model gave higher scores than the Claude model), but ranked conversations similarly (rank correlations 0.55-0.70), so we report the agent-Socratic-conduct results as exploratory.
+### Perceived helpfulness (RQ4) {#sec:res-rq4}
 
-*Socratic conduct.* The Socratic agent was rated clearly higher on supportive guidance without giving the answer (+1.45 standardised units, 95% CI 1.30 to 1.61), next-step guidance (+1.41, 1.25 to 1.56) and encouraging tone (+1.09, 0.92 to 1.27), and the two raters agreed on the direction and approximate size of these differences (Appendix Table \@ref(tab:si-per-rater)). Conversational flow was rated higher after adjusting for message counts (+0.36, 0.14 to 0.58) but not before (-0.11, -0.34 to 0.11), so we do not interpret it. These results support that the Socratic agent behaved in a Socratic way. 
+Students also rated how helpful it was to interact with the AI tutor. The two schools used different five-point labels (the top category was "Extremely helpful" in Seville and "Very helpful" in Brussels), and the scales were aligned by the position of the labels; we check below that the results do not depend on this choice. Helpfulness is a secondary outcome and is not part of the Holm family.
 
-<!-- [If you keep the single-rater result on clarity and depth from the earlier coding: "In an earlier single-rater coding, the Socratic agent was also rated less clear and less deep; we did not replicate this with two raters."] -->
+Students rated the Socratic agent as less helpful in all three tasks, with the clearest difference in Task 1 (Figure \@ref(fig:helpfulness-fig) and Table \@ref(tab:helpfulness)). In Task 1 the adjusted difference is `r num(h_ols("Task 1")$est)` points (95% CI `r num(h_ols("Task 1")$lo)` to `r num(h_ols("Task 1")$hi)`; `r pv(h_ols("Task 1")$p)`), and the share of students who rated the agent as helpful or very helpful is `r num(-100 * one(help_eff, grepl("Task 1", task), grepl("Rated 4-5", model))$est, 0)` percentage points lower (`r pct(one(help_desc, grepl("Task 1", task), arm == "Socratic")$pct_rated_4_5)` against `r pct(one(help_desc, grepl("Task 1", task), arm == "Non-Socratic")$pct_rated_4_5)`). In Task 3 the difference is `r num(h_ols("Task 3")$est)` points (`r num(h_ols("Task 3")$lo)` to `r num(h_ols("Task 3")$hi)`; `r pv(h_ols("Task 3")$p)`), but the ordinal model gives a weaker result (odds ratio `r ci(h_or("Task 3"))`, `r pv(h_or("Task 3")$p)`). In Task 2, the essay, there is no difference (`r num(h_ols("Task 2")$est)` points; `r pv(h_ols("Task 2")$p)`). Pooling the tasks (helpfulness standardised within task, errors clustered by student), the Socratic agent was rated `r num(-help_pool$est)` standard deviations lower (95% CI `r num(-help_pool$hi)` to `r num(-help_pool$lo)`; `r pv(help_pool$p)`), with weak evidence that the size of the difference varies across tasks (`r pv(help_pool$p_task_diff)`). Allowing for three task-level tests, the Holm-adjusted p-values of the linear models are `r paste(sprintf("%.3f", p.adjust(help_eff %>% filter(model == "OLS, adjusted (points)") %>% pull(p), "holm")), collapse = ", ")` for Tasks 1, 2 and 3, so only Task 1 stands as a clear result.
 
-*Student behaviour.* Table \@ref(tab:llm-effects) summarises the comparison. Without adjustment, Socratic students scored substantially higher on reasoning quality (+0.76; 0.55 to 0.96), knowledge building (+0.74; 0.53 to 0.94) and effort (+0.82; 0.62 to 1.02). Most of this difference is mechanical: the number and length of student messages alone account for about half of the variation in these scores (marginal R-squared 0.51-0.64), and the Socratic condition prompts more and longer messages. 
+```{r helpfulness}
+hrow <- function(k) {
+  o <- h_ols(k); r <- h_or(k)
+  dn <- one(help_desc, grepl(k, task), arm == "Non-Socratic"); ds <- one(help_desc, grepl(k, task), arm == "Socratic")
+  tibble(Task = k,
+         `Mean (non-Socratic / Socratic)` = sprintf("%.2f / %.2f", dn$mean, ds$mean),
+         `Rated 4-5 (non-Socratic / Socratic)` = sprintf("%.0f%% / %.0f%%", dn$pct_rated_4_5, ds$pct_rated_4_5),
+         `Difference, points [95% CI]` = ci(o), `p (linear)` = sprintf("%.3f", o$p),
+         `Odds ratio [95% CI]` = ci(r), `p (ordinal)` = sprintf("%.3f", r$p))
+}
+bind_rows(hrow("Task 1"), hrow("Task 2"), hrow("Task 3")) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Perceived helpfulness of the AI agent (1-5): Socratic versus non-Socratic") %>%
+  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
+  kableExtra::footnote(general = "Differences are Socratic minus non-Socratic, adjusted for school and task-specific self-efficacy (and the baseline answer in Task 3); linear models use HC2 robust errors. Odds ratios below 1 mean lower helpfulness ratings with the Socratic agent. N = 120 per task.",
+                       general_title = "Notes: ", threeparttable = TRUE, escape = TRUE)
+```
 
-After adjusting for the number of student messages and words, the difference remained for reasoning quality (+0.29; 0.12 to 0.46; Benjamini-Hochberg-adjusted p = 0.002) and was smaller and borderline for knowledge building (+0.17; 0.01 to 0.33; adjusted p = 0.0496). Exploratory items were in the same direction: effort (+0.24; 0.10 to 0.39) and asking a content question (+0.07 on the 0-1 scale; 0.00 to 0.14, p = 0.064).
+```{r helpfulness-fig, fig.cap = "Perceived helpfulness of the AI agent by task and agent type: shares of students at each point of the five-point scale.", out.width = "80%", fig.align = "center"}
+knitr::include_graphics(fig("helpfulness_distribution.pdf"))
+```
 
-The reasoning result was stable across the pre-specified checks: it was similar when the rater saw only the student's messages (+0.30; 0.12 to 0.47), when conversations with a single student message were excluded (+0.49; 0.19 to 0.80), when the development conversations were added (+0.28; 0.11 to 0.44), and for each rater analysed alone (+0.29 in both). The knowledge-building result was less robust: it was close to zero for the Claude rater alone (+0.09; -0.08 to 0.27) and positive for the GPT rater (+0.25; 0.06 to 0.44). We, therefore, regard the evidence for higher reasoning as moderate, and the evidence for knowledge building as weak.
+Because the two schools used different labels, we checked that the result does not depend on how the scales are aligned (Table \@ref(tab:helpfulness-checks)). Estimating the Task 1 model separately in each school gives odds ratios of `r num(one(help_chk, grepl("Task 1", task), grepl("Brussels", check))$est)` in Brussels and `r num(one(help_chk, grepl("Task 1", task), grepl("Seville", check))$est)` in Seville, both below 1 although with wide intervals, and recoding Seville's "Very helpful" as the top category (the previous coding) leaves the pooled Task 1 estimate nearly unchanged (odds ratio `r num(one(help_chk, grepl("Task 1", task), grepl("Manuscript", check))$est)`, `r pv(one(help_chk, grepl("Task 1", task), grepl("Manuscript", check))$p)`). In Task 3 the within-school estimates differ (Brussels `r num(one(help_chk, grepl("Task 3", task), grepl("Brussels", check))$est)`, Seville `r num(one(help_chk, grepl("Task 3", task), grepl("Seville", check))$est)`), so the Task 3 result is less secure. In sum, students found the Socratic agent less helpful, most clearly when the task was to estimate a quantity.
+
+```{r helpfulness-checks}
+help_chk %>%
+  mutate(task = sub(":.*", "", task), check = sub(" \\(ordinal OR\\)", "", check),
+         check = sub("Manuscript recode, pooled", "Pooled, alternative recode", check),
+         or = sprintf("%s [%s, %s]", num(est), num(lo), num(hi)), p = sprintf("%.3f", p)) %>%
+  select(task, check, n, or, p) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", col.names = c("Task", "Specification", "N", "Odds ratio [95% CI]", "p"),
+                  caption = "Perceived helpfulness: Socratic versus non-Socratic odds ratio under alternative alignments of the two schools' scales") %>%
+  kableExtra::kable_styling(font_size = 9) %>%
+  kableExtra::collapse_rows(columns = 1, latex_hline = "major")
+```
+
+### What the Conversations Show (RQ5) {#sec:llm-results}
+
+We now turn to the conversations between students and the AI agents. Two caveats apply to this section. First, the conversation logs identify `r n_accounts` user accounts, fewer than the `r n_all` students in the questionnaire, and `r n_both` of the accounts have conversations in both conditions, so the random intercept in the models below groups conversations by account and may not correspond to a single student.^[This is a data issue that we are still resolving. It does not affect the questionnaire-based results above, which do not use the logs.] Second, the ratings come from LLMs, and agreement between them shows consistency, not validity.
+
+**Interaction volume.** Conversations with the Socratic agent were longer (Table \@ref(tab:volume)). Students sent a median of `r vol$median_socratic[1]` messages per conversation to the Socratic agent and `r vol$median_non_socratic[1]` to the non-Socratic agent (Wilcoxon `r pv(vol$wilcoxon_p[1])`), and wrote a median of `r vol$median_socratic[2]` against `r vol$median_non_socratic[2]` words. In a mixed model that accounts for school, the order of the conversation and the account, Socratic conversations had `r num(vol$ratio[1])` times as many student messages (95% CI `r num(vol$ratio_lo[1])` to `r num(vol$ratio_hi[1])`) and `r num(vol$ratio[2])` times as many student words (`r num(vol$ratio_lo[2])` to `r num(vol$ratio_hi[2])`). The same pattern appears in the number of turns that the Brussels students reported in the questionnaire (medians of `r one(use, grepl("Task 1", task), arm == "Socratic")$median` against `r one(use, grepl("Task 1", task), arm == "Non-Socratic")$median` in Task 1 and `r one(use, grepl("Task 2", task), arm == "Socratic")$median` against `r one(use, grepl("Task 2", task), arm == "Non-Socratic")$median` in Task 2; Wilcoxon tests: `r pv(one(use, grepl("Task 1", task), arm == "Socratic")$wilcoxon_p)` in Task 1, `r pv(one(use, grepl("Task 2", task), arm == "Socratic")$wilcoxon_p)` in Task 2 and `r pv(one(use, grepl("Task 3", task), arm == "Socratic")$wilcoxon_p)` in Task 3). Because the Socratic agent was instructed to reply with questions, this difference follows in part from the condition itself, and it is not evidence that students were more engaged or thought harder.
+
+```{r volume}
+vol %>%
+  transmute(Measure = measure, `Median, non-Socratic` = median_non_socratic, `Median, Socratic` = median_socratic,
+            `Wilcoxon p` = ifelse(wilcoxon_p < 0.001, "< 0.001", sprintf("%.3f", wilcoxon_p)),
+            `Ratio Socratic / non-Socratic [95% CI]` = sprintf("%.2f [%.2f, %.2f]", ratio, ratio_lo, ratio_hi),
+            `Mixed-model p` = ifelse(p_mixed < 0.001, "< 0.001", sprintf("%.3f", p_mixed))) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Student messages and words per conversation, by agent (all 354 conversations)") %>%
+  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
+  kableExtra::footnote(general = "Ratios are from linear mixed models of the logarithm of each count with a random intercept for the account and fixed effects for school and conversation order.",
+                       general_title = "Notes: ", threeparttable = TRUE, escape = TRUE)
+```
+
+**Agreement between the raters.** We analyse the 314 holdout conversations (`r llm$students[1]` accounts; `r vol_desc$chats[vol_desc$arm == "non_socratic"]` with the non-Socratic and `r vol_desc$chats[vol_desc$arm == "socratic"]` with the Socratic agent), and report the agreement of the two raters in Table \@ref(tab:reliability). Among the student-behaviour items, reasoning quality (Krippendorff's alpha `r num(one(rel, mode == "full", item == "reasoning_quality")$alpha)`) and knowledge building (`r num(one(rel, mode == "full", item == "knowledge_building")$alpha)`) reached the pre-specified threshold of 0.67 and are our primary outcomes. Effort and task focus fell just short (`r num(one(rel, mode == "full", item == "effort_seriousness")$alpha, 3)`), and the yes/no question item reached `r pct(one(rel, mode == "full", item == "question_asking")$pct_agree)` agreement against the threshold of 80%. We report these two as exploratory. None of the four items describing the AI agent's Socratic conduct reached the threshold (alpha between `r num(min(rel_c$alpha))` and `r num(max(rel_c$alpha))`). The two raters differed in leniency but ranked the conversations similarly (rank correlations of `r num(min(rel_c$spearman))` to `r num(max(rel_c$spearman))` for these items), so the results on the agent's conduct are exploratory.
+
+```{r reliability}
+labs <- c(reasoning_quality = "Reasoning quality", knowledge_building = "Knowledge building", effort_seriousness = "Effort and task focus",
+          question_asking = "Asks a content question", supportive_guidance = "Supportive guidance", next_step_guidance = "Next-step guidance",
+          encouraging_tone = "Encouraging tone", conversational_flow = "Conversational flow")
+rel %>%
+  filter(mode == "full", item %in% names(labs)) %>%
+  mutate(Group = ifelse(rubric == "student", "Student behaviour", "AI agent conduct"), Item = labs[item],
+         Agreement = ifelse(is.na(pct_agree), sprintf("alpha = %.2f", alpha), sprintf("%.0f%% agreement, AC1 = %.2f", pct_agree, ac1)),
+         Spearman = sprintf("%.2f", spearman), Status = ifelse(status == "primary", "Primary", "Exploratory")) %>%
+  arrange(desc(rubric == "student"), match(item, names(labs))) %>%
+  select(Group, Item, Agreement, Spearman, Status) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Agreement between the two LLM raters on the 314 holdout conversations") %>%
+  kableExtra::kable_styling(font_size = 9) %>%
+  kableExtra::collapse_rows(columns = 1, latex_hline = "major")
+```
+
+**AI agent conduct.** The Socratic agent was rated clearly higher on supportive guidance without giving the answer (`r ci(one(llm, item == "supportive_guidance", spec == "adjusted"))` standardised units), next-step guidance (`r ci(one(llm, item == "next_step_guidance", spec == "adjusted"))`) and encouraging tone (`r ci(one(llm, item == "encouraging_tone", spec == "adjusted"))`), and both raters agreed on the direction and approximate size of these differences (Table \@ref(tab:si-per-rater) in the Supporting Information). Conversational flow was higher after adjusting for message counts (`r ci(one(llm, item == "conversational_flow", spec == "adjusted"))`) but not before (`r ci(one(llm, item == "conversational_flow", spec == "unadjusted"))`), so we do not interpret it. Although the reliability of these items is below our threshold, the large and consistent differences support the view that the two agents behaved as instructed.
+
+**Observable student behaviour.** Table \@ref(tab:llm-effects) and Figure \@ref(fig:llm-effects-fig) compare the students' conversations. Without adjustment, students with the Socratic agent scored higher on reasoning quality (`r ci(one(llm, item == "reasoning_quality", spec == "unadjusted"))`), knowledge building (`r ci(one(llm, item == "knowledge_building", spec == "unadjusted"))`) and effort (`r ci(one(llm, item == "effort_seriousness", spec == "unadjusted"))`). Most of this difference is mechanical: the number and length of the student's messages alone account for about half of the variation in these scores (marginal R-squared between `r num(min(filter(llm_r2, item %in% c("reasoning_quality", "knowledge_building", "effort_seriousness"))$R2_length_only))` and `r num(max(filter(llm_r2, item %in% c("reasoning_quality", "knowledge_building", "effort_seriousness"))$R2_length_only))`), and the Socratic agent prompts more and longer messages.
+
+After adjusting for the number of student messages and words, the difference remained for reasoning quality (`r ci(one(llm, item == "reasoning_quality", spec == "adjusted"))`; Benjamini-Hochberg adjusted `r pv(one(llm, item == "reasoning_quality", spec == "adjusted")$p_bh)`) and was smaller and borderline for knowledge building (`r ci(one(llm, item == "knowledge_building", spec == "adjusted"))`; adjusted `r pv(one(llm, item == "knowledge_building", spec == "adjusted")$p_bh)`). The exploratory items point the same way: effort (`r ci(one(llm, item == "effort_seriousness", spec == "adjusted"))`) and asking a content question (`r ci(one(llm, item == "question_asking", spec == "adjusted"))` on the 0-1 scale; `r pv(one(llm, item == "question_asking", spec == "adjusted")$p)`).
+
+The reasoning result was stable across the pre-specified checks (Table \@ref(tab:si-sensitivity) in the Supporting Information): it was similar when the rater saw only the student's messages (`r ci(one(llm_sens, analysis == "student-only ratings", item == "reasoning_quality"))`), when conversations with a single student message were excluded (`r ci(one(llm_sens, analysis == "excl. 1-message chats", item == "reasoning_quality"))`), when the development conversations were added (`r ci(one(llm_sens, analysis == "all chats (holdout + development)", item == "reasoning_quality"))`), and for each rater analysed alone (`r num(one(llm_rater, item == "reasoning_quality", model == "claude-haiku-5-5")$est)` and `r num(one(llm_rater, item == "reasoning_quality", model == "gpt-4o-mini")$est)`). The knowledge-building result was less robust: it was close to zero for the Claude rater alone (`r ci(one(llm_rater, item == "knowledge_building", model == "claude-haiku-5-5"))`) and positive for the GPT rater (`r ci(one(llm_rater, item == "knowledge_building", model == "gpt-4o-mini"))`). We therefore regard the evidence for more observable reasoning with the Socratic agent as moderate, and the evidence for knowledge building as weak. These are ratings of what is visible in the transcript, not measures of learning; and, as shown above, the Socratic condition did not improve the Task 3 answers.
 
 ```{r llm-effects}
-tab <- readr::read_csv(
-    here::here(
-        "output/tables/tab_llm_effects.csv"
-    )
-)
-knitr::kable(head(tab), caption = "TBA")
-cap <- "Socratic minus non-Socratic differences in LLM-coded student behaviour (314 holdout conversations from 85 students). Estimates are from linear mixed models with a random intercept for student and fixed effects for school and conversation order; scores are standardised averages of two LLM raters (the yes/no item is a proportion). Brackets show 95% confidence intervals. BH = Benjamini-Hochberg adjusted within the four student items." # nolint
+llm %>%
+  mutate(cell = sprintf("%.2f [%.2f, %.2f]", est, lo, hi)) %>%
+  select(family, item, status, spec, cell, p_bh) %>%
+  pivot_wider(names_from = spec, values_from = c(cell, p_bh)) %>%
+  arrange(family, match(item, names(labs))) %>%
+  mutate(Group = ifelse(grepl("^A", family), "Student behaviour", "AI agent conduct"), Item = labs[item],
+         Status = ifelse(status == "primary", "Primary", "Exploratory"),
+         p_adj = ifelse(p_bh_adjusted < 0.001, "< 0.001", sprintf("%.3f", p_bh_adjusted))) %>%
+  select(Group, Item, Status, cell_unadjusted, cell_adjusted, p_adj) %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", col.names = c("Group", "Item", "Status", "Unadjusted [95% CI]", "Adjusted [95% CI]", "BH p (adjusted)"),
+                  caption = "Socratic minus non-Socratic differences in LLM-coded conversations (314 holdout conversations). Scores are standardised averages of two LLM raters (the yes/no item is a proportion).") %>%
+  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
+  kableExtra::collapse_rows(columns = 1, latex_hline = "major") %>%
+  kableExtra::footnote(general = "Linear mixed models with a random intercept for the account and fixed effects for school and conversation order. Adjusted models also control for the logarithm of the number of student messages and words. BH = Benjamini-Hochberg adjusted p-value within the four items of each group.",
+                       general_title = "Notes: ", threeparttable = TRUE, escape = TRUE)
 ```
 
-
-```{r socratic-eval, include = FALSE}
-library(dplyr)
-library(lme4)
-library(knitr)
-
-# tutorgpt <- readRDS("analysis/data/processed/tutorgpt.rds")
-# chats <- readRDS("analysis/data/processed/chats.rds")
-
-chat_info <- chats %>%
-    filter(role == "user") %>%
-    rename(student_id = user_id) %>%
-    distinct(chat_id, student_id, treatment_tutor_id, location)
-
-data_path <- "llm_annotation/legacy/data/dialogues.csv"
-ds_text <- read.csv(data_path, header = FALSE, col.names = c(
-    "chat_id", "coherence", "accuracy", "depth", "engagement",
-    "clarity", "learning_outcome", "comments"
-))
-
-data_path <- "llm_annotation/legacy/data/dialogues_socratic_eval.csv"
-ds_socratic <- read.csv(data_path, header = FALSE, col.names = c(
-    "chat_id", "coherence_2", "identifying_mistake", "acknowledging_mistake", "supportive_guidance",
-    "next_step_guidance", "conversational_flow", "encouraging_tone", "comments_socratic"
-))
-
-ds <- left_join(ds_text, chat_info, by = "chat_id") %>%
-    left_join(ds_socratic, by = "chat_id") %>%
-    left_join(count(chats, chat_id, name = "interactions"), by = "chat_id") %>%
-    filter(student_id != 1)
-
-fit_coherence <- lmer(
-    scale(coherence) ~ treatment_tutor_id + location +
-        scale(log(interactions)) + (1 | student_id),
-    data = ds
-)
-fit_engagement <- update(fit_coherence, scale(engagement) ~ .)
-fit_clarity <- update(fit_coherence, scale(clarity) ~ .)
-fit_depth <- update(fit_coherence, scale(depth) ~ .)
-fit_learning_outcome <- update(fit_coherence, scale(learning_outcome) ~ .)
-
-fit_mistake_id <- update(fit_coherence, scale(identifying_mistake) ~ .)
-fit_mistake_ack <- update(fit_coherence, scale(acknowledging_mistake) ~ .)
-
-fit_supportive_guidance <- update(fit_coherence, scale(supportive_guidance) ~ .)
-fit_next_step <- update(fit_coherence, scale(next_step_guidance) ~ .)
-fit_conversational_flow <- update(fit_coherence, scale(conversational_flow) ~ .)
-fit_encouraging_tone <- update(fit_coherence, scale(encouraging_tone) ~ .)
-
-models_socratic <- list(
-    "Supportive guidance" = fit_supportive_guidance,
-    "Next step" = fit_next_step,
-    "Encouraging tone" = fit_encouraging_tone,
-    "Conversational flow" = fit_conversational_flow,
-    "Mistake identification" = fit_mistake_id,
-    "Mistake acknowledge" = fit_mistake_ack,
-    "Clarity" = fit_clarity,
-    "Engagement" = fit_engagement,
-    "Depth" = fit_depth
-)
+```{r llm-effects-fig, fig.cap = "Socratic minus non-Socratic differences in LLM-coded conversations, unadjusted and adjusted for message and word counts (95% confidence intervals).", out.width = "85%", fig.align = "center"}
+knitr::include_graphics(fig("fig_llm_effects.pdf"))
 ```
 
-```{r socratic-dimensions, fig.cap = cap}
-cap <- paste(
-    "Coefficients and 95% confidence intervals for the effect of Socratic AI from mixed-effects regression models. Each row reports the estimated average difference between Socratic and non-Socratic AI for a distinct pedagogical dimension. All models include individual-level random effects to account for within-student correlation across chats, school-location fixed effects, and a control for the number of exchanges in each chat. Dependent variables were standardized from their original 1–5 scales, so all coefficients represent changes measured in standard-deviation units." # nolint
-)
+## Exploratory Analyses {#sec:res-exploratory}
 
+**Heterogeneity by school.** For none of the four primary outcomes does the effect of the Socratic agent differ between Brussels and Seville (interaction p-values between `r num(min(het$p), 2)` and `r num(max(het$p), 2)`). The questionnaire pipeline does not include the other planned subgroup analyses (prior ChatGPT experience, gender and task), and the sample is too small to support them reliably.
 
-coeffs <- models_socratic %>%
-    lapply(broom::tidy, conf.int = TRUE) %>%
-    bind_rows(.id = "depvar")
-
-coeffs %>%
-    filter(grepl("socratic", term)) %>%
-    ggplot() +
-    aes(
-        x = estimate,
-        y = reorder(depvar, estimate),
-        xmin = conf.low, xmax = conf.high,
-        color = "95% CI",
-    ) +
-    geom_vline(xintercept = 0, linetype = "dashed") +
-    geom_coef() +
-    labs(
-        x = "Regression coefficient (Socratic AI)",
-        y = "Pedagogical dimension (standardised)",
-        caption = "Source: AI-student conversations (n = 362)"
-    ) +
-    theme(
-        legend.position.inside = c(.1, .9),
-        legend.title = element_blank(),
-        plot.title.position = "plot",
-    )
-```
-
-
-### Students' Confidence in Their Responses
-
-To test whether Socratic AI increased students' confidence in their answers (RQ4), we examined students' self-reported confidence levels at the end of each task. As shown in Figure \@ref(fig:confidence), the observed differences in confidence between the treatment groups were minimal. Specifically, 25% of Socratic students reported feeling "very confident," and 33% reported feeling "confident" compared to 21% and 38%, respectively, among non-Socratic students. These differences were not statistically significant, even with regression analysis controlling for variation across students and tasks (Figure \@ref(fig:confidence-regression)). Thus, our analysis found no evidence of treatment effects on students' confidence in their answers.
-
-```{r confidence, fig.width = 7, fig.height = 7, fig.cap = "This figure shows the impact of Socratic AI on students' confidence levels in their performance across three different tasks. Despite some differences between the Socratic and Non-Socratic groups, we found no significant association between the treatment assignment and students' declared confidence levels."}
-create_impact_figure <- function(data, measure) {
-    # Flip and bind data
-    data_long <- data %>%
-        bind_rows(mutate(data, name = "All")) %>%
-        xtabs(
-            formula = as.formula(paste("~", measure, "+ treatment_tutor_id + name")),
-            data = .,
-            exclude = "Other"
-        )
-
-    # Run Fisher's tests and get p-values
-    test_results <- apply(data_long, 3, fisher.test)
-    p_values <- sapply(test_results, function(x) x$p.value)
-
-    # Convert xtabs results to dataframe and add percentage calculations
-    plot_df <- as.data.frame(data_long) %>%
-        dplyr::mutate(
-            percent = 100 * (Freq + 1) / (sum(Freq) + 5),
-            .by = c(treatment_tutor_id, name)
-        ) %>%
-        dplyr::mutate(
-            treatment_tutor_id = case_when(
-                treatment_tutor_id == "socratic" ~ "Socratic AI",
-                TRUE ~ "Non-Socratic AI"
-            ),
-            name = case_match(
-                name,
-                "All" ~ sprintf("All tasks<br>p = %2.3f", p_values["All"]),
-                "task1_water" ~ sprintf("Task 1: Guess<br>p = %2.3f", p_values["task1_water"]),
-                "task2_media" ~ sprintf("Task 2: Essay<br>p = %2.3f", p_values["task2_media"]),
-                "task3_sound" ~ sprintf("Task 3: Physics<br>p = %2.3f", p_values["task3_sound"])
-            )
-        )
-
-    # Set color palette
-    palette <- c("#ca0020", "#f4a582", "#d1e5f0", "#92c5de", "#0571b0")
-
-    # Create the plot
-    this_plot <- ggplot(plot_df) +
-        aes(
-            x = percent,
-            label = paste0(round(percent), "%"),
-            y = get(measure),
-            hjust = ifelse(percent < 5, -1, 0),
-            fill = get(measure),
-            position = name,
-        ) +
-        facet_grid(name ~ treatment_tutor_id, scales = "free") +
-        scale_fill_manual(values = palette) +
-        geom_col(width = .8, show.legend = FALSE, position = position_dodge(1), alpha = .75) +
-        geom_text(position = position_stack(.5)) +
-        theme(
-            axis.line.x = element_blank(),
-            axis.ticks = element_blank(),
-            axis.text.x = element_blank(),
-            strip.text.y = ggtext::element_markdown(face = "plain"),
-            panel.spacing = unit(2, "lines")
-        ) +
-        labs(
-            x = NULL,
-            y = NULL,
-            caption = "Source: Full sample of student-task combinations (n = 364)"
-        )
-
-    return(this_plot)
-}
-
-# Invert confidence levels
-tutorgpt_wide <- tutorgpt_wide %>%
-    mutate(value = factor(value, rev(levels(value))))
-
-p1 <- create_impact_figure(data = tutorgpt_wide, measure = "value")
-print(p1)
-```
-
-```{r confidence-regression, fig.width = 7, fig.height = 4, fig.cap = "This figure shows the coefficients from separate ordinal logistic regressions on students' confidence in their answer on a five-point scale, controlling for students' self-efficacy per task and task fixed effect. Results show no significant association between the treatment assignment and students' confidence levels.", message=FALSE, warning=FALSE}
-fit_all <- ordinal::clm(
-    value ~ treatment_tutor_id + name + conf_value,
-    data = tutorgpt_wide
-)
-
-fit_task_1 <- ordinal::clm(
-    value ~ treatment_tutor_id + conf_value + location,
-    data = tutorgpt_wide, subset = name == "task1_water"
-)
-
-fit_task_2 <- ordinal::clm(
-    value ~ treatment_tutor_id + location + gender + has_used_before,
-    data = tutorgpt_wide, subset = name == "task2_media"
-)
-
-fit_task_3 <- ordinal::clm(
-    value ~ treatment_tutor_id + conf_value + location,
-    data = tutorgpt_wide, subset = name == "task3_sound"
-)
-
-df_coef <- list(
-    all = fit_all, task1 = fit_task_1,
-    task2 = fit_task_2, task3 = fit_task_3
-) %>%
-    lapply(broom::tidy, conf.int = TRUE) %>%
-    bind_rows(.id = "name")
-
-df_coef %>%
-    filter(grepl("treat", term)) %>%
-    ggplot() +
-    aes(
-        color = "95% CI",
-        x = estimate, y = name,
-        xmin = conf.low, xmax = conf.high
-    ) +
-    geom_coef() +
-    scale_y_discrete(
-        labels = c(
-            task1 = "Task 1 (guessing)",
-            task2 = "Task 2 (writing)",
-            task3 = "Task 3 (physics)",
-            all = "All tasks"
-        )
-    ) +
-    theme(
-        legend.position.inside = c(.1, .9), legend.title = element_blank(),
-        plot.title.position = "plot",
-    ) +
-    labs(
-        x = "Regression coefficient (ordinal logistic)",
-        y = "Tasks",
-    )
-```
-
-Further explorative regression analysis to examine potential treatment interactions shows that Socratic AI students with prior ChatGPT experience reported significantly less confidence (p < 0.1) than Non-Socratic AI students (see Figure \@ref(fig:interactions)). This explorative finding suggests that experienced users may perceive new or unconventional AI chatbots as less effective or even counterproductive, indicating that encouraging the use of such AI chatbots among experienced ChatGPT students can be challenging.
-
-### Perceived Helpfulness of AI Agent
-
-To test differences in students' perceptions of the AI agent's helpfulness (RQ5), we examined students' ratings of helpfulness of the AI interaction at the end of each task. These ratings were on a five-point scale, from "Not at all helpful" to "Very helpful."[^mistake]
-
-[^mistake]: Due to a coding issue, the scale used in Brussels and Seville differed slightly in the labels: Seville's students saw "Extremely helpful" whereas Brussels students saw "Very helpful." However, this issue has a minimal impact on the overall results, as results focus on the negative labels ("not at all helpful" or "not helpful") and they remain the same even after controlling for location effects in a regression. Additionally, open discussions held with students after the experimental session confirmed that they found the Socratic AI less helpful. This feedback, combined with the observed differences in negative labels, reinforces that the coding discrepancy has a minimal impact on the overall findings.
-
-In both treatment groups, many students found interacting with the AI agent “very helpful” or “helpful”, with 56% of the non-Socratic and 44% of the Socratic students, as shown in Figure \@ref(fig:helpfulness). However, the Socratic treatment group showed a bimodal distribution, with a substantial fraction of students (21%) finding the interaction "not at all helpful." The association between perceived helpfulness and treatment assignment was statistically significant (Fisher's exact test, p = 0.025), providing evidence that Socratic AI was less helpful to certain students. This association, however, was stronger for Task 1 and Taks 3 than Task 2, suggesting an association between the perceived AI's helpfulness and the type of task. Ordinal logistic regression accounting for individual student and task characteristics, including self-efficacy per task, revealed a statistically significant negative difference that corresponds to a drop of approximately 13 percentage points in perceived helpfulness associated with the Socratic AI, as illustrated in Figure \@ref(fig:helpful-regression). See Section \@ref(sec:regress-confidence) for more details. 
-
-```{r helpfulness, fig.width = 7, fig.height = 7, fig.cap = "This figure shows the impact of Socratic AI on students' perceived helpfulness of the AI agent across three different tasks."}
-p2 <- create_impact_figure(data = tutorgpt_wide, measure = "helpful")
-print(p2)
-```
-
-```{r helpful-regression, fig.width = 7, fig.height = 4, fig.cap = "The impact of Socratic AI on students' confidence levels in their performance across three different tasks. Despite some differences between the Socratic and Non-Socratic groups, we found no significant association between the treatment assignment and students' declared confidence levels", message=FALSE, warning=FALSE}
-fit_all <- MASS::polr(helpful ~ treatment_tutor_id + name, tutorgpt_wide)
-fit_task_1 <- MASS::polr(helpful ~ treatment_tutor_id, tutorgpt_wide, subset = name == "task1_water")
-fit_task_2 <- MASS::polr(helpful ~ treatment_tutor_id, tutorgpt_wide, subset = name == "task2_media")
-fit_task_3 <- MASS::polr(helpful ~ treatment_tutor_id, tutorgpt_wide, subset = name == "task3_sound")
-
-df_coef <- list(all = fit_all, task1 = fit_task_1, task2 = fit_task_2, task3 = fit_task_3) %>%
-    lapply(broom::tidy, conf.int = TRUE) %>%
-    bind_rows(.id = "name")
-
-df_coef %>%
-    filter(grepl("treat", term)) %>%
-    ggplot() +
-    aes(
-        color = "95% CI",
-        x = estimate, y = name,
-        xmin = conf.low, xmax = conf.high
-    ) +
-    geom_coef() +
-    scale_y_discrete(
-        labels = c(
-            task1 = "Task 1 (guessing)",
-            task2 = "Task 2 (writing)",
-            task3 = "Task 3 (sound propagation)",
-            all = "All tasks"
-        )
-    ) +
-    theme(
-        legend.position.inside = c(.1, .9), legend.title = element_blank(),
-        plot.title.position = "plot",
-    ) +
-    labs(
-        x = "Regression coefficient (ordinal logistic)",
-        y = "Sample",
-        title = "Effect of Socratic AI on Students' Perceived Helpfulness of the AI Agent",
-    )
-```
-
-### Learning Outcomes and Knowledge Retention
-
-To evaluate the impact of learning (RQ3), we compared the correctness of responses to Task 3, which focused on sound propagation, and assessed knowledge retention using a follow-up question on the same topic without AI assistance. As shown in Figure \@ref(fig:learning), the use of AI significantly enhanced students' response accuracy. Before interacting with the AI agent, only 32% of students correctly answered that sound travels faster in water than air due to water's higher density. After AI interaction, this percentage nearly doubled increasing to 68%. However, there was no significant difference in learning outcomes between the Socratic and non-Socratic AI approaches, as illustrated in the figure. Moreover, when presented with a follow-up question (asking in which medium sound travels fastest among gold, rubber, warm air, cold air, and water), only 18% of students responded correctly by selecting the denser material (i.e., gold), again with no significant difference across treatments (Table \@ref(tab:learning)). This result suggests two implications. Firstly, we found no evidence of Socratic AI improving learning. Secondly, our results seems to suggest a problem of limited retention of the insights obtained with AI assistance or difficulty in applying such learning to novel scenarios.[^limitation]
-
-[^limitation]: While it is true that gold is significantly denser than water or air, it is possible that some students did not fully understand this fact or were unsure how to compare the densities of the materials. If that were the case, even if the AI effectively conveyed that sound travels faster in denser media, students lacking this knowledge may still have been unable to select the correct answer. However, this explanation seems unlikely, as the relative densities of air, water, and metals, like gold, are commonly taught and conceptually straightforward, suggesting that other factors have contributed to students' outcomes.
-
-```{r learning, fig.cap ="Effects on learning: **A** shows the % of correct responses about the physics of sound propagation, illustrating the positive effect of interacting with the AI agent, while no differences are associated with the Socratic AI. **B** shows the results of the verification question asking students to identify the fastest material for sound propagation (speed as meter per second reported) without AI assistance. Only 18% responded accurately, indicating limited learning."}
-# Verification question
-tutorgpt <- tutorgpt %>%
-    mutate(
-        q29_sound_speed_verify = case_match(
-            q29_sound_speed_verify,
-            c("0", "very_helpful") ~ "Rubber",
-            c("helpful", "1", "2") ~ "Warm/Cold Air",
-            c("3", "neutral") ~ "Gold",
-            c("4", "not_very_helpful") ~ "Water",
-            .default = q29_sound_speed_verify
-        )
-    )
-
-# Create table 1.
-tab <- tutorgpt %>%
-    bind_rows(., mutate(., treatment_tutor_id = "All")) %>%
-    xtabs(~ q25_sound_speed + treatment_tutor_id, .) %>%
-    prop.table(2) * 100
-
-colnames(tab) <- case_match(
-    colnames(tab),
-    "All" ~ "Full sample",
-    "socratic" ~ "Socratic AI",
-    "non_socratic" ~ "Non-Socratic"
-)
-
-rownames(tab) <- case_match(rownames(tab),
-    "same_speed" ~ "Same speed",
-    "water_faster_higher_density" ~ "Water is faster because higher density (correct)",
-    "water_faster_lower_density" ~ "Water is faster because lower density",
-    "water_slower_higher_density" ~ "Water is slower because higher density",
-    "water_slower_lower_density" ~ "Water is slower because lower density",
-    .default = rownames(tab)
-)
-
-tab %>%
-    kbl(
-        caption = "% of students in each treatment group by responses to the question 'Does sound travel faster in water than air?'",
-        format = "pipe", digits = 1
-    )
-
-
-tutorgpt <- tutorgpt %>%
-    mutate(
-        q25_sound_speed_correct = ifelse(
-            q25_sound_speed == "water_faster_higher_density", "correct", "incorrect"
-        ),
-        q26_sound_speed_with_ai_correct = ifelse(
-            q26_sound_speed_with_ai == "water_faster_higher_density", "correct", "incorrect"
-        ),
-        q26_update = ifelse(
-            q25_sound_speed != q26_sound_speed_with_ai, "update_yes", "update_no"
-        )
-    )
-
-# tab <- tutorgpt %>%
-#   bind_rows(., mutate(., treatment_tutor_id = "All")) %>%
-#   xtabs(~ q26_update + treatment_tutor_id, .) %>%
-#   prop.table(margin = 2) * 100
-
-# colnames(tab) <- case_match(colnames(tab),
-#                             "All" ~ "Full sample",
-#                             "socratic" ~ "Socratic AI",
-#                             "non_socratic" ~ "Non-Socratic")
-
-# rownames(tab) <- case_match(rownames(tab),
-#                             "update_yes" ~ "Update answer",
-#                             "update_no" ~ "No update answer",
-#                             .default = rownames(tab))
-
-# tab %>%
-#   kbl(
-#     format = "pipe", digits = 1,
-#     caption = "% of students in each treatment group who changed their answers after interacting with the AI tutor"
-#   )
-
-# p_value <- with(tutorgpt, fisher.test(q26_update, treatment_explain_id))$p.value
-
-
-# tab <- tutorgpt %>%
-#   bind_rows(., mutate(., treatment_tutor_id = "All")) %>%
-#   xtabs(~ q26_sound_speed_with_ai + treatment_tutor_id, .) %>%
-#   prop.table(2) * 100
-
-# colnames(tab) <- case_match(colnames(tab),
-#                             "All" ~ "Full sample",
-#                             "socratic" ~ "Socratic AI",
-#                             "non_socratic" ~ "Non-Socratic")
-
-# rownames(tab) <- case_match(rownames(tab),
-#                             "same_speed" ~ "Same speed",
-#                             "water_faster_higher_density" ~ "Water is faster because higher density (correct)",
-#                             "water_faster_lower_density" ~ "Water is faster because lower density",
-#                             "water_slower_higher_density" ~ "Water is slower because higher density",
-#                             "water_slower_lower_density" ~ "Water is slower because lower density",
-#                             .default = rownames(tab))
-
-# tab %>%
-#   kbl(
-#     caption = "% of students in each treatment group by responses to the question 'Does sound travel faster in water than air?' after interacting with the AI tutor",
-#     format = "pipe", digits = 1
-#   )
-
-#' ## Verification question
-#+ echo = FALSE
-# tab <- tutorgpt %>%
-#   bind_rows(., mutate(., treatment_tutor_id = "All")) %>%
-#   xtabs(~ q29_sound_speed_verify + treatment_tutor_id, .) %>%
-#   prop.table(2) * 100
-
-# colnames(tab) <- case_match(colnames(tab),
-#                             "All" ~ "Full sample",
-#                             "socratic" ~ "Socratic AI",
-#                             "non_socratic" ~ "Non-Socratic")
-
-# rownames(tab) <- case_match(rownames(tab),
-#                             "same_speed" ~ "Same speed",
-#                             "water_faster_higher_density" ~ "Water is faster because higher density (correct)",
-#                             "water_faster_lower_density" ~ "Water is faster because lower density",
-#                             "water_slower_higher_density" ~ "Water is slower because higher density",
-#                             "water_slower_lower_density" ~ "Water is slower because lower density",
-#                             .default = rownames(tab))
-
-# tab %>%
-#   kbl(
-#     caption = "% of students in each treatment group by responses to the question 'Does sound travel faster in water than air?' after interacting with the AI tutor",
-#     format = "pipe", digits = 1
-#   )
-
-
-strip_labels <- c(
-    "(Intercept)" = "Non-Socratic AI",
-    "treatment_tutor_idsocratic" = "Diff. with Socratic AI"
-)
-
-# First panel
-panel_a <- tutorgpt %>%
-    pivot_longer(c(q25_sound_speed_correct, q26_sound_speed_with_ai_correct)) %>%
-    reframe(
-        broom::tidy(lm(value == "correct" ~ treatment_tutor_id), conf.int = TRUE),
-        .by = name
-    ) %>%
-    mutate(
-        name = replace_values(
-            name,
-            "q25_sound_speed_correct" ~ "Before AI",
-            "q26_sound_speed_with_ai_correct" ~ "After AI"
-        )
-    ) %>%
-    ggplot() +
-    aes(x = estimate, y = name, xmin = conf.low, xmax = conf.high, color = "95% CI") +
-    facet_grid(~term, labeller = labeller(term = strip_labels)) +
-    geom_coef() +
-    geom_text_repel(aes(label = paste0(round(estimate * 100), "%"))) +
-    theme(
-        legend.position = "none",
-        panel.spacing = unit(3, "lines"),
-    ) +
-    scale_x_continuous(labels = function(x) 100 * x) +
-    labs(
-        x = "Correct answers (%)",
-        y = NULL,
-        title = "Impact of AI on Answer Accuracy",
-        subtitle = "Comparison of Correct Answers Before and After Interacting with AI Agent"
-    )
-
-water <- data.frame(
-    q29_sound_speed_verify = c("Gold", "Water", "Warm/Cold Air", "Rubber"),
-    speed = c(3200, 1500, 350, 60) / 1e3
-)
-
-
-panel_b_data <- tutorgpt %>%
-    xtabs(~q29_sound_speed_verify, .) %>%
-    as.data.frame() %>%
-    left_join(water) %>%
-    mutate(
-        percent = 100 * (Freq + 1) / (sum(Freq) + 4),
-        name = sprintf("%s<br>(%.1f km/s)", q29_sound_speed_verify, speed)
-    )
-
-panel_b <- panel_b_data %>%
-    ggplot() +
-    aes(
-        x = percent, y = reorder(q29_sound_speed_verify, speed),
-        label = paste0(round(percent), "%"),
-        hjust = ifelse(percent > 10, 1.2, -.2),
-    ) +
-    geom_col(fill = "orange") +
-    geom_text() +
-    geom_text(aes(label = sprintf("%.1f m/s", speed)), x = 0, hjust = 0, color = "white") +
-    theme(
-        axis.text.y = element_markdown(lineheight = 1.3, hjust = 0)
-    ) +
-    labs(
-        x = "Students (%)", y = NULL
-    )
-
-(panel_a + labs(title = NULL, subtitle = NULL)) / (panel_b) +
-    plot_annotation(tag_levels = "A")
-```
-
-
-
-```{r interactions, include = TRUE, fig.cap = cap, fig.asp = 1}
-cap <- "Regression coefficients and 95% confidence intervals from a linear regression using as dependent variable the (**A**) students' self-reported confidence level and (**B**) perceived helpfulness of the AI agent. The controls include student's gender, grades, location, and ChatGPT experience. Treatment dummies are interacted with all the controls and the task type. All models also include individual student random effects, and the student's rated confidence in their skills before performing each task." # nolint
-
-tutorgpt_wide <- tutorgpt_wide %>%
-    mutate(
-        helpful_yes = helpful %in% c("Helpful", "Very helpful"),
-        confident_yes = value %in% c("Very confident", "Confident")
-    )
-
-fit_lmer <- lmerTest::lmer(
-    100 * confident_yes ~ treatment_tutor_id + name +
-        conf_value + location + gender + has_used_before +
-        top_grades + (1 | student_id), tutorgpt_wide
-)
-
-interactions <- list(baseline = fit_lmer)
-interactions$used <- update(fit_lmer, ~ . + treatment_tutor_id:has_used_before)
-interactions$name <- update(fit_lmer, ~ . + treatment_tutor_id:name)
-interactions$gender <- update(fit_lmer, ~ . + treatment_tutor_id:gender)
-interactions$grades <- update(fit_lmer, ~ . + treatment_tutor_id:top_grades)
-interactions$all <- update(fit_lmer, ~ . + treatment_tutor_id:(has_used_before + top_grades + gender + location + name))
-
-coef_df <- interactions %>%
-    lapply(broom.mixed::tidy, conf.int = TRUE) %>%
-    bind_rows(.id = "model")
-
-calc_stars <- function(p.value) {
-    dplyr::case_when(
-        p.value < 0.01 ~ "***",
-        (p.value < 0.05 & p.value > 0.01) ~ "**",
-        (p.value < 0.1 & p.value > 0.05) ~ "*",
-        TRUE ~ ""
-    )
-}
-
-panel_a <- coef_df %>%
-    filter(grepl(":", term), model == "all") %>%
-    ggplot() +
-    aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high, color = p.value < 0.1) +
-    geom_vline(xintercept = 0, linetype = "dashed") +
-    geom_linerange(linewidth = 3, alpha = .25) +
-    geom_point(size = 3) +
-    geom_text_repel(
-        nudge_y = -.25,
-        aes(
-            label = sprintf("%.1f%s", estimate, calc_stars(p.value))
-        )
-    ) +
-    ## Add CIs
-    geom_text(x = Inf, aes(label = sprintf("(%s: %.1f, %.1f)", "95% CI", conf.low, conf.high)), size = 3.5) +
-    coord_cartesian(clip = "off") +
-    theme(
-        legend.position = "none",
-        axis.text.y = element_markdown(hjust = 0),
-        plot.margin = margin(t = .1, b = .1, r = 1, l = .1, unit = "in"),
-    ) +
-    scale_color_manual(values = c("orange", "navy")) +
-    scale_y_discrete(
-        labels = function(x) {
-            x %>%
-                gsub("^.*:", "Socratic x ", .) %>%
-                gsub("has_used_beforeYes", "ChatGPT experience", .) %>%
-                gsub("locationSeville", "Seville", .) %>%
-                gsub("top_grades", "", .) %>%
-                gsub("gender", "", .) %>%
-                gsub("nametask([123])_(.*)", "Task \\1 (\\2)", .)
-        }
-    ) +
-    labs(
-        title = "Socratic AI and Student Confidence Levels",
-        subtitle = "Interaction effects between Socratic AI and task/student characteristics",
-        y = NULL,
-        x = "Regression coefficients and 95% confidence intervals",
-        caption = "Results from linear regression (n = 366); * p < 0.1"
-    )
-
-# ggsave("figures_and_tables/10_socratic_interact_confidence.pdf")
-
-#' ### Helpfulness
-
-fit_lmer <- lmerTest::lmer(
-    100 * helpful_yes ~ treatment_tutor_id + name +
-        conf_value + location + gender + has_used_before +
-        top_grades + (1 | student_id), tutorgpt_wide
-)
-
-interactions <- list(baseline = fit_lmer)
-interactions$used <- update(fit_lmer, ~ . + treatment_tutor_id:has_used_before)
-interactions$name <- update(fit_lmer, ~ . + treatment_tutor_id:name)
-interactions$gender <- update(fit_lmer, ~ . + treatment_tutor_id:gender)
-interactions$grades <- update(fit_lmer, ~ . + treatment_tutor_id:top_grades)
-interactions$all <- update(fit_lmer, ~ . + treatment_tutor_id:(has_used_before + top_grades + gender + location + name))
-
-coef_df <- interactions %>%
-    lapply(broom.mixed::tidy, conf.int = TRUE) %>%
-    bind_rows(.id = "model")
-
-panel_b <- coef_df %>%
-    filter(grepl(":", term), model == "all") %>%
-    ggplot() +
-    aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high, color = p.value < 0.1) +
-    geom_vline(xintercept = 0, linetype = "dashed") +
-    geom_linerange(linewidth = 3, alpha = .25) +
-    geom_point(size = 3) +
-    geom_text_repel(
-        nudge_y = -.25,
-        aes(label = sprintf("%.1f%s", estimate, calc_stars(p.value)))
-    ) +
-    ## Add CIs
-    geom_text(x = Inf, aes(label = sprintf("(%s: %.1f, %.1f)", "95% CI", conf.low, conf.high)), size = 3.5) +
-    coord_cartesian(clip = "off") +
-    theme(
-        legend.position = "none",
-        axis.text.y = element_markdown(hjust = 0),
-        plot.margin = margin(t = .1, b = .1, r = 1, l = .1, unit = "in"),
-    ) +
-    scale_color_manual(values = c("orange", "navy")) +
-    scale_y_discrete(
-        labels = function(x) {
-            x %>%
-                gsub("^.*:", "Socratic x ", .) %>%
-                gsub("has_used_beforeYes", "ChatGPT experience", .) %>%
-                gsub("locationSeville", "Seville", .) %>%
-                gsub("top_grades", "", .) %>%
-                gsub("gender", "", .) %>%
-                gsub("nametask([123])_(.*)", "Task \\1 (\\2)", .)
-        }
-    ) +
-    labs(
-        title = "Socratic AI and Perceived Helpfulness",
-        subtitle = "Interaction effects between Socratic AI and task/student characteristics",
-        y = NULL,
-        x = "Regression coefficients and 95% confidence intervals",
-        caption = "Results from linear regression (n = 366); * p < 0.1"
-    )
-
-# ggsave("figures_and_tables/10_socratic_interact_helpfull.pdf")
-
-panel_a / panel_b + plot_annotation(tag_levels = "A")
-
-## ggsave("figures_and_tables/10_socratic_interactions.pdf")
-```
+**Changing opinions in the essay task.** Task 2 had no correct answer, so we cannot measure accuracy, but we can ask whether the agent moved students' opinions about the effect of social media on teenagers. More students with the Socratic agent changed their opinion after the interaction (`r pct(op_desc$pct_changed[op_desc$arm == "Socratic"])` against `r pct(op_desc$pct_changed[op_desc$arm == "Non-Socratic"])`; adjusted difference `r num(100 * one(op_eff, grepl("Changed", outcome))$est, 1)` percentage points, 95% CI `r num(100 * one(op_eff, grepl("Changed", outcome))$lo, 1)` to `r num(100 * one(op_eff, grepl("Changed", outcome))$hi, 1)`, `r pv(one(op_eff, grepl("Changed", outcome))$p)`), and the average size of the change was larger (`r ci(one(op_eff, grepl("Absolute", outcome)))` points, `r pv(one(op_eff, grepl("Absolute", outcome))$p)`). The signed shift does not differ significantly (`r ci(one(op_eff, grepl("Signed", outcome)))`, `r pv(one(op_eff, grepl("Signed", outcome))$p)`), which suggests that the Socratic agent moved opinions in both directions and not in one. These tests were not corrected for multiplicity and are exploratory.

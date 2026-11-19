@@ -116,3 +116,15 @@ coeffs %>%
   geom_pointrange(position = position_dodge(.25)) +
   geom_vline(xintercept = 0, color = "red", linetype = "dashed")
 
+
+# ---- Saved effects of the explanation arm (HC3 robust 95% CIs) --------------------------
+# Same models as above; outcomes are on the log scale (adopt, near: probabilities).
+reasoning_effects <- bind_rows(lapply(names(fits), function(nm) {
+  m <- fits[[nm]]
+  vc <- sandwich::vcovHC(m, type = "HC3")
+  ct <- lmtest::coeftest(m, vcov. = vc)["explExplanation", ]
+  ci <- lmtest::coefci(m, vcov. = vc)["explExplanation", ]
+  tibble(model = nm, est = ct[[1]], lo = ci[[1]], hi = ci[[2]], p = ct[[4]], n = stats::nobs(m))
+})) |>
+  tidyr::separate(model, c("spec", "outcome"), sep = "\\.", extra = "merge")
+save_table(reasoning_effects, "reasoning_effects")
