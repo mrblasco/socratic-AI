@@ -1,4 +1,4 @@
-# 06_exploratory_summary: heterogeneity by school, Task 2 opinion change, tutor usage, summary forest plot.
+# 06_exploratory_summary: heterogeneity by school and by prior ChatGPT use, Task 2 opinion change, tutor usage, summary forest plot.
 # Reads:  dd, and output/tables/confidence_effects.csv, confidence_effect_sizes.csv, confidence_pooled.csv,
 #         correctness_effects.csv (steps 02, 03)
 # Writes: output/tables/exploratory_*.csv; output/figures/summary_forest.pdf
@@ -12,6 +12,23 @@ het <- bind_rows(lapply(1:4, function(i) {
   tibble(outcome = o$id, label = o$label, interaction_seville = ct["z:sev", 1], se = ct["z:sev", 2], p = ct["z:sev", 4])
 }))
 save_table(het, "exploratory_heterogeneity_school")
+
+# ---- Heterogeneity: treatment x prior ChatGPT use (interaction), primary outcomes and helpfulness -------
+# Same adjustment set as the main models; "used_ai_before" = has used ChatGPT before (Yes/No); the interaction is Socratic x prior use.
+dd_ai <- dd %>% mutate(prior = as.integer(used_ai_before == "Yes"))
+int_row <- function(y, covs, data, label, outcome) {
+  m <- lm(reformulate(c("z", "prior", "z:prior", covs), y), data)
+  ct <- hc2(m)
+  tibble(outcome = outcome, label = label, n = nrow(data),
+         effect_no_prior = ct["z", 1], effect_prior_extra = ct["z:prior", 1], se_interaction = ct["z:prior", 2], p_interaction = ct["z:prior", 4])
+}
+het_ai <- bind_rows(
+  lapply(1:4, function(i) { o <- PRIMARY[i, ]; int_row(o$y, covs_for(o$task), task_data(dd_ai, o$task), o$label, o$id) }),
+  lapply(1:3, function(k) { hd <- task_data(dd_ai, k) %>% mutate(help = help_code(.data[[paste0("h", k, "_raw")]], school)) %>% filter(!is.na(help))
+                            int_row("help", covs_for(k), hd, paste("Helpfulness, Task", k), paste0("H", k)) })
+)
+save_table(het_ai, "exploratory_heterogeneity_prior_ai")
+save_table(dd_ai %>% count(arm, used_ai_before), "exploratory_prior_ai_by_arm")
 
 # ---- Task 2: did the tutor change students' opinions? (no correct answer; not accuracy) ----
 o2 <- dd %>% filter(!is.na(op_pre), !is.na(op_post)) %>%
