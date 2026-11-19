@@ -1,0 +1,611 @@
+---
+title: "Effect of Socratic vs non-Socratic AI tutor on self-confidence (Tasks 1-3) and correctness (Task 3)"
+subtitle: "Independent re-analysis of the randomised experiment, from the student questionnaire only"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    df_print: paged
+    self_contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4.5)
+suppressPackageStartupMessages({
+  library(dplyr); library(tidyr); library(tibble); library(ggplot2); library(knitr)
+  library(sandwich); library(lmtest); library(MASS); library(marginaleffects)
+})
+select <- dplyr::select
+theme_set(theme_minimal(base_size = 12))
+set.seed(20261106)
+COL <- c("Non-Socratic" = "#7a7a7a", "Socratic" = "#c2410c")
+TASKS <- c("1" = "Task 1: water estimate", "2" = "Task 2: social-media essay", "3" = "Task 3: sound physics")
+```
+
+# 0. Purpose and scope
+
+This notebook estimates the causal effect of the **Socratic vs non-Socratic AI tutor** on students in all three tasks:
+
+* **Task 1** – estimate the weekly water consumption at school (numeric guess).
+* **Task 2** – opinion and short essay on social media and teenagers.
+* **Task 3** – "Does sound travel faster in water than air? And if so, why?"
+
+Outcomes:
+
+1. **Self-confidence** that the answer is accurate (5-point scale), asked after the tutor interaction in **every** task.
+2. **Correctness**, available **only for Task 3** (the only task with a correct answer). Task 1 has a numeric guess recorded once (no pre-AI guess), and Task 2 is an opinion task, so neither has a correctness outcome.
+
+It does not use the LLM chat ratings and is independent of the manuscript's current analysis.
+
+**Design.** Students were randomised to a Socratic or non-Socratic GPT-4 tutor (different system prompts, same model) and used that tutor in all three tasks. A second, independent randomisation (step-by-step explanation in a separate coin-jar task) is unrelated to these outcomes and enters only as a covariate in a robustness check. Two schools (Brussels, Seville).
+
+**Estimand.** The intention-to-treat average effect of being assigned to the Socratic tutor, relative to the non-Socratic tutor, among students with data on the outcome.
+
+**Analysis plan (set out before looking at outcomes by arm).**
+
+| Element | Choice |
+|---|---|
+| Primary outcomes (family of 4) | Confidence after AI in Task 1 (C1), Task 2 (C2), Task 3 (C3); correct answer after AI in Task 3 (K3) |
+| Multiplicity | Holm correction across the four primary p-values, reported alongside unadjusted |
+| Primary model | Covariate-adjusted regression with HC2 robust SEs; covariates fixed in advance: school, **task-specific baseline self-efficacy** (Task 1: numerical estimate in a swimming pool; Task 2: writing a technology essay; Task 3: explaining sound), plus pre-AI correctness for Task 3 outcomes |
+| Why adjust | Pre-treatment, prognostic covariates improve precision in randomised experiments without biasing the effect (Freedman 2008; Lin 2013). Unadjusted estimates are always shown |
+| Confidence scale | Ordinal logit (primary for C1-C3, effect as odds ratio), with OLS in scale points and Wilcoxon as companions |
+| Inference | Robust SEs, with randomisation-inference p-values (permuting within school) as a small-sample check |
+| Pooled summary | Average effect across the three tasks on within-task standardised confidence, student-clustered SEs, with a test of whether the effect differs by task. Summarises C1-C3; not an additional hypothesis |
+| Secondary / exploratory | Perceived helpfulness of the AI agent, heterogeneity by school, calibration, opinion shift in Task 2, learning transitions and retention in Task 3, tutor usage |
+
+Everything beyond the four primary outcomes is labelled exploratory.
+
+# 1. Data
+
+```{r data}
+raw <- readRDS("analysis/data/processed/tutorgpt.rds")
+
+CORRECT <- "water_faster_higher_density"
+CONF_LEVELS <- c("not_confident_at_all", "not_very_confident", "neutral", "confident", "very_confident")
+OPIN_LEVELS <- c("very_negative", "negative", "neutral", "positive", "very_positive")
+eff_code <- function(x) 5L - as.integer(x)  # 1 = couldn't do it alone ... 4 = could do easily
+stopifnot(levels(raw$q5_self_physics)[1] == "Could do easily",
+          levels(raw$q6_self_technology)[1] == "Could do easily",
+          levels(raw$q7_self_swimming_pool)[1] == "Could do easily")
+stopifnot(all(na.omit(raw$q27_sound_speed_conf) %in% CONF_LEVELS),
+          all(na.omit(raw$q15_guess_water_confidence) %in% CONF_LEVELS),
+          all(na.omit(raw$q21_social_media_conf) %in% CONF_LEVELS),
+          all(na.omit(c(raw$q18_social_media_impact, raw$q19_social_media_impact_with_ai)) %in% OPIN_LEVELS))
+
+d <- raw %>%
+  transmute(
+    id       = student_id,
+    arm      = factor(treatment_tutor_id, c("non_socratic", "socratic"), c("Non-Socratic", "Socratic")),
+    z        = as.integer(arm == "Socratic"),
+    school   = factor(location),
+    sev      = as.integer(location == "Seville"),
+    explain  = factor(treatment_explain_id, c("explain_no", "explain_yes"), c("No", "Yes")),
+    gender   = factor(gender),
+    top_grades = factor(top_grades),
+    used_ai_before = factor(has_used_before),
+    eff1 = eff_code(q7_self_swimming_pool), eff2 = eff_code(q6_self_technology), eff3 = eff_code(q5_self_physics),
+    conf1 = as.integer(factor(q15_guess_water_confidence, CONF_LEVELS)),
+    conf2 = as.integer(factor(q21_social_media_conf,      CONF_LEVELS)),
+    conf3 = as.integer(factor(q27_sound_speed_conf,       CONF_LEVELS)),
+    pre_correct  = as.integer(q25_sound_speed == CORRECT),
+    post_correct = as.integer(q26_sound_speed_with_ai == CORRECT),
+    turns1 = q14_tutor_interactions, turns2 = q19_tutor_interactions, turns3 = q26_tutor_interactions,
+    op_pre  = as.integer(factor(q18_social_media_impact, OPIN_LEVELS)),
+    op_post = as.integer(factor(q19_social_media_impact_with_ai, OPIN_LEVELS)),
+    verify_raw = q29_sound_speed_verify,
+    h1_raw = q16_guess_water_ai_helpful, h2_raw = q22_social_media_ai_helpful, h3_raw = q28_sound_speed_ai_helpful
+  )
+cat("Students:", nrow(d), "| duplicated ids:", sum(duplicated(d$id)), "\n")
+```
+
+## 1.1 Missing data
+
+```{r missing}
+miss <- d %>% summarise(across(c(arm, school, eff1, eff2, eff3, conf1, conf2, conf3, pre_correct, post_correct), ~ sum(is.na(.x)))) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "n_missing")
+kable(miss, caption = "Missing values in analysis variables")
+d %>% filter(if_any(c(conf1, conf2, conf3, pre_correct, post_correct), is.na)) %>% select(id, arm, school, conf1, conf2, conf3, pre_correct, post_correct)
+```
+
+Missingness on the primary outcomes is minimal. Students with a missing primary variable are dropped (complete case); with so few, the effect on estimates is negligible. The number of tutor interactions (`turns*`) is missing for about half of the students; it is post-treatment and is used only descriptively.
+
+```{r sample}
+dd <- d %>% filter(!is.na(conf1), !is.na(conf2), !is.na(conf3), !is.na(post_correct), !is.na(pre_correct))
+cat("Analysis sample: N =", nrow(dd), "(", nrow(d) - nrow(dd), "student(s) excluded )\n")
+kable(dd %>% count(school, arm) %>% pivot_wider(names_from = arm, values_from = n),
+      caption = "Analysis sample by school and arm")
+```
+
+# 2. Randomisation check
+
+Baseline covariates should be balanced up to chance. Standardised mean differences (SMD) are shown; |SMD| < 0.25 is the usual benchmark. A joint test (logistic regression of assignment on all covariates, likelihood-ratio test against the null model) tests the global null of successful randomisation. Covariate-by-covariate p-values are deliberately not reported (uninformative in a randomised trial).
+
+```{r balance}
+smd_bin <- function(x, z) { p1 <- mean(x[z == 1]); p0 <- mean(x[z == 0]); (p1 - p0) / sqrt((p1 * (1 - p1) + p0 * (1 - p0)) / 2) }
+smd_num <- function(x, z) (mean(x[z == 1]) - mean(x[z == 0])) / sqrt((var(x[z == 1]) + var(x[z == 0])) / 2)
+ok <- function(x) !is.na(x)
+
+bal <- tribble(
+  ~covariate, ~smd,
+  "School: Seville",                       smd_bin(dd$sev, dd$z),
+  "Self-efficacy Task 1 (1-4)",            smd_num(dd$eff1, dd$z),
+  "Self-efficacy Task 2 (1-4)",            smd_num(dd$eff2, dd$z),
+  "Self-efficacy Task 3 (1-4)",            smd_num(dd$eff3, dd$z),
+  "Correct before AI (Task 3)",            smd_bin(dd$pre_correct, dd$z),
+  "Gender: girl",                          smd_bin(as.integer(dd$gender[ok(dd$gender)] == "Girl"), dd$z[ok(dd$gender)]),
+  "Top grades",                            smd_bin(as.integer(dd$top_grades[ok(dd$top_grades)] == "Top grades"), dd$z[ok(dd$top_grades)]),
+  "Used ChatGPT before",                   smd_bin(as.integer(dd$used_ai_before == "Yes"), dd$z),
+  "Explanation arm (other experiment)",    smd_bin(as.integer(dd$explain == "Yes"), dd$z)
+)
+kable(bal, digits = 2, caption = "Standardised mean differences (Socratic minus non-Socratic)")
+
+ggplot(bal, aes(smd, reorder(covariate, abs(smd)))) +
+  annotate("rect", xmin = -0.25, xmax = 0.25, ymin = -Inf, ymax = Inf, fill = "grey90") +
+  geom_vline(xintercept = 0, colour = "grey50") +
+  geom_point(size = 2.5, colour = COL["Socratic"]) +
+  labs(x = "Standardised mean difference", y = NULL, title = "Covariate balance (grey band = |SMD| < 0.25)")
+
+bal_dat <- dd %>% filter(!is.na(gender), !is.na(top_grades))
+m0 <- glm(z ~ 1, binomial, bal_dat)
+m1 <- glm(z ~ school + eff1 + eff2 + eff3 + pre_correct + gender + top_grades + used_ai_before + explain, binomial, bal_dat)
+lr <- anova(m0, m1, test = "LRT")
+cat(sprintf("Joint balance test: LR chi2(%d) = %.2f, p = %.3f (n = %d)\n", lr$Df[2], lr$Deviance[2], lr$`Pr(>Chi)`[2], nrow(bal_dat)))
+```
+
+# 3. Descriptive results
+
+```{r desc}
+desc <- bind_rows(lapply(1:3, function(k) {
+  dd %>% mutate(conf = .data[[paste0("conf", k)]]) %>% group_by(arm) %>%
+    summarise(task = TASKS[[k]], n = n(), `Confidence mean (1-5)` = mean(conf), `SD` = sd(conf),
+              `Confident or very (%)` = 100 * mean(conf >= 4), .groups = "drop")
+})) %>% select(task, arm, everything()) %>% arrange(task, arm)
+kable(desc, digits = 2, caption = "Self-confidence after the tutor interaction, by task and arm")
+
+cf <- dd %>% pivot_longer(c(conf1, conf2, conf3), names_to = "task", values_to = "conf", names_prefix = "conf") %>%
+  mutate(task = TASKS[task], conf_f = factor(conf, 1:5)) %>%
+  count(task, arm, conf_f) %>% group_by(task, arm) %>% mutate(share = n / sum(n))
+ggplot(cf, aes(share, arm, fill = conf_f)) +
+  geom_col(width = .6) + facet_wrap(~ task, ncol = 1) +
+  scale_fill_brewer(palette = "RdYlBu", direction = 1, labels = c("Not at all", "Not very", "Neutral", "Confident", "Very confident"), name = "Confidence") +
+  scale_x_continuous(labels = scales::percent) +
+  labs(x = NULL, y = NULL, title = "Self-confidence in the answer, by task and arm") +
+  theme(strip.text = element_text(hjust = 0))
+```
+
+Task 3 correctness (the only task with a correct answer):
+
+```{r desc-correct}
+kable(dd %>% group_by(arm) %>% summarise(n = n(), `Correct before AI (%)` = 100 * mean(pre_correct), `Correct after AI (%)` = 100 * mean(post_correct)),
+      digits = 1, caption = "Task 3 correctness by arm")
+
+prop_ci <- function(x) { w <- prop.test(sum(x), length(x), correct = FALSE); tibble(p = mean(x), lo = w$conf.int[1], hi = w$conf.int[2]) }
+pc <- dd %>% pivot_longer(c(pre_correct, post_correct), names_to = "time", values_to = "y") %>%
+  mutate(time = factor(time, c("pre_correct", "post_correct"), c("Before AI", "After AI"))) %>%
+  group_by(arm, time) %>% reframe(prop_ci(y))
+ggplot(pc, aes(time, p, fill = arm)) +
+  geom_col(position = position_dodge(.8), width = .75) +
+  geom_errorbar(aes(ymin = lo, ymax = hi), position = position_dodge(.8), width = .2) +
+  scale_fill_manual(values = COL) + scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
+  labs(x = NULL, y = "Correct answers", fill = NULL, title = "Task 3 correctness, with 95% Wilson CIs")
+```
+
+# 4. Primary analysis
+
+Let $Z=1$ for the Socratic tutor. Each primary outcome has its own pre-specified covariate set $X$ (school, task-specific baseline self-efficacy, and for Task 3 also pre-AI correctness).
+
+```{r helpers}
+tr <- function(v) as_tibble_row(v)
+hc2 <- function(m) coeftest(m, vcov = vcovHC(m, type = "HC2"))
+ci_hc2 <- function(m, term = "z", level = .95) {
+  est <- coef(m)[term]; se <- sqrt(diag(vcovHC(m, type = "HC2")))[term]
+  q <- qt(1 - (1 - level) / 2, m$df.residual)
+  c(est = unname(est), lo = unname(est - q * se), hi = unname(est + q * se), p = unname(2 * pt(-abs(est / se), m$df.residual)))
+}
+or_ci <- function(m) {
+  b <- coef(m)["z"]; se <- sqrt(diag(vcov(m)))["z"]
+  c(est = unname(exp(b)), lo = unname(exp(b - 1.96 * se)), hi = unname(exp(b + 1.96 * se)), p = unname(2 * pnorm(-abs(b / se))))
+}
+
+# Data for task k: adds `conf` (confidence) and `eff` (task-specific self-efficacy)
+task_dat <- function(k) dd %>% mutate(conf = .data[[paste0("conf", k)]], eff = .data[[paste0("eff", k)]],
+                                      conf_f = factor(conf, 1:5, ordered = TRUE))
+# Primary outcome registry
+OUT <- list(
+  C1 = list(label = "C1  Confidence, Task 1", y = "conf",         task = 1, covs = c("sev", "eff")),
+  C2 = list(label = "C2  Confidence, Task 2", y = "conf",         task = 2, covs = c("sev", "eff")),
+  C3 = list(label = "C3  Confidence, Task 3", y = "conf",         task = 3, covs = c("sev", "eff", "pre_correct")),
+  K3 = list(label = "K3  Correct, Task 3",    y = "post_correct", task = 3, covs = c("sev", "eff", "pre_correct"))
+)
+fml <- function(y, covs) reformulate(c("z", covs), y)
+```
+
+## 4.1 Self-confidence (C1-C3)
+
+The primary estimate is the **proportional-odds (ordinal logit)** effect (odds ratio; OR < 1 means lower confidence under the Socratic tutor). For interpretability we also report OLS in scale points (HC2 SEs), and the Wilcoxon rank-sum test with probability of superiority.
+
+```{r conf-primary}
+conf_rows <- list(); conf_extra <- list()
+for (nm in c("C1", "C2", "C3")) {
+  o <- OUT[[nm]]; dk <- task_dat(o$task)
+  sdk <- sd(dk$conf)
+  ol_u <- polr(conf_f ~ z, droplevels(dk), Hess = TRUE)
+  ol_a <- polr(fml("conf_f", o$covs), droplevels(dk), Hess = TRUE)
+  ls_u <- lm(conf ~ z, dk); ls_a <- lm(fml("conf", o$covs), dk)
+  conf_rows[[nm]] <- bind_rows(
+    tibble(outcome = o$label, model = "Ordinal logit, unadjusted (OR)", tr(or_ci(ol_u))),
+    tibble(outcome = o$label, model = "Ordinal logit, adjusted (OR)",   tr(or_ci(ol_a))),
+    tibble(outcome = o$label, model = "OLS, unadjusted (points)",       tr(ci_hc2(ls_u))),
+    tibble(outcome = o$label, model = "OLS, adjusted (points)",         tr(ci_hc2(ls_a)))
+  )
+  wt <- wilcox.test(conf ~ z, dk, exact = FALSE)
+  r <- rank(dk$conf); n1 <- sum(dk$z); n0 <- sum(1 - dk$z)
+  conf_extra[[nm]] <- tibble(outcome = o$label, sd = sdk, n = nrow(dk),
+                             smd_adj = unname(coef(ls_a)["z"]) / sdk,
+                             wilcoxon_p = wt$p.value,
+                             prob_superiority = (sum(r[dk$z == 1]) - n1 * (n1 + 1) / 2) / (n1 * n0))
+}
+conf_tab <- bind_rows(conf_rows)
+kable(conf_tab, digits = c(0, 0, 2, 2, 2, 3), col.names = c("Outcome", "Model", "Estimate", "95% CI low", "95% CI high", "p"),
+      caption = "Effect of Socratic tutor on confidence (OR > 1 or points > 0 = more confident)")
+kable(bind_rows(conf_extra), digits = 2,
+      col.names = c("Outcome", "SD of confidence", "n", "Adj. effect (SD)", "Wilcoxon p", "P(Socratic > non-Socratic)"),
+      caption = "Standardised effects and rank-based checks")
+```
+
+Proportional-odds check: if the assumption holds, the log-odds of exceeding each cut-point shift by a similar amount. (The cut-point ">= 2" is omitted: very few students chose the lowest category, so that logit is not estimable.)
+
+```{r po-check}
+po <- bind_rows(lapply(c("C1", "C2", "C3"), function(nm) {
+  dk <- task_dat(OUT[[nm]]$task)
+  bind_rows(lapply(3:5, function(k) {
+    m <- glm(I(conf >= k) ~ z, binomial, dk)
+    tibble(outcome = OUT[[nm]]$label, cutoff = paste0(">= ", k), logOR = unname(coef(m)["z"]), se = unname(sqrt(vcov(m)["z", "z"])))
+  }))
+}))
+kable(po, digits = 2, caption = "Binary logit at each cut-point (should be roughly constant within a task under proportional odds)")
+```
+
+## 4.2 Correctness in Task 3 (K3)
+
+We report (a) the unadjusted risk difference, (b) the covariate-adjusted risk difference from a linear probability model with HC2 SEs (a consistent estimator of the ATE under randomisation, in percentage points), and (c) the logit average marginal effect as a robustness check. A Lin (2013) interacted specification is in section 6.
+
+```{r k3}
+dk3 <- task_dat(3)
+m_k_u <- lm(post_correct ~ z, dk3)
+m_k_a <- lm(fml("post_correct", OUT$K3$covs), dk3)
+m_k_l <- glm(fml("post_correct", OUT$K3$covs), binomial, dk3)
+ame <- avg_comparisons(m_k_l, variables = "z", vcov = "HC2")
+
+k3_tab <- bind_rows(
+  tibble(model = "Unadjusted risk difference (LPM, HC2)", tr(ci_hc2(m_k_u))),
+  tibble(model = "Adjusted risk difference (LPM, HC2)",   tr(ci_hc2(m_k_a))),
+  tibble(model = "Adjusted AME (logit, HC2)", est = ame$estimate, lo = ame$conf.low, hi = ame$conf.high, p = ame$p.value)
+)
+kable(k3_tab %>% mutate(across(c(est, lo, hi), ~ 100 * .x)), digits = c(0, 1, 1, 1, 3),
+      col.names = c("Model", "Effect (pp)", "95% CI low", "95% CI high", "p"),
+      caption = "K3: effect of Socratic tutor on correct answer after AI (percentage points)")
+orK <- exp(cbind(OR = coef(m_k_l), confint.default(m_k_l, vcov. = vcovHC(m_k_l, "HC2"))))["z", ]
+h <- 2 * asin(sqrt(mean(dk3$post_correct[dk3$z == 1]))) - 2 * asin(sqrt(mean(dk3$post_correct[dk3$z == 0])))
+cat(sprintf("Adjusted odds ratio (logit): %.2f [%.2f, %.2f]; Cohen's h (unadjusted): %.2f\n", orK[1], orK[2], orK[3], h))
+```
+
+## 4.3 Multiplicity
+
+Holm correction across the four primary outcomes (adjusted models: ordinal logit for C1-C3, linear probability for K3).
+
+```{r holm}
+p_adj <- c(
+  C1 = conf_tab %>% filter(grepl("^C1", outcome), model == "Ordinal logit, adjusted (OR)") %>% pull(p),
+  C2 = conf_tab %>% filter(grepl("^C2", outcome), model == "Ordinal logit, adjusted (OR)") %>% pull(p),
+  C3 = conf_tab %>% filter(grepl("^C3", outcome), model == "Ordinal logit, adjusted (OR)") %>% pull(p),
+  K3 = ci_hc2(m_k_a)[["p"]]
+)
+holm_tab <- tibble(outcome = sapply(OUT, `[[`, "label"), p_raw = unname(p_adj), p_holm = p.adjust(p_adj, "holm"))
+kable(holm_tab, digits = 3, caption = "Holm correction across the four primary outcomes")
+```
+
+## 4.4 Pooled effect on confidence across the three tasks
+
+Confidence is standardised within task (z-score), so a one-unit effect is one SD of that task's confidence. The pooled model has task fixed effects, school, and task-specific standardised self-efficacy; SEs are clustered by student because each student contributes three observations. The second test asks whether the effect differs by task. This summarises C1-C3 and is not an additional hypothesis.
+
+```{r pooled}
+long <- bind_rows(lapply(1:3, function(k) {
+  dd %>% transmute(id, z, sev, task = factor(k), conf = .data[[paste0("conf", k)]], eff = .data[[paste0("eff", k)]])
+})) %>%
+  group_by(task) %>% mutate(zconf = (conf - mean(conf)) / sd(conf), zeff = (eff - mean(eff)) / sd(eff)) %>% ungroup()
+
+m_pool   <- lm(zconf ~ z + task + sev + zeff, long)
+m_pool_i <- lm(zconf ~ z * task + sev + zeff, long)
+cl <- function(m) vcovCL(m, cluster = long$id, type = "HC2")
+ct <- coeftest(m_pool, vcov = cl(m_pool))["z", ]
+pool_est <- c(est = unname(ct[1]), lo = unname(ct[1] - 1.96 * ct[2]), hi = unname(ct[1] + 1.96 * ct[2]), p = unname(ct[4]))
+kable(tr(pool_est), digits = 3, col.names = c("Pooled effect (SD)", "95% CI low", "95% CI high", "p"),
+      caption = "Average effect of the Socratic tutor on standardised confidence across tasks (student-clustered HC2)")
+wd <- waldtest(m_pool, m_pool_i, vcov = cl, test = "F")
+cat(sprintf("Test that the effect differs by task: F(%d) = %.2f, p = %.3f\n", abs(wd$Df[2]), wd$F[2], wd$`Pr(>F)`[2]))
+```
+
+# 5. Randomisation inference
+
+A permutation test re-draws treatment labels (within school, mimicking blocking by site), recomputes the adjusted effect each time, and compares with the observed value. It does not rely on large-sample approximations.
+
+```{r ri}
+ri <- function(y, covs, data, B = 5000) {
+  f <- fml(y, covs)
+  obs <- coef(lm(f, data))["z"]
+  sims <- replicate(B, { data$z <- ave(data$z, data$school, FUN = sample); coef(lm(f, data))["z"] })
+  c(obs = unname(obs), p = mean(abs(sims) >= abs(obs) - 1e-12))
+}
+ri_tab <- do.call(rbind, lapply(names(OUT), function(nm) { o <- OUT[[nm]]; ri(o$y, o$covs, task_dat(o$task)) }))
+rownames(ri_tab) <- sapply(OUT, `[[`, "label")
+kable(ri_tab, digits = 3, col.names = c("Observed adj. effect (OLS)", "RI p-value"),
+      caption = "Randomisation-inference p-values (5,000 permutations within school)")
+```
+
+# 6. Robustness
+
+```{r robust}
+lin <- function(y, covs, data) {
+  dc <- data %>% mutate(across(all_of(covs), ~ .x - mean(.x)))
+  ci_hc2(lm(reformulate(c("z", covs, paste0("z:", covs)), y), dc))
+}
+rob <- function(nm) {
+  o <- OUT[[nm]]; dk <- task_dat(o$task); extra <- c("gender", "top_grades", "used_ai_before", "explain")
+  dk2 <- dk %>% filter(!is.na(gender), !is.na(top_grades))
+  nos <- setdiff(o$covs, "sev")
+  bind_rows(
+    tibble(outcome = o$label, spec = "Unadjusted",                         tr(ci_hc2(lm(reformulate("z", o$y), dk)))),
+    tibble(outcome = o$label, spec = "Adjusted (primary)",                 tr(ci_hc2(lm(fml(o$y, o$covs), dk)))),
+    tibble(outcome = o$label, spec = "Adjusted + gender, grades, prior AI use, explain arm", tr(ci_hc2(lm(fml(o$y, c(o$covs, extra)), dk2)))),
+    tibble(outcome = o$label, spec = "Lin (2013) interacted",              tr(lin(o$y, o$covs, dk))),
+    tibble(outcome = o$label, spec = "Brussels only",                      tr(ci_hc2(lm(fml(o$y, nos), filter(dk, sev == 0))))),
+    tibble(outcome = o$label, spec = "Seville only",                       tr(ci_hc2(lm(fml(o$y, nos), filter(dk, sev == 1)))))
+  )
+}
+rob_tab <- bind_rows(lapply(names(OUT), rob))
+kable(rob_tab, digits = c(0, 0, 3, 3, 3, 3), col.names = c("Outcome", "Specification", "Effect", "CI low", "CI high", "p"),
+      caption = "Treatment effect under alternative specifications (OLS/LPM, HC2; confidence in scale points, correctness as probability)")
+```
+
+# 7. What could this study detect?
+
+With these sample sizes, a non-significant result is not evidence of no effect. Minimum detectable effect (MDE) at 80% power, α = 0.05 two-sided:
+
+```{r power}
+n1 <- sum(dd$z); n0 <- sum(1 - dd$z); nn <- mean(c(n1, n0))
+mde <- bind_rows(lapply(c("C1", "C2", "C3"), function(nm) {
+  dk <- task_dat(OUT[[nm]]$task)
+  dlt <- power.t.test(n = nn, sd = sd(dk$conf), power = .8, sig.level = .05)$delta
+  tibble(outcome = OUT[[nm]]$label, MDE = dlt, unit = "scale points", MDE_sd = dlt / sd(dk$conf))
+}))
+p_ctrl <- mean(dk3$post_correct[dk3$z == 0])
+mde_prop <- uniroot(function(delta) power.prop.test(n = nn, p1 = p_ctrl, p2 = p_ctrl + delta, sig.level = .05)$power - .8, c(.01, 1 - p_ctrl - 1e-3))$root
+mde <- bind_rows(mde, tibble(outcome = OUT$K3$label, MDE = 100 * mde_prop, unit = "percentage points", MDE_sd = NA_real_))
+kable(mde, digits = 2, col.names = c("Outcome", "MDE", "Unit", "MDE in SD"), caption = sprintf("Minimum detectable effects (%d Socratic vs %d non-Socratic)", n1, n0))
+```
+
+Smaller effects, including educationally meaningful ones, cannot be ruled out; interpret confidence intervals rather than significance alone.
+
+# 8. Summary figure
+
+```{r forest, fig.height = 4.2}
+fp <- bind_rows(
+  bind_rows(lapply(c("C1", "C2", "C3"), function(nm) {
+    o <- OUT[[nm]]; dk <- task_dat(o$task)
+    tibble(panel = "Confidence (adjusted effect, SD of 1-5 scale)", outcome = o$label, tr(ci_hc2(lm(fml("conf", o$covs), dk)) / c(rep(sd(dk$conf), 3), 1)))
+  })),
+  tibble(panel = "Confidence (adjusted effect, SD of 1-5 scale)", outcome = "Pooled, 3 tasks", tr(pool_est)),
+  tibble(panel = "Correctness (adjusted effect, percentage points)", outcome = OUT$K3$label, tr(ci_hc2(m_k_a) * c(100, 100, 100, 1)))
+) %>% mutate(outcome = factor(outcome, rev(unique(outcome))))
+
+ggplot(fp, aes(est, outcome)) +
+  geom_vline(xintercept = 0, colour = "grey50") +
+  geom_pointrange(aes(xmin = lo, xmax = hi, shape = outcome == "Pooled, 3 tasks"), colour = COL["Socratic"], linewidth = .8, show.legend = FALSE) +
+  facet_wrap(~ panel, scales = "free", ncol = 1) +
+  labs(x = "Effect of Socratic vs non-Socratic tutor (95% CI)", y = NULL) +
+  theme(strip.text = element_text(hjust = 0))
+```
+
+# 9. Exploratory analyses
+
+Not part of the primary plan; not corrected for multiplicity.
+
+## 9.1 Perceived helpfulness of the AI agent
+
+After each task students rated "How helpful was it to interact with the AI tutor?". This is a **secondary** outcome (not in the Holm family): it asks whether the Socratic style is received differently, which is separate from its effect on confidence or correctness.
+
+**Data-coding caveat.** The two schools used *different 5-point answer scales*: Brussels (Not at all / Not helpful / Neutral / Helpful / Very helpful) and Seville (Not at all / Slightly / Somewhat / Very / Extremely helpful); the few "Other" answers are set to missing (none remain in the analysis sample). We map both scales to 1-5 by position (Seville: Very = 4, Extremely = 5). The manuscript's recode instead gives Seville's "Very" and "Extremely" the top value. Because the wording is not identical across schools, school is always adjusted for, and two checks are shown: a within-school ordinal analysis (unaffected by how schools are aligned) and the alternative recode.
+
+```{r help-data}
+help_code <- function(x, school, very_seville = 4L) case_when(
+  x == "Not at all helpful" ~ 1L,
+  x %in% c("Not helpful", "Slightly helpful") ~ 2L,
+  x %in% c("Neutral", "Somewhat helpful") ~ 3L,
+  x == "Helpful" ~ 4L,
+  x == "Very helpful" ~ if_else(school == "Seville", very_seville, 5L),
+  x == "Extremely helpful" ~ 5L
+)  # "Other" and anything else -> NA
+help_dat <- function(k, very = 4L) {
+  task_dat(k) %>% mutate(help = help_code(.data[[paste0("h", k, "_raw")]], school, very), help_f = factor(help, 1:5, ordered = TRUE)) %>%
+    filter(!is.na(help))
+}
+kable(bind_rows(lapply(1:3, function(k) {
+  hd <- help_dat(k); hd %>% group_by(arm) %>% summarise(task = TASKS[[k]], n = n(), `Helpfulness mean (1-5)` = mean(help), SD = sd(help),
+                                                         `Rated 4-5 (%)` = 100 * mean(help >= 4), .groups = "drop")
+})) %>% select(task, arm, everything()), digits = 2, caption = "Perceived helpfulness of the AI tutor, by task and arm (positional coding)")
+
+hp <- bind_rows(lapply(1:3, function(k) help_dat(k) %>% mutate(task = TASKS[[k]]))) %>% count(task, arm, help_f) %>% group_by(task, arm) %>% mutate(share = n / sum(n))
+ggplot(hp, aes(share, arm, fill = help_f)) + geom_col(width = .6) + facet_wrap(~ task, ncol = 1) +
+  scale_fill_brewer(palette = "RdYlBu", name = "Helpfulness\n(1 = lowest)") + scale_x_continuous(labels = scales::percent) +
+  labs(x = NULL, y = NULL, title = "Perceived helpfulness of the AI tutor, by task and arm") + theme(strip.text = element_text(hjust = 0))
+```
+
+```{r help-models}
+help_res <- bind_rows(lapply(1:3, function(k) {
+  covs <- OUT[[paste0("C", k)]]$covs; hd <- help_dat(k)
+  ol <- polr(fml("help_f", covs), droplevels(hd), Hess = TRUE)
+  ols <- lm(fml("help", covs), hd)
+  lp  <- lm(fml("I(help >= 4)", covs), hd)
+  bind_rows(
+    tibble(outcome = TASKS[[k]], model = "Ordinal logit, adjusted (OR)", tr(or_ci(ol))),
+    tibble(outcome = TASKS[[k]], model = "OLS, adjusted (points)",       tr(ci_hc2(ols))),
+    tibble(outcome = TASKS[[k]], model = "Rated 4-5, adjusted (prob.)",  tr(ci_hc2(lp)))
+  )
+}))
+kable(help_res, digits = c(0, 0, 2, 2, 2, 3), col.names = c("Task", "Model", "Estimate", "95% CI low", "95% CI high", "p"),
+      caption = "Effect of the Socratic tutor on perceived helpfulness (OR > 1 or points > 0 = rated more helpful)")
+```
+
+Checks that do not depend on how the two schools' scales are aligned:
+
+```{r help-checks}
+chk <- bind_rows(lapply(1:3, function(k) {
+  covs <- setdiff(OUT[[paste0("C", k)]]$covs, "sev")
+  bind_rows(
+    bind_rows(lapply(c(Brussels = 0, Seville = 1), function(sv) {
+      hd <- help_dat(k) %>% filter(sev == sv)
+      tibble(task = TASKS[[k]], check = paste0("Within school: ", if (sv == 0) "Brussels" else "Seville", " (ordinal OR)"), n = nrow(hd),
+             tr(or_ci(polr(fml("help_f", covs), droplevels(hd), Hess = TRUE))))
+    })),
+    { hd <- help_dat(k, very = 5L)
+      tibble(task = TASKS[[k]], check = "Manuscript recode, pooled (ordinal OR)", n = nrow(hd),
+             tr(or_ci(polr(fml("help_f", c("sev", covs)), droplevels(hd), Hess = TRUE)))) }
+  )
+}))
+kable(chk, digits = c(0, 0, 0, 2, 2, 2, 3), col.names = c("Task", "Check", "n", "OR", "95% CI low", "95% CI high", "p"),
+      caption = "Helpfulness: within-school and alternative-coding checks")
+```
+
+Pooled across tasks (helpfulness standardised within task, task fixed effects, school, standardised self-efficacy, student-clustered SEs):
+
+```{r help-pooled}
+hlong <- bind_rows(lapply(1:3, function(k) help_dat(k) %>% transmute(id, z, sev, task = factor(k), help, eff))) %>%
+  group_by(task) %>% mutate(zhelp = (help - mean(help)) / sd(help), zeff = (eff - mean(eff)) / sd(eff)) %>% ungroup()
+mh  <- lm(zhelp ~ z + task + sev + zeff, hlong); mhi <- lm(zhelp ~ z * task + sev + zeff, hlong)
+clh <- function(m) vcovCL(m, cluster = hlong$id, type = "HC2")
+cth <- coeftest(mh, vcov = clh(mh))["z", ]
+kable(tr(c(est = unname(cth[1]), lo = unname(cth[1] - 1.96 * cth[2]), hi = unname(cth[1] + 1.96 * cth[2]), p = unname(cth[4]))), digits = 3,
+      col.names = c("Pooled effect (SD)", "95% CI low", "95% CI high", "p"), caption = "Average effect of the Socratic tutor on standardised helpfulness")
+wdh <- waldtest(mh, mhi, vcov = clh, test = "F")
+cat(sprintf("Test that the effect differs by task: F(%d) = %.2f, p = %.3f\n", abs(wdh$Df[2]), wdh$F[2], wdh$`Pr(>F)`[2]))
+```
+
+## 9.2 Heterogeneity by school
+
+Interaction of the treatment with school for each primary outcome. With this sample size these tests have little power; they are for hypothesis generation only.
+
+```{r het}
+het <- bind_rows(lapply(names(OUT), function(nm) {
+  o <- OUT[[nm]]; dk <- task_dat(o$task)
+  ct <- hc2(lm(reformulate(c("z", o$covs, "z:sev"), o$y), dk))
+  tibble(outcome = o$label, interaction_Seville = ct["z:sev", 1], se = ct["z:sev", 2], p = ct["z:sev", 4])
+}))
+kable(het, digits = 3, caption = "Treatment x school (Seville) interaction (OLS/LPM, HC2)")
+```
+
+## 9.3 Calibration (Task 3): does confidence track correctness?
+
+```{r calib}
+cal <- dk3 %>% group_by(arm, answer = factor(post_correct, 0:1, c("Incorrect", "Correct"))) %>%
+  summarise(n = n(), mean_confidence = mean(conf), .groups = "drop")
+kable(cal, digits = 2, caption = "Mean confidence by arm and correctness of the post-AI answer")
+
+m_cal <- lm(conf ~ z * post_correct + sev + eff + pre_correct, dk3)
+ct <- hc2(m_cal)
+kable(tibble(term = rownames(ct), estimate = ct[, 1], se = ct[, 2], p = ct[, 4]) %>% filter(term %in% c("z", "post_correct", "z:post_correct")),
+      digits = 3, caption = "Does the Socratic tutor change how well confidence tracks correctness? (z:post_correct)")
+
+ggplot(dk3 %>% mutate(answer = factor(post_correct, 0:1, c("Incorrect", "Correct"))), aes(answer, conf, colour = arm)) +
+  geom_point(position = position_jitterdodge(jitter.width = .15, jitter.height = .1, dodge.width = .6), alpha = .5) +
+  stat_summary(fun.data = mean_cl_normal, geom = "pointrange", position = position_dodge(.6), linewidth = 1, colour = "black", aes(group = arm)) +
+  scale_colour_manual(values = COL) +
+  labs(x = "Answer after AI (Task 3)", y = "Confidence (1-5)", colour = NULL, title = "Confidence by correctness (black = mean, 95% CI)")
+```
+
+## 9.4 Task 2: change of opinion after the tutor
+
+Students gave their view on the effect of social media before and after the interaction. There is no correct answer, so this is behavioural (did the tutor move opinions?), not accuracy.
+
+```{r opinion}
+o2 <- dd %>% filter(!is.na(op_pre), !is.na(op_post)) %>%
+  mutate(changed = as.integer(op_post != op_pre), shift = op_post - op_pre, abs_shift = abs(shift))
+kable(o2 %>% group_by(arm) %>% summarise(n = n(), `Changed opinion (%)` = 100 * mean(changed), `Mean signed shift` = mean(shift), `Mean |shift|` = mean(abs_shift)),
+      digits = 2, caption = "Opinion before vs after the tutor (5-point scale)")
+op_tab <- bind_rows(
+  tibble(outcome = "Changed opinion (prob.)", tr(ci_hc2(lm(changed ~ z + sev + eff2, o2)))),
+  tibble(outcome = "Absolute shift (points)", tr(ci_hc2(lm(abs_shift ~ z + sev + eff2, o2)))),
+  tibble(outcome = "Signed shift (points)",   tr(ci_hc2(lm(shift ~ z + sev + eff2, o2))))
+)
+kable(op_tab, digits = 3, col.names = c("Outcome", "Adj. effect", "CI low", "CI high", "p"), caption = "Effect of the Socratic tutor on opinion change (Task 2)")
+```
+
+## 9.5 Task 3: learning transitions and tutor use
+
+ANCOVA (K3 adjusted for baseline) already captures gain; the transition table shows how students moved.
+
+```{r gain}
+kable(dk3 %>% count(arm, pre = factor(pre_correct, 0:1, c("Wrong before", "Right before")),
+                    post = factor(post_correct, 0:1, c("Wrong after", "Right after"))) %>%
+        group_by(arm, pre) %>% mutate(`% of row` = 100 * n / sum(n)), digits = 0,
+      caption = "Transitions in correctness (before to after AI)")
+```
+
+Number of tutor interactions is **post-treatment** and observed for only about half of the sample, so conditioning on it would break randomisation. It is described, not used as a covariate or mediator.
+
+```{r usage}
+usage <- bind_rows(lapply(1:3, function(k) {
+  dk <- dd %>% mutate(turns = .data[[paste0("turns", k)]])
+  p <- wilcox.test(turns ~ z, dk, exact = FALSE)$p.value
+  dk %>% group_by(arm) %>% summarise(task = TASKS[[k]], observed = sum(!is.na(turns)), median = median(turns, na.rm = TRUE),
+                                      mean = mean(turns, na.rm = TRUE), .groups = "drop") %>% mutate(wilcoxon_p = p)
+})) %>% select(task, arm, everything())
+kable(usage, digits = c(0, 0, 0, 1, 1, 3), caption = "Tutor interactions per task (where recorded); Wilcoxon p compares arms")
+```
+
+## 9.6 Task 3: retention / transfer (verification question)
+
+After Task 3, students answered a transfer question without AI: *"In which material does sound travel faster?"* (correct: Gold).
+
+**Data-coding caveat.** The stored answers use *different codes in each school*: Seville has numeric codes (0-4), Brussels has Likert-style labels (an export artefact). The manuscript's recode maps `3` and `neutral` to Gold.
+
+```{r verify-dist}
+kable(table(raw$q29_sound_speed_verify, raw$location), caption = "Raw verification answers by school: no code appears in both schools")
+```
+
+If the Brussels labels were mapped in option order (`very_helpful`=Rubber, `helpful`=Cold air, `neutral`=Warm air, `not_very_helpful`=Gold), Gold would be chosen by 34 of 64 students in Brussels but 10 of 57 in Seville, an implausible gap between two schools with comparable students. The manuscript's mapping (`neutral`=Gold, `not_very_helpful`=Water) gives near-identical distributions in the two schools (Rubber 4 vs 1, Air 15 vs 20, Gold 11 vs 10, Water 34 vs 26), so it is more credible. It remains an inference: **the original export should be checked before relying on this outcome.** Results are shown under the manuscript coding (A), the order-based coding (B), and Seville alone where the codes are unambiguous (C).
+
+```{r verify}
+code_a <- function(v) case_match(v, c("3", "neutral") ~ 1L, c("0", "1", "2", "4", "very_helpful", "helpful", "not_very_helpful") ~ 0L)
+code_b <- function(v) case_match(v, c("3", "not_very_helpful") ~ 1L, c("0", "1", "2", "4", "very_helpful", "helpful", "neutral") ~ 0L)
+code_c <- function(v) case_match(v, "3" ~ 1L, c("0", "1", "2", "4") ~ 0L)
+vv <- dk3 %>% mutate(A = code_a(verify_raw), B = code_b(verify_raw), C = code_c(verify_raw))
+labs <- c(A = "A: manuscript recode (3, neutral = Gold)",
+          B = "B: option-order recode (3, not_very_helpful = Gold)",
+          C = "C: Seville only, numeric codes (3 = Gold)")
+out <- bind_rows(lapply(c("A", "B", "C"), function(k) {
+  dv <- vv %>% filter(!is.na(.data[[k]]))
+  covs <- c(if (n_distinct(dv$sev) > 1) "sev", "eff", "pre_correct")
+  tibble(coding = labs[[k]], n = nrow(dv), pct_correct = 100 * mean(dv[[k]]), tr(ci_hc2(lm(fml(k, covs), dv))))
+}))
+kable(out, digits = c(0, 0, 1, 3, 3, 3, 3), col.names = c("Coding", "n", "% correct", "Adj. effect (prob.)", "CI low", "CI high", "p"),
+      caption = "Transfer question: share correct and Socratic effect under three codings")
+```
+
+# 10. Notes for interpretation and reporting
+
+* Report **effect sizes with confidence intervals** for the four primary outcomes, the unadjusted alongside the adjusted estimate, and Holm-adjusted p-values.
+* The design supports causal claims about *assignment to the Socratic prompt* (ITT). It says nothing about why, since the prompts differ in style, length and information, not only in being Socratic.
+* Confidence is self-reported and can diverge from accuracy; only Task 3 allows checking calibration (section 9.3). A drop in confidence is not by itself good or bad.
+* Task 3 post-AI correctness measures performance **with** AI help, not learning. Learning requires the unassisted transfer question, whose coding should be verified against the original export (section 9.6).
+* Tasks 1 and 2 have no correctness outcome, so nothing here speaks to accuracy or quality in those tasks.
+* The sample is two schools, ~60 students per arm. Section 7 gives the smallest effects that could be detected; phrase null results as "no evidence of an effect larger than X".
+* Section 9 is exploratory and should be labelled as such or moved to an appendix.
+
+```{r session}
+sessionInfo()
+```
