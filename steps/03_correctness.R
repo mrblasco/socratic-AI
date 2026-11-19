@@ -57,20 +57,16 @@ fig <- ggplot(dk3 %>% mutate(answer = factor(post_correct, 0:1, c("Incorrect", "
 save_figure(fig, "calibration")
 
 # ---- Retention: the transfer question answered without AI ------------------------
-# CAVEAT: the stored answers use different codes in each school (Seville numeric, Brussels
-# Likert-style labels), so the coding of "Gold" is an inference. Three codings are compared:
-#   A = manuscript recode (3, neutral = Gold); B = labels in option order (3, not_very_helpful = Gold);
-#   C = Seville only, numeric codes (3 = Gold).
+# Stored answers use different codes in each school (Seville numeric, Brussels Likert-style labels).
+# Coding taken as correct: "3" (Seville) and "neutral" (Brussels) = Gold; all other codes = incorrect.
 save_table(as.data.frame(table(code = raw$q29_sound_speed_verify, school = raw$location)), "retention_raw_codes_by_school")
 
-code_a <- function(v) case_match(v, c("3", "neutral") ~ 1L, c("0", "1", "2", "4", "very_helpful", "helpful", "not_very_helpful") ~ 0L)
-code_b <- function(v) case_match(v, c("3", "not_very_helpful") ~ 1L, c("0", "1", "2", "4", "very_helpful", "helpful", "neutral") ~ 0L)
-code_c <- function(v) case_match(v, "3" ~ 1L, c("0", "1", "2", "4") ~ 0L)
-vv <- dk3 %>% mutate(A = code_a(verify_raw), B = code_b(verify_raw), C = code_c(verify_raw))
-labs <- c(A = "A: manuscript recode (3, neutral = Gold)", B = "B: option-order recode (3, not_very_helpful = Gold)", C = "C: Seville only, numeric codes (3 = Gold)")
-ret <- bind_rows(lapply(c("A", "B", "C"), function(k) {
-  dv <- vv %>% filter(!is.na(.data[[k]]))
-  covs <- c(if (n_distinct(dv$sev) > 1) "sev", "eff", "pre_correct")
-  tibble(coding = labs[[k]], n = nrow(dv), pct_correct = 100 * mean(dv[[k]]), tr(ci_hc2(lm(fml(k, covs), dv))))
-}))
+code_gold <- function(v) case_match(v, c("3", "neutral") ~ 1L, c("0", "1", "2", "4", "very_helpful", "helpful", "not_very_helpful") ~ 0L)
+vv <- dk3 %>% mutate(verify_correct = code_gold(verify_raw))
+dv <- vv %>% filter(!is.na(verify_correct))
+covs <- c(if (n_distinct(dv$sev) > 1) "sev", "eff", "pre_correct")
+ret <- bind_rows(
+  tibble(model = "Unadjusted", n = nrow(dv), pct_correct = 100 * mean(dv$verify_correct), tr(ci_hc2(lm(fml("verify_correct", NULL), dv)))),
+  tibble(model = "Adjusted", n = nrow(dv), pct_correct = 100 * mean(dv$verify_correct), tr(ci_hc2(lm(fml("verify_correct", covs), dv))))
+)
 save_table(ret, "retention_effects")

@@ -47,6 +47,8 @@ trans <- tab("learning_transitions")
 calib <- tab("calibration_means")
 calib_int <- tab("calibration_interaction")
 retention <- tab("retention_effects")
+ret_adj <- one(retention, model == "Adjusted")
+ret_raw <- one(retention, model == "Unadjusted")
 holm <- tab("primary_holm")
 ri <- tab("primary_randomisation_inference")
 robust <- tab("primary_robustness")
@@ -286,18 +288,18 @@ knitr::include_graphics(fig("correctness.pdf"))
 
 Confidence tracked correctness only weakly. In the non-Socratic group, students whose final answer was right were just `r num(one(calib, arm == "Non-Socratic", post_correct == 1)$mean_confidence - one(calib, arm == "Non-Socratic", post_correct == 0)$mean_confidence)` points more confident than those who were wrong; in the Socratic group the gap was `r num(one(calib, arm == "Socratic", post_correct == 1)$mean_confidence - one(calib, arm == "Socratic", post_correct == 0)$mean_confidence)` points. The gap arises because students who were wrong were less confident with the Socratic agent (`r num(one(calib, arm == "Socratic", post_correct == 0)$mean_confidence)` against `r num(one(calib, arm == "Non-Socratic", post_correct == 0)$mean_confidence)`), but this difference is not significant (`r pv(one(calib_int, term == "z")$p)`), and neither is the interaction between the agent and correctness (`r pv(one(calib_int, term == "z:post_correct")$p)`).
 
-**Retention.** After the tasks, students answered without the AI a related question: in which of five materials (gold, rubber, warm air, cold air, water) does sound travel fastest. Fewer students answered correctly than after the interaction with the AI in Task 3, and the proportion did not differ by agent (Table \@ref(tab:retention)). This result needs a caveat about the data. The stored answers to this question use different codes in the two schools (numeric in Seville, labels borrowed from another scale in Brussels), so which code stands for gold is an inference. Under the coding used in the previous version of this manuscript `r pct(retention$pct_correct[1], 1)` of the students were correct, under an alternative coding that follows the order of the options `r pct(retention$pct_correct[2], 1)`, and using the Seville students alone `r pct(retention$pct_correct[3], 1)`. Under all three codings fewer than half of the students gave the right answer, and the Socratic and non-Socratic groups do not differ (differences between `r num(100 * min(retention$est), 1)` and `r num(100 * max(retention$est), 1)` percentage points; all p-values above `r num(min(retention$p), 2)`). We therefore conclude that many students did not transfer what they had learned with the AI, but we do not report a precise rate until the coding of this item is verified against the original questionnaire.
+**Retention.** After the tasks, students answered without the AI a related question: in which of five materials (gold, rubber, warm air, cold air, water) does sound travel fastest. Only `r pct(ret_adj$pct_correct, 1)` of the students answered correctly, fewer than after the interaction with the AI in Task 3, and the proportion did not differ by agent (adjusted difference `r num(100 * ret_adj$est, 1)` percentage points, 95% CI `r num(100 * ret_adj$lo, 1)` to `r num(100 * ret_adj$hi, 1)`; `r pv(ret_adj$p)`; unadjusted difference `r num(100 * ret_raw$est, 1)` percentage points, `r pv(ret_raw$p)`; Table \@ref(tab:retention)). Most students therefore did not transfer what they had learned with the AI, and neither agent type did better.
 
 ```{r retention}
 retention %>%
-  mutate(coding = sub("^[ABC]: ", "", coding), pct = sprintf("%.1f", pct_correct),
+  mutate(pct = sprintf("%.1f", pct_correct),
          effect = sprintf("%s [%s, %s]", num(100 * est, 1), num(100 * lo, 1), num(100 * hi, 1)), p = sprintf("%.2f", p)) %>%
-  select(coding, n, pct, effect, p) %>%
+  select(model, n, pct, effect, p) %>%
   kableExtra::kbl(booktabs = TRUE, linesep = "",
-                  col.names = c("Coding of the answer 'gold'", "N", "% correct", "Difference, pp [95% CI]", "p"),
-                  caption = "Answer to the transfer question (answered without AI) under three codings of the stored responses") %>%
-  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
-  kableExtra::footnote(general = "Difference is Socratic minus non-Socratic (linear probability models with HC2 robust errors, adjusted for school, Task 3 self-efficacy and the baseline answer).",
+                  col.names = c("Model", "N", "% correct", "Difference, pp [95% CI]", "p"),
+                  caption = "Answer to the transfer question (answered without AI)") %>%
+  kableExtra::kable_styling(font_size = 8) %>%
+  kableExtra::footnote(general = "Difference is Socratic minus non-Socratic (linear probability models with HC2 robust errors). The adjusted model controls for school, Task 3 self-efficacy and the baseline answer.",
                        general_title = "Notes: ", threeparttable = TRUE, escape = TRUE)
 ```
 

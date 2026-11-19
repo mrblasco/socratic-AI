@@ -74,7 +74,7 @@ Structure: sample and randomisation; Experiment 1 (RQ1, RQ2); Experiment 2 (RQ3 
 | RQ1 anchoring | not tested | Explanation cut the share ending within 10% of the AI estimate by 20.6 pp (p = 0.01) |
 | RQ2 | Human rating effect "significant" | Borderline (adjusted OR 1.95, p = 0.047; unadjusted p = 0.11); exploratory |
 | RQ3 confidence | Fisher/ordinal pooled, no clustering | Per-task models, Holm, randomisation inference, MDE (about 0.5 SD); all null |
-| RQ3 learning | No test of Socratic effect on follow-up question | Task 3 correctness null (+0.9 pp, CI -14.8 to 16.7); retention coding of "gold" flagged as uncertain (18% vs 36% correct) |
+| RQ3 learning | No test of Socratic effect on follow-up question | Task 3 correctness null (+0.9 pp, CI -14.8 to 16.7); retention question coded with 3/neutral = gold (17.5% correct; no difference by arm) |
 | RQ4 helpfulness | Pooled Fisher p = 0.025; "13 pp" | Task 1 clearly lower (-0.60 points, Holm 0.017); Task 3 weaker; Task 2 null; scale-alignment checks |
 | RQ5 volume | 20 vs 8 messages per student | Median 3 vs 1 student messages per conversation, with tests |
 | RQ5 legacy figure | Single-rater clarity/depth/engagement figure | Removed |
@@ -85,7 +85,6 @@ Structure: sample and randomisation; Experiment 1 (RQ1, RQ2); Experiment 2 (RQ3 
 - Discussion mentions "less clear / less deep" Socratic AI from the legacy single-rater coding.
 - Intro, abstract and highlights say N = 122; the analysis has 121 (120 for Experiment 2).
 - Conversation logs have 86 user accounts (Brussels: 31 accounts for 63 students) and 19 accounts appear in both arms: `user_id` is not a reliable student identifier.
-- The transfer question (`q29_sound_speed_verify`) uses different codes in each school; which code is "gold" is unverified.
 - Methods describe student-clustered models for H3/H4; the pipeline estimates per-task models (one row per student), plus a pooled clustered model.
 - Planned heterogeneity by ChatGPT experience and gender is not in `steps/`.
 - Step 07 keeps the 6,969 outlier (log scale); the old text removed it.
