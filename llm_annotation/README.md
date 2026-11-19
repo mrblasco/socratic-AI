@@ -3,19 +3,21 @@
 Rates the student–AI chats with a panel of LLMs and measures rater reliability.
 It is separate from the empirical analysis and the manuscript: its only input is
 `input/dialogues.json` (built from the `socraticaidata` R package), and the
-analysis reads only from `input/` (ID lists) and `output/` (collected ratings and
+analysis (`../steps/08_llm_ratings.R`) reads only from `input/` (ID lists) and `output/` (collected ratings and
 reliability tables).
 
-> **Status (2026-11-04): input rebuilt, ratings not yet redone.** The ratings in
-> `ratings/` and `output/` were made on `input/dialogues_v1.json`, which has a
-> bug (see *Chat IDs* below). `input/dialogues.json` is now correct, but nothing
-> has been re-rated yet.
+> **Status (2026-11-19): ratings not redone; analysis uses the 302 valid holdout chats.**
+> The ratings in `ratings/` and `output/` were made on `input/dialogues_v1.json`,
+> which has a bug (see *Chat IDs* below): 12 of the 314 holdout dialogues merged a
+> Brussels and a Seville chat. `input/dialogues.json` is correct but nothing has
+> been re-rated. The paper instead drops the 12 invalid dialogues and analyses the
+> remaining 302 (see *Analysis without the 12 merged chats*; `make clean-holdout`).
 
 ```
 socraticaidata::chats ──export──▶ input/dialogues.json ──rate──▶ ratings/<run>/*.json
                                                                 │ collect
                                                                 ▼
-                      ../analysis.R ◀── output/*.csv ◀── reliability
+                      ../steps/08_llm_ratings.R ◀── output/*.csv ◀── reliability
 ```
 
 ## Layout
@@ -73,8 +75,8 @@ re-rated on `input/dialogues.json`, with dev/holdout splits drawn on the package
 IDs. Changing the holdout from the 314 chats in `../docs/prespecification.md`
 is a deviation and must be reported as one.
 
-`../analysis.R` still reads the v1 ID lists, and its chat-level covariates have
-the same per-school ID problem; it has not been changed yet.
+`../steps/08_llm_ratings.R` (which replaced `../analysis.R` for this analysis) keys chats by
+(school, `chat_id`) and students by (school, `user_id`), so the covariate problem is fixed there.
 
 ## Analysis without the 12 merged chats (option 1)
 
