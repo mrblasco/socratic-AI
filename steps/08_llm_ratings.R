@@ -18,6 +18,10 @@ needed <- file.path(LLM_DIR, c("input/holdout_ids.json", "output/llm_ratings_hol
                                "output/llm_ratings_dev_v3_long.csv", "output/reliability_holdout/reliability_table.csv"))
 if (!all(file.exists(needed))) stop("LLM annotation outputs missing: ", paste(needed[!file.exists(needed)], collapse = ", "))
 ARM_FILL <- c("#d95f02", "#7570b3")
+ITEM_LAB <- c(reasoning_quality = "Reasoning quality", knowledge_building = "Knowledge building",
+              effort_seriousness = "Effort and task focus", question_asking = "Asks a content question",
+              supportive_guidance = "Supportive guidance", next_step_guidance = "Next-step guidance",
+              encouraging_tone = "Encouraging tone", conversational_flow = "Conversational flow")
 
 holdout <- fromJSON(file.path(LLM_DIR, "input", "holdout_ids.json"))
 
@@ -71,7 +75,7 @@ save_table(chat_info %>% filter(chat_id %in% holdout) %>% group_by(arm) %>%
 
 fig <- ggplot(filter(outcome, mode == "full"), aes(arm, y, fill = arm)) +
   geom_violin(alpha = .4, colour = NA) + stat_summary(fun = mean, geom = "point", size = 2.5) +
-  facet_wrap(~item, scales = "free_y", nrow = 2) + scale_fill_manual(values = ARM_FILL) + guides(fill = "none") +
+  facet_wrap(~item, scales = "free_y", nrow = 2, labeller = labeller(item = ITEM_LAB)) + scale_fill_manual(values = ARM_FILL) + guides(fill = "none") +
   labs(x = NULL, y = "Item score (mean of two raters' z-scores)", title = "LLM ratings by arm (holdout, full dialogue)")
 save_figure(fig, "fig_llm_ratings_by_arm", width = 9, height = 5.5)
 
@@ -100,13 +104,14 @@ res <- llm_run(filter(outcome, chat_id %in% holdout)) %>%
   arrange(family, item, spec)
 save_table(select(res, family, item, status, spec, est, lo, hi, p, p_bh, n, students), "tab_llm_effects")
 
-fig <- ggplot(res, aes(est, reorder(item, est), colour = spec, shape = status)) +
+fig <- ggplot(res, aes(est, reorder(ITEM_LAB[item], est), colour = spec, shape = status)) +
   geom_vline(xintercept = 0, linetype = 2, colour = "grey50") +
   geom_pointrange(aes(xmin = lo, xmax = hi), position = position_dodge(.5)) +
   facet_grid(family ~ ., scales = "free_y", space = "free_y") +
   scale_colour_manual(values = c("navy", "orange")) +
-  labs(x = "Socratic − non-Socratic (z units; 95% CI)", y = NULL, colour = NULL, shape = "Reliability",
-       title = "Unadjusted vs adjusted for message and word counts")
+  labs(x = "Socratic − non-Socratic (standardised units; 95% CI)", y = NULL, colour = NULL, shape = "Reliability",
+       title = "Unadjusted vs adjusted for message and word counts") +
+  theme(strip.text.y = element_text(angle = 0))
 save_figure(fig, "fig_llm_effects", width = 8, height = 6)
 
 # ---- Sensitivity 2: each rater separately -------------------------------------------------------
@@ -141,7 +146,7 @@ sens <- bind_rows(mutate(filter(res, spec == "adjusted"), analysis = "primary (h
 save_table(sens, "tab_llm_sensitivity")
 fig <- ggplot(sens, aes(est, analysis)) +
   geom_vline(xintercept = 0, linetype = 2, colour = "grey50") + geom_pointrange(aes(xmin = lo, xmax = hi)) +
-  facet_wrap(~item, scales = "free_x", nrow = 2) + labs(x = "Socratic − non-Socratic (95% CI)", y = NULL)
+  facet_wrap(~item, scales = "free_x", nrow = 2, labeller = labeller(item = ITEM_LAB)) + labs(x = "Socratic − non-Socratic (95% CI)", y = NULL)
 save_figure(fig, "fig_llm_sensitivity", width = 11, height = 6)
 
 # ---- Sensitivity 6: does the rating carry information beyond interaction volume? ---------------------

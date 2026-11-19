@@ -354,8 +354,13 @@ vol %>%
             `Wilcoxon p` = ifelse(wilcoxon_p < 0.001, "< 0.001", sprintf("%.3f", wilcoxon_p)),
             `Ratio Socratic / non-Socratic [95% CI]` = sprintf("%.2f [%.2f, %.2f]", ratio, ratio_lo, ratio_hi),
             `Mixed-model p` = ifelse(p_mixed < 0.001, "< 0.001", sprintf("%.3f", p_mixed))) %>%
-  kableExtra::kbl(booktabs = TRUE, linesep = "", caption = "Student messages and words per conversation, by agent (all 354 conversations)") %>%
-  kableExtra::kable_styling(font_size = 8, latex_options = "scale_down") %>%
+  kableExtra::kbl(booktabs = TRUE, linesep = "", align = "lccccc", caption = "Student messages and words per conversation, by agent (all 354 conversations)") %>%
+  kableExtra::kable_styling(font_size = 9) %>%
+  kableExtra::column_spec(1, width = "2.6cm") %>%
+  kableExtra::column_spec(2:3, width = "2.2cm") %>%
+  kableExtra::column_spec(4, width = "1.8cm") %>%
+  kableExtra::column_spec(5, width = "3.2cm") %>%
+  kableExtra::column_spec(6, width = "1.8cm") %>%
   kableExtra::footnote(general = "Ratios are from linear mixed models of the logarithm of each count with a random intercept for the account and fixed effects for school and conversation order.",
                        general_title = "Notes: ", threeparttable = TRUE, escape = TRUE)
 ```
